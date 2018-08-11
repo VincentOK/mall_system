@@ -50,6 +50,7 @@ export default {
         margin-top: 30px;
         padding-bottom: 200px;
     }
+    
     .error-btn{
         margin-left: 100px;
     }

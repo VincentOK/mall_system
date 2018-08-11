@@ -16,29 +16,39 @@ export default new Router({
             children:[
                 {
                     path: '/dashboard',
-                    component: resolve => require(['../components/page/Dashboard.vue'], resolve),
+                    component: resolve => require(['../components/commercial/Dashboard.vue'], resolve),
                     meta: { title: '系统首页' }
                 },
                 {
                     path: '/onlineManagement',
-                    component: resolve => require(['../components/page/OnlineManagement.vue'], resolve),
-                    meta: { title: '基础表格' }
+                    component: resolve => require(['../components/commercial/OnlineManagement.vue'], resolve),
+                    meta: { title: '线上商品管理' }
                 },
                 {
-                    path: '/table',
-                    component: resolve => require(['../components/page/BaseTable.vue'], resolve),
-                    meta: { title: '基础表格' }
+                    path: '/addnewgoods',
+                    component: resolve => require(['../components/commercial/AddNewGoods.vue'], resolve),
+                    meta: { title: '新增商品' }
                 },
                 {
-                    path: '/tabs',
-                    component: resolve => require(['../components/page/Tabs.vue'], resolve),
-                    meta: { title: 'tab选项卡' }
+                    path: '/untreatedOrders',
+                    component: resolve => require(['../components/commercial/UntreatedOrders.vue'], resolve),
+                    meta: { title: '待处理订单' }
                 },
                 {
-                    path: '/form',
-                    component: resolve => require(['../components/page/BaseForm.vue'], resolve),
-                    meta: { title: '基本表单' }
+                    path: '/processedOrder',
+                    component: resolve => require(['../components/commercial/ProcessedOrder.vue'], resolve),
+                    meta: { title: '已处理订单' }
                 },
+                {
+                    path: '/incomestatistics',
+                    component: resolve => require(['../components/commercial/IncomeStatistics.vue'], resolve),
+                    meta: { title: '收益统计与结算' }
+                },
+                {
+                    path: '/returnsdetailed',
+                    component: resolve => require(['../components/commercial/ReturnsDetailed.vue'], resolve),
+                    meta: { title: '结算明细' }
+                },                
                 {
                     // 富文本编辑器组件
                     path: '/editor',

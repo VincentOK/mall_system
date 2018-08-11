@@ -55,7 +55,7 @@
                                 title: '线上商品管理'
                             },
                             {
-                                index: 'form',
+                                index: 'addnewgoods',
                                 title: '新增商品'
                             }
                             // {

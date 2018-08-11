@@ -1,7 +1,7 @@
 <template>
     <div class="sidebar">
-        <el-menu class="sidebar-el-menu" :default-active="onRoutes" :collapse="collapse" background-color="#324157"
-            text-color="#bfcbd9" active-text-color="#20a0ff" unique-opened router>
+        <el-menu default-active="2" class="sidebar-el-menu" :default-active="onRoutes" :collapse="collapse" active-background-color="#545c64" background-color="#FFFEFE"
+            text-color="black" active-text-color="#EC414D" unique-opened router>
             <template v-for="item in items">
                 <template v-if="item.subs">
                     <el-submenu :index="item.index" :key="item.index">
@@ -13,7 +13,7 @@
                         </el-menu-item>
                     </el-submenu>
                 </template>
-                <template v-else>
+                <template v-else >
                     <el-menu-item :index="item.index" :key="item.index">
                         <i :class="item.icon"></i><span slot="title">{{ item.title }}</span>
                     </el-menu-item>
@@ -137,5 +137,5 @@
     .sidebar > ul {
         height:100%;
     }
-    
+
 </style>

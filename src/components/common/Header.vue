@@ -25,7 +25,7 @@
                                 <!-- <el-table-column width="400" property="date" label="日期"></el-table-column> -->
                                 <!-- <el-table-column width="100" property="name" label="姓名"></el-table-column> -->
                                 <!-- <el-table-column width="200" property="address" label="地址" class="el-scrollbar"></el-table-column> -->
-                                
+
                                 <!-- </el-table> -->
                                 <span slot="reference">消息</span>
                                 <div class="scrollbarParent">
@@ -197,6 +197,7 @@ export default {
 .header {
   position: relative;
   box-sizing: border-box;
+    background-color: #ec414d;
   width: 100%;
   height: 70px;
   font-size: 22px;

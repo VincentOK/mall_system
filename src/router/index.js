@@ -22,23 +22,33 @@ export default new Router({
                 {
                     path: '/onlineManagement',
                     component: resolve => require(['../components/commercial/OnlineManagement.vue'], resolve),
-                    meta: { title: '基础表格' }
-                },
-                {
-                    path: '/table',
-                    component: resolve => require(['../components/page/BaseTable.vue'], resolve),
-                    meta: { title: '基础表格' }
-                },
-                {
-                    path: '/tabs',
-                    component: resolve => require(['../components/page/Tabs.vue'], resolve),
-                    meta: { title: 'tab选项卡' }
+                    meta: { title: '线上商品管理' }
                 },
                 {
                     path: '/addnewgoods',
                     component: resolve => require(['../components/commercial/AddNewGoods.vue'], resolve),
-                    meta: { title: '基本表单' }
+                    meta: { title: '新增商品' }
                 },
+                {
+                    path: '/untreatedOrders',
+                    component: resolve => require(['../components/commercial/UntreatedOrders.vue'], resolve),
+                    meta: { title: '待处理订单' }
+                },
+                {
+                    path: '/processedOrder',
+                    component: resolve => require(['../components/commercial/ProcessedOrder.vue'], resolve),
+                    meta: { title: '已处理订单' }
+                },
+                {
+                    path: '/incomestatistics',
+                    component: resolve => require(['../components/commercial/IncomeStatistics.vue'], resolve),
+                    meta: { title: '收益统计与结算' }
+                },
+                {
+                    path: '/returnsdetailed',
+                    component: resolve => require(['../components/commercial/ReturnsDetailed.vue'], resolve),
+                    meta: { title: '结算明细' }
+                },                
                 {
                     // 富文本编辑器组件
                     path: '/editor',

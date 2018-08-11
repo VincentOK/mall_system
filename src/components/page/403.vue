@@ -22,7 +22,7 @@ export default {
 </script>
 
 
-<style scoped>
+<style scoped>  
     .error-page{
         display: flex;
         justify-content: center;
@@ -50,10 +50,6 @@ export default {
         margin-top: 30px;
         padding-bottom: 200px;
     }
-<<<<<<< HEAD
-    
-=======
->>>>>>> wangwj
     .error-btn{
         margin-left: 100px;
     }

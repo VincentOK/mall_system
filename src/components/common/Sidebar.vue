@@ -35,16 +35,6 @@
                         index: 'dashboard',
                         title: '概览'
                     },
-                    // {
-                    //     icon: 'el-icon-tickets',
-                    //     index: 'table',
-                    //     title: '基础表格'
-                    // },
-                    // {
-                    //     icon: 'el-icon-message',
-                    //     index: 'tabs',
-                    //     title: 'tab选项卡'
-                    // },
                     {
                         icon: 'el-icon-date',
                         index: '1',
@@ -58,39 +48,48 @@
                                 index: 'addnewgoods',
                                 title: '新增商品'
                             }
-                            // {
-                            //     index: 'editor',
-                            //     title: '富文本编辑器'
-                            // },
-                            // {
-                            //     index: 'markdown',
-                            //     title: 'markdown编辑器'
-                            // },
-                            // {
-                            //     index: 'upload',
-                            //     title: '文件上传'
-                            // }
                         ]
                     },
+                    // {
+                    //     icon: 'el-icon-tickets',
+                    //     index: 'table',
+                    //     title: '基础表格'
+                    // },
+                    // {
+                    //     icon: 'el-icon-message',
+                    //     index: 'tabs',
+                    //     title: 'tab选项卡'
+                    // },
+                   
                     {
                         icon: 'el-icon-star-on',
                         index: '2',
                         title: '订单管理',
                         subs: [
                             {
-                                index: 'table',
+                                index: 'untreatedOrders',
                                 title: '待处理订单'
                             },
                             {
-                                index: 'table',
+                                index: 'processedOrder',
                                 title: '已处理订单'
                             }
                         ]
                     },
                     {
                         icon: 'el-icon-date',
-                        index: 'editor',
-                        title: '资产管理'
+                        index: '3',
+                        title: '资产管理',
+                        subs: [
+                            {
+                                index: 'Incomestatistics',
+                                title: '收益统计与结算'
+                            },
+                            {
+                                index: 'returnsdetailed',
+                                title: '结算明细'
+                            }
+                        ]
                     },
                     // {
                     //     icon: 'el-icon-warning',
@@ -101,6 +100,18 @@
                     //     icon: 'el-icon-error',
                     //     index: '404',
                     //     title: '404页面'
+                    // }
+                    // {
+                    //     index: 'editor',
+                    //     title: '富文本编辑器'
+                    // },
+                    // {
+                    //     index: 'markdown',
+                    //     title: 'markdown编辑器'
+                    // },
+                    // {
+                    //     index: 'upload',
+                    //     title: '文件上传'
                     // }
                 ]
             }

@@ -16,12 +16,12 @@ export default new Router({
             children:[
                 {
                     path: '/dashboard',
-                    component: resolve => require(['../components/page/Dashboard.vue'], resolve),
+                    component: resolve => require(['../components/commercial/Dashboard.vue'], resolve),
                     meta: { title: '系统首页' }
                 },
                 {
                     path: '/onlineManagement',
-                    component: resolve => require(['../components/page/OnlineManagement.vue'], resolve),
+                    component: resolve => require(['../components/commercial/OnlineManagement.vue'], resolve),
                     meta: { title: '基础表格' }
                 },
                 {
@@ -35,8 +35,8 @@ export default new Router({
                     meta: { title: 'tab选项卡' }
                 },
                 {
-                    path: '/form',
-                    component: resolve => require(['../components/page/BaseForm.vue'], resolve),
+                    path: '/addnewgoods',
+                    component: resolve => require(['../components/commercial/AddNewGoods.vue'], resolve),
                     meta: { title: '基本表单' }
                 },
                 {

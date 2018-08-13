@@ -21,32 +21,32 @@ export default new Router({
                 },
                 {
                     path: '/onlineManagement',
-                    component: resolve => require(['../components/commercial/OnlineManagement.vue'], resolve),
+                    component: resolve => require(['../components/commercial/goods_management/OnlineManagement.vue'], resolve),
                     meta: { title: '线上商品管理' }
                 },
                 {
                     path: '/addnewgoods',
-                    component: resolve => require(['../components/commercial/AddNewGoods.vue'], resolve),
+                    component: resolve => require(['../components/commercial/goods_management/AddNewGoods.vue'], resolve),
                     meta: { title: '新增商品' }
                 },
                 {
                     path: '/untreatedOrders',
-                    component: resolve => require(['../components/commercial/UntreatedOrders.vue'], resolve),
+                    component: resolve => require(['../components/commercial/order_management/UntreatedOrders.vue'], resolve),
                     meta: { title: '待处理订单' }
                 },
                 {
                     path: '/processedOrder',
-                    component: resolve => require(['../components/commercial/ProcessedOrder.vue'], resolve),
+                    component: resolve => require(['../components/commercial/order_management/ProcessedOrder.vue'], resolve),
                     meta: { title: '已处理订单' }
                 },
                 {
                     path: '/incomestatistics',
-                    component: resolve => require(['../components/commercial/IncomeStatistics.vue'], resolve),
+                    component: resolve => require(['../components/commercial/assets_management/IncomeStatistics.vue'], resolve),
                     meta: { title: '收益统计与结算' }
                 },
                 {
                     path: '/returnsdetailed',
-                    component: resolve => require(['../components/commercial/ReturnsDetailed.vue'], resolve),
+                    component: resolve => require(['../components/commercial/assets_management/ReturnsDetailed.vue'], resolve),
                     meta: { title: '结算明细' }
                 },                
                 {

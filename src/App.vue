@@ -13,4 +13,10 @@
 .content{
   padding: 20px 40px;
 }
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{
+  -webkit-appearance:textfield;
+}
+input[type="number"]{
+  -moz-appearance:textfield;
+}
 </style>

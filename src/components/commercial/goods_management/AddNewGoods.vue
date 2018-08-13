@@ -1,3 +1,4 @@
+<!--新增商品-->
 <template>
     <div>
         <!-- <div class="crumbs">
@@ -21,7 +22,8 @@
                                 list-type="picture-card"
                                 :limit="5"
                                 :on-preview="handlePictureCardPreview"
-                                :on-remove="handleRemove">
+                                :on-remove="handleRemove"
+                                :before-upload="beforeAvatarUpload">
                                 <i class="el-icon-plus"></i>
                             </el-upload>
                         </div>
@@ -33,10 +35,10 @@
                         <el-input v-model="form.specification" placeholder="请选择商品出售的单位规格，如“每份 300克”、“一双”" maxlength="20"></el-input>
                     </el-form-item>
                     <el-form-item label="实际售价">
-                        <el-input v-model="form.specification" placeholder="请输入单位实际售价" maxlength="20"></el-input>
+                        <el-input v-model.number="form.actual_price" type="number" placeholder="请输入单位实际售价" maxlength="20"></el-input>
                     </el-form-item>
                     <el-form-item label="建议售价">
-                        <el-input v-model="form.specification" placeholder="请输入单位建议售价，即删除线价格" maxlength="20"></el-input>
+                        <el-input v-model.number="form.suggest_price" type="number" placeholder="请输入单位建议售价，即删除线价格" maxlength="20"></el-input>
                     </el-form-item>
                     <el-form-item label="剩余库存">
                         <el-input v-model="form.specification"></el-input>
@@ -95,125 +97,160 @@
 </template>
 
 <script>
-    export default {
-        name: 'baseform',
-        data: function(){
-            return {
-                dialogImageUrl: '',
-                dialogVisible: false,
-                options:[
-                    {
-                        value: 'guangdong',
-                        label: '广东省',
-                        children: [
-                            {
-                                value: 'guangzhou',
-                                label: '广州市',
-                                children: [
-                                    {
-                                        value: 'tianhe',
-                                        label: '天河区'
-                                    },
-                                    {
-                                        value: 'haizhu',
-                                        label: '海珠区'
-                                    }
-                                ]
-                            },
-                            {
-                                value: 'dongguan',
-                                label: '东莞市',
-                                children: [
-                                    {
-                                        value: 'changan',
-                                        label: '长安镇'
-                                    },
-                                    {
-                                        value: 'humen',
-                                        label: '虎门镇'
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        value: 'hunan',
-                        label: '湖南省',
-                        children: [
-                            {
-                                value: 'changsha',
-                                label: '长沙市',
-                                children: [
-                                    {
-                                        value: 'yuelu',
-                                        label: '岳麓区'
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ],
-                form: {
-                    name: '',
-                    specification:'',
-                    region: '',
-                    date1: '',
-                    date2: '',
-                    delivery: true,
-                    type: ['步步高'],
-                    resource: '小天才',
-                    desc: '',
-                    options: []
+export default {
+  name: "baseform",
+  data: function() {
+    return {
+      dialogImageUrl: "",
+      dialogVisible: false,
+      searchGoodsName: 0,
+      val: 0,
+      options: [
+        {
+          value: "guangdong",
+          label: "广东省",
+          children: [
+            {
+              value: "guangzhou",
+              label: "广州市",
+              children: [
+                {
+                  value: "tianhe",
+                  label: "天河区"
+                },
+                {
+                  value: "haizhu",
+                  label: "海珠区"
                 }
+              ]
+            },
+            {
+              value: "dongguan",
+              label: "东莞市",
+              children: [
+                {
+                  value: "changan",
+                  label: "长安镇"
+                },
+                {
+                  value: "humen",
+                  label: "虎门镇"
+                }
+              ]
             }
+          ]
         },
-        methods: {
-            onSubmit() {
-                this.$message.success('提交成功！');
-            },
-            handleRemove(file, fileList) {
-                console.log(file, fileList);
-            },
-            handlePictureCardPreview(file) {
-                this.dialogImageUrl = file.url;
-                this.dialogVisible = true;
+        {
+          value: "hunan",
+          label: "湖南省",
+          children: [
+            {
+              value: "changsha",
+              label: "长沙市",
+              children: [
+                {
+                  value: "yuelu",
+                  label: "岳麓区"
+                }
+              ]
             }
+          ]
         }
+      ],
+      form: {
+        name: "",
+        specification: "",
+        actual_price: 0,
+        suggest_price:0,
+        region: "",
+        date1: "",
+        date2: "",
+        delivery: true,
+        type: ["步步高"],
+        resource: "小天才",
+        desc: "",
+        options: []
+      }
+    };
+  },
+  //   watch: {
+  //     searchGoodsName: function() {
+  //       if (!this.searchGoodsName.replace(/[^0-9]+/g, "")) {
+  //         this.$message.error("上传图片只能是Image格式!");
+  //       }
+  //     }
+  //   },
+  methods: {
+    handleInput(e) {
+      e = e.replace(/[^\d]/g, "");
+    },
+    onSubmit() {
+      this.$message.success("提交成功！");
+    },
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
+    beforeAvatarUpload(file) {
+      const isImage = /\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(file.name);
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isImage) {
+        this.$message.error("上传图片只能是Image格式!");
+      }
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 2MB!");
+      }
+      return isImage && isLt2M;
     }
+  }
+};
 </script>
 <style scoped>
-    .form-box{
-        margin-left: 50px;
-        margin-top: 20px;
-    }
-    /* .upload-picture{
+.form-box {
+  margin-left: 50px;
+  margin-top: 20px;
+}
+/* .el-input__inner::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+.el-input__inner::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+.input__inner::-webkit-textfield-decoration-container {
+   background-color: #f0f3f9;
+}  */
+/* .upload-picture{
         width: 100px;
         height: 100px;
     } */
-    .el-upload-collect{
-        position: relative;
-        height: 150px;
-        width: 1100px;
-        font-size: 14px;
-        color: #606266;
-        text-align: left;
-        margin-bottom: 15px;
-    }
-    .el-upload-collect p{
-        padding-top:30px;
-    }
-    .el-upload-right{
-        position: absolute;
-        left: 7.3%;
-        top: 0;
-    }
-    .product-details{
-        margin-left: -70px;
-        font-size: 14px;
-        color: #606266;
-    }
-    .submit-button{
-        margin: 0 100px;
-    }
+.el-upload-collect {
+  position: relative;
+  height: 150px;
+  width: 1100px;
+  font-size: 14px;
+  color: #606266;
+  text-align: left;
+  margin-bottom: 15px;
+}
+.el-upload-collect p {
+  padding-top: 30px;
+}
+.el-upload-right {
+  position: absolute;
+  left: 7.3%;
+  top: 0;
+}
+.product-details {
+  margin-left: -70px;
+  font-size: 14px;
+  color: #606266;
+}
+.submit-button {
+  margin: 0 100px;
+}
 </style>
 

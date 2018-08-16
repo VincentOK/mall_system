@@ -30,33 +30,33 @@
                         </el-card>
                     </el-col>
                 </el-row>
-                
+
             </el-col> -->
-            <el-col :span="20">
+            <el-col>
                 <el-row :gutter="20" class="mgb20">
-                    <el-col :span="20">
-                        <el-card shadow="hover" :body-style="{padding: '0px'}">
-                            <div class="grid-content grid-con-1">
+                    <el-col>
+                        <el-card shadow="hover" :body-style="{padding: '0px',height:'125px'}">
+                            <div class="grid-content grid-con-1":body-style="{padding: '0px',marginTop:'25px'}">
                                 <div class="grid-cont-right">
-                                    <div>代发订单</div>
-                                    <div class="grid-num">1234个</div>
+                                    <div class="word_goods">总收益</div>
+                                    <div class="grid-num">1234个<a class="look_goods">查看</a></div>
                                 </div>
                                 <div class="grid-cont-right">
-                                    <div>代发订单</div>
-                                    <div class="grid-num">1234个</div>
+                                    <div  class="word_goods">待发货订单</div>
+                                    <div class="grid-num">1234个<a class="look_goods">查看</a></div>
                                 </div>
                                 <div class="grid-cont-right">
-                                    <div>代发订单</div>
-                                    <div class="grid-num">1234个</div>
+                                    <div class="word_goods">待退款订单</div>
+                                    <div class="grid-num">1234个<a class="look_goods">查看</a></div>
                                 </div>
                                 <div class="grid-cont-right">
-                                    <div>代发订单</div>
-                                    <div class="grid-num">1234个</div>
+                                    <div class="word_goods">待补货商品</div>
+                                    <div class="grid-num">1234个<a class="look_goods">查看</a></div>
                                 </div>
                             </div>
                         </el-card>
                     </el-col>
-                    <!-- 
+                    <!--
                     <el-col :span="8">
                         <el-card shadow="hover" :body-style="{padding: '0px'}">
                             <div class="grid-content grid-con-3">
@@ -70,98 +70,44 @@
                     </el-col> -->
                 </el-row>
                 <el-row :gutter="20">
-                    <el-col :span="20">
-                        <el-card shadow="hover" :body-style="{padding: '0px',height: '200px'}">
-                            <div class="grid-content grid-con-2">
-                                <i class="el-icon-message grid-con-icon"></i>
-                                <div class="grid-cont-right">
-                                    <div class="grid-num">321</div>
-                                    <div>系统消息</div>
-                                </div>
-                            </div>
-                        </el-card>
+                    <el-col>
+                        <img width="100%" src="/static/img/1.png" alt="">
+
                     </el-col>
                 </el-row>
+
+
+
                 <el-row :gutter="20">
-                    <el-col :span="10">
+                    <el-col :span="17">
                     <el-card shadow="hover" :body-style="{ height: '295px'}">
                         <div slot="header" class="clearfix">
                             <span>公告</span>
-                            <el-button style="float: right; padding: 3px 0" type="text">添加</el-button>
+                            <!--<el-button style="float: right; padding: 3px 0" type="text">添加</el-button>-->
                         </div>
-                        <el-table :data="todoList" :show-header="false" height="500" style="width: 100%;font-size:14px;">
+                        <el-table :data="todoList" :show-header="false"  style="width: 100%;font-size:14px;">
                             <el-table-column>
                                 <template slot-scope="scope">
-                                    <div class="todo-item" @click="clickDialog">{{scope.row.title}}</div>
+                                    <div class="todo-item" @click="clickDialog">{{scope.row.title}}<label style="float: right">2018-06-08</label></div>
                                 </template>
                             </el-table-column>
                         </el-table>
                     </el-card>
                     </el-col>
-                    <el-col :span="10">
-                    <el-card shadow="hover" :body-style="{ height: '150px'}">
-                        <!-- <div slot="header" class="clearfix">
-                            <span>公告</span>
-                            <el-button style="float: right; padding: 3px 0" type="text">添加</el-button>
-                        </div>
-                        <el-table :data="todoList" :show-header="false" height="304" style="width: 100%;font-size:14px;">
-                            <el-table-column width="40">
-                                <template slot-scope="scope">
-                                    <el-checkbox v-model="scope.row.status"></el-checkbox>
-                                </template>
-                            </el-table-column>
-                            <el-table-column>
-                                <template slot-scope="scope">
-                                    <el-popover placement="top" title="标题" width="300" height="300" trigger="click">
-                                        <div slot="reference" class="todo-item">{{scope.row.title}}</div>
-                                    </el-popover>
-                                </template>
-                            </el-table-column>
-                            <el-table-column width="60">
-                                <template slot-scope="scope">
-                                    <i class="el-icon-edit"></i>
-                                    <i class="el-icon-delete"></i>
-                                </template>
-                            </el-table-column>
-                        </el-table> -->
-                    </el-card>
+                    <el-col :span="7">
+                        <img width="100%" src="/static/img/2.png" alt="">
                     </el-col>
-                    <el-col :span="10" class="padding-top-10">
-                    <el-card shadow="hover" :body-style="{ height: '150px'}">
-                        <!-- <div slot="header" class="clearfix">
-                            <span>公告</span>
-                            <el-button style="float: right; padding: 3px 0" type="text">添加</el-button>
-                        </div> -->
-                        <!-- <el-table :data="todoList" :show-header="false" height="304" style="width: 100%;font-size:14px;">
-                            <el-table-column width="40">
-                                <template slot-scope="scope">
-                                    <el-checkbox v-model="scope.row.status"></el-checkbox>
-                                </template>
-                            </el-table-column>
-                            <el-table-column>
-                                <template slot-scope="scope">
-                                    <el-popover placement="top" title="标题" width="300" height="300" trigger="click">
-                                        <div slot="reference" class="todo-item">{{scope.row.title}}</div>
-                                    </el-popover>
-                                </template>
-                            </el-table-column>
-                            <el-table-column width="60">
-                                <template slot-scope="scope">
-                                    <i class="el-icon-edit"></i>
-                                    <i class="el-icon-delete"></i>
-                                </template>
-                            </el-table-column>
-                        </el-table> -->
-                    </el-card>
+                    <el-col :span="7" class="padding-top-10">
+                        <img width="100%" src="/static/img/3.png" alt="">
                     </el-col>
                 </el-row>
             </el-col>
         </el-row>
-        <el-dialog title="公告详情" :visible.sync="dialogVisible" width="50%" :before-close="handleClose">
+        <el-dialog title="公告详情" :visible.sync="dialogVisible" width="50%"  :before-close="handleClose">
             <span>{{dialogContext}}</span>
             <span slot="footer" class="dialog-footer">
                 <!-- <el-button @click="dialogVisible = false">取 消</el-button> -->
-                <el-button type="primary" @click="dialogVisible = false">关闭窗口</el-button>
+                <el-button class="close_dialog" type="primary" @click="dialogVisible = false">关闭窗口</el-button>
             </span>
         </el-dialog>
     </div>
@@ -204,7 +150,15 @@ export default {
     };
   },
   methods: {
-    handleClose(done) {
+      getRowClass({ row, column, rowIndex, columnIndex }) {
+          if (rowIndex == 0) {
+              return 'background:#EFEFEF'
+          } else {
+              return ''
+          }
+      },
+
+      handleClose(done) {
       this.dialogVisible = true;
       done();
     },
@@ -223,6 +177,29 @@ export default {
 
 
 <style scoped>
+.el-dialog__footer{
+    border-top: 1px solid #d3dce6;
+}
+    .grid-num{
+        position: relative;
+    }
+    .grid-con-1{
+        margin-top: 25px;
+    }
+    .look_goods{
+        position: absolute;
+        right: 50px;
+        bottom: 0;
+        /*margin-left: 30px;*/
+        font-size: 14px;
+        color: cornflowerblue;
+        font-weight: normal;
+    }
+    .word_goods{
+        margin: 15px 0;
+        font-size: 16px;
+        color: black;
+    }
 .padding-top-10 {
   padding-top: 10px;
 }
@@ -250,7 +227,7 @@ export default {
 
 .grid-num {
   font-size: 16px;
-  font-weight: normal;
+  font-weight: 600;
 }
 
 .grid-con-icon {

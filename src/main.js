@@ -7,6 +7,12 @@ import ElementUI from 'element-ui';
 // import '../static/css/theme-green/index.css';       // 浅绿色主题
 import '../static/css/#EC414D/index.css';
 import "babel-polyfill";
+//全局调用Vue原型方法
+import _prototype from './components/common/commonJS/_prototypeJS'
+Vue.use(_prototype)
+//全局调用自定义vue指令
+import instruction from './components/common/commonJS/instruction'
+Vue.use(instruction)
 
 Vue.use(ElementUI, { size: 'small' });
 Vue.prototype.$axios = axios;

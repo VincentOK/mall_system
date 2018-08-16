@@ -72,6 +72,7 @@
 </template>
 
 <script>
+    import { formatMoney } from '../../common/commonJS/commonjs'
     export default {
         name: 'tabs',
         data() {

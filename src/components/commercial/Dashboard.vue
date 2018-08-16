@@ -36,7 +36,7 @@
                 <el-row :gutter="20" class="mgb20">
                     <el-col>
                         <el-card shadow="hover" :body-style="{padding: '0px',height:'125px'}">
-                            <div class="grid-content grid-con-1":body-style="{padding: '0px',marginTop:'25px'}">
+                            <div class="grid-content grid-con-1" :body-style="{padding: '0px',marginTop:'25px'}">
                                 <div class="grid-cont-right">
                                     <div class="word_goods">总收益</div>
                                     <div class="grid-num">1234个<a class="look_goods">查看</a></div>

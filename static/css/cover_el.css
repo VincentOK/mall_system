@@ -1,3 +1,24 @@
 /**
 *覆盖element默认样式
  */
+ .el-tabs__nav-wrap{
+    background-color: #fff;
+    padding: 10px 0 0 30px;
+  }
+  .surplus_stock .el-input-group__append{
+      padding:0;
+  }
+  .surplus_stock .el-input-group__append span{
+    padding: 7px 10px;
+    cursor:pointer 
+  }
+  .surplus_stock .el-input-group__prepend{
+    padding: 0;
+  }
+  .surplus_stock .el-input-group__prepend span{
+    padding: 7px 10px;
+    cursor:pointer 
+  }
+  .surplus_stock .el-input__inner{
+    padding: 0 5px;
+}

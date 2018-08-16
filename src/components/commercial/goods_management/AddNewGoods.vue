@@ -6,13 +6,11 @@
                 <el-breadcrumb-item><i class="el-icon-date"></i> 表单</el-breadcrumb-item>
                 <el-breadcrumb-item>基本表单</el-breadcrumb-item>
             </el-breadcrumb>
-
-
         </div> -->
         <div class="container">
             <h4>新增商品</h4>
             <div class="form-box">
-                <el-form ref="form" :model="form" label-width="80px">
+                <el-form ref="form" :model="form" label-width="100px">
                     <div class="el-upload-collect">
                         <p>图片轮播图</p>
                         <p>（最多5张）</p>
@@ -34,11 +32,11 @@
                     <el-form-item label="商品规格">
                         <el-input v-model="form.specification" placeholder="请选择商品出售的单位规格，如“每份 300克”、“一双”" maxlength="20"></el-input>
                     </el-form-item>
-                    <el-form-item label="实际售价">
-                        <el-input v-model.number="form.actual_price" type="number" placeholder="请输入单位实际售价" maxlength="20"></el-input>
+                    <el-form-item label="实际售价￥:">
+                        <el-input v-model.number="form.actual_price" type="number" placeholder="请输入单位实际售价" maxlength="20" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'></el-input>
                     </el-form-item>
                     <el-form-item label="建议售价">
-                        <el-input v-model.number="form.suggest_price" type="number" placeholder="请输入单位建议售价，即删除线价格" maxlength="20"></el-input>
+                        <el-input v-model.number="form.suggest_price" type="number" placeholder="请输入单位建议售价，即删除线价格" maxlength="20" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'></el-input>
                     </el-form-item>
                     <el-form-item label="剩余库存">
                         <el-input v-model="form.specification"></el-input>
@@ -160,8 +158,8 @@ export default {
       form: {
         name: "",
         specification: "",
-        actual_price: 0,
-        suggest_price:0,
+        actual_price: null,
+        suggest_price: null,
         region: "",
         date1: "",
         date2: "",
@@ -238,10 +236,11 @@ export default {
 }
 .el-upload-collect p {
   padding-top: 30px;
+  padding-left: 20px;
 }
 .el-upload-right {
   position: absolute;
-  left: 7.3%;
+  left: 9.3%;
   top: 0;
 }
 .product-details {

@@ -5,7 +5,10 @@ import axios from 'axios';
 import ElementUI from 'element-ui';
 // import 'element-ui/lib/theme-chalk/index.css';    // 默认主题
 // import '../static/css/theme-green/index.css';       // 浅绿色主题
+import '../static/css/iconfont/iconfont.css'
 import '../static/css/#EC414D/index.css';
+
+
 import "babel-polyfill";
 //全局调用Vue原型方法
 import _prototype from './components/common/commonJS/_prototypeJS'
@@ -19,14 +22,15 @@ Vue.prototype.$axios = axios;
 
 //使用钩子函数对路由进行权限跳转
 router.beforeEach((to, from, next) => {
-    console.log("测试我的分支lianghc")
-    console.log("测试")
     const role = localStorage.getItem('ms_username');
-    if(!role && to.path !== '/login'){
+    console.log(from)
+    if(!role && to.path !== '/login' && to.path !== '/tenants' && to.path !== '/forgetpassword'){
+        console.log("路径："+to.path)
         next('/login');
     }else if(to.meta.permission){
         // 如果是管理员权限则可进入，这里只是简单的模拟管理员权限而已
-        role === 'admin' ? next() : next('/403');
+        next();
+        // role === 'admin' ? next() : next('/403');
     }else{
         // 简单的判断IE10及以下不进入富文本编辑器，该组件不兼容
         if(navigator.userAgent.indexOf('MSIE') > -1 && to.path === '/editor'){

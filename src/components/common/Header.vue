@@ -59,7 +59,7 @@
                 </el-dropdown>
             </div>
         </div>
-        <el-dialog title="公告详情" :visible.sync="dialogVisible" width="50%" :before-close="handleClose">
+        <el-dialog title="消息详情" :visible.sync="dialogVisible" width="40%" :before-close="handleClose">
             <span>{{dialogContext}}</span>
             <span slot="footer" class="dialog-footer">
                 <!-- <el-button @click="dialogVisible = false">取 消</el-button> -->
@@ -73,6 +73,7 @@ import bus from "../common/bus";
 export default {
   data() {
     return {
+        dialogTitle:'',
       collapse: false,
       fullscreen: false,
       name: "linxin",
@@ -148,6 +149,7 @@ export default {
     clickDialog(e) {
       this.dialogContext = e;
       this.dialogVisible = true;
+        this.dialogTitle = '消息'
     },
     // 侧边栏折叠
     collapseChage() {

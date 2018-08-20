@@ -7,23 +7,31 @@
              <div class="login_icon"></div>
             <div class="login_form">
                 <div class="ms-login">
-                    <p class="login_title">后台管理系统</p>
+                    <p class="login_title">时间商城后台管理系统</p>
                     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm">
                         <el-form-item prop="username">
-                            <el-input v-model="ruleForm.username" placeholder="用户名"></el-input>
+                            <i class="shopping-icon-user login_iconfont"></i>
+                            <el-input  class="login_input" v-model="ruleForm.username" placeholder="用户名">
+
+                            </el-input>
                         </el-form-item>
-                        <el-form-item prop="password">
-                            <el-input type="password" placeholder="密码" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')"></el-input>
+                        <el-form-item prop="password" >
+                            <i class="shopping-icon-lock login_iconfont"></i>
+                            <el-input type="password"  class="login_input" placeholder="密码" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')"></el-input>
                         </el-form-item>
 
                         <el-form-item prop="checkword">
-                            <el-input  placeholder="验证码" v-model="ruleForm.checkword" @keyup.enter.native="submitForm('ruleForm')"></el-input>
+                            <i class="shopping-icon-safetycertificate login_iconfont"></i>
+                            <el-input   class="login_input" placeholder="验证码" v-model="ruleForm.checkword" @keyup.enter.native="submitForm('ruleForm')"></el-input>
                         </el-form-item>
 
                         <div class="login-btn">
                             <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
                         </div>
-                        <p style="font-size:12px;line-height:30px;color:#999;">Tips : 用户名和密码随便填。</p>
+                        <p style="font-size:12px;line-height:30px;color:#999;">
+                            <router-link :to="'/tenants'" style="float: left;color: #5394ec">商家入驻申请</router-link>
+                            <router-link :to="'/forgetpassword'" style="float: right;color: #5394ec">忘记密码？</router-link>
+                        </p>
                     </el-form>
                 </div>
             </div>
@@ -71,6 +79,12 @@
 </script>
 
 <style scoped>
+.login_iconfont{
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    z-index: 1;
+}
     .wrd_title{
         font-size: 30px;
         color: #EC414D;
@@ -107,9 +121,9 @@
         flex: 1;
         position: absolute;
         top:10%;
-        left: 10%;
-        height: 600px;
-        width: 600px;
+        left: 15%;
+        height: 500px;
+        width: 500px;
         background-image: url("/static/img/login_icon.png");
         background-repeat: no-repeat;
         background-size: 100% 100%;
@@ -131,18 +145,18 @@
     .ms-login{
         flex: 1;
         position: absolute;
-        right:5%;
-        top:50%;
+        right:10%;
+        top:40%;
         width:300px;
-        height:260px;
+        height:350px;
         margin:-150px 0 0 -190px;
         padding:0px 40px 40px 40px;
         border-radius: 5px;
         background: #fff;
-
     }
     .login-btn{
         text-align: center;
+        padding-top: 20px;
     }
     .login-btn button{
         width:100%;

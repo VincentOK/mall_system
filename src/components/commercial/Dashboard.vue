@@ -103,7 +103,7 @@
                 </el-row>
             </el-col>
         </el-row>
-        <el-dialog title="公告详情" :visible.sync="dialogVisible" width="50%"  :before-close="handleClose">
+        <el-dialog title="公告详情" :visible.sync="dialogVisible" width="40%"  :before-close="handleClose">
             <span>{{dialogContext}}</span>
             <span slot="footer" class="dialog-footer">
                 <!-- <el-button @click="dialogVisible = false">取 消</el-button> -->
@@ -177,9 +177,6 @@ export default {
 
 
 <style scoped>
-.el-dialog__footer{
-    border-top: 1px solid #d3dce6;
-}
     .grid-num{
         position: relative;
     }

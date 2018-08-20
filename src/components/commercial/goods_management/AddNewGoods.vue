@@ -212,19 +212,6 @@ export default {
   margin-left: 50px;
   margin-top: 20px;
 }
-/* .el-input__inner::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-}
-.el-input__inner::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-}
-.input__inner::-webkit-textfield-decoration-container {
-   background-color: #f0f3f9;
-}  */
-/* .upload-picture{
-        width: 100px;
-        height: 100px;
-    } */
 .el-upload-collect {
   position: relative;
   height: 150px;

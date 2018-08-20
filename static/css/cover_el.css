@@ -1,6 +1,9 @@
 /**
 *覆盖element默认样式
  */
+ ol,ul{
+  list-style: none;
+}
  .el-tabs__nav-wrap{
     background-color: #fff;
     padding: 10px 0 0 30px;
@@ -21,4 +24,28 @@
   }
   .surplus_stock .el-input__inner{
     padding: 0 5px;
-}
+  }
+  #el-title div.el-dialog__header {
+    background:#ec414d;
+    padding-top: 15px;
+  }
+  #el-title span.el-dialog__title {
+    color: #fff;
+  }
+  #viewDetail div.el-dialog__header {
+    background:#ec414d;
+    padding-top: 15px;
+  }
+  #viewDetail span.el-dialog__title {
+    color: #fff;
+  }
+  #viewDetail .el-dialog__headerbtn {
+    top: 15px;
+  }
+  #viewDetail i.el-dialog__close {
+    color: #fff;
+    font-size: 25px;
+  }
+  #viewDetail .el-dialog__body{
+    padding-right: 0;
+  }

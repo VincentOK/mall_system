@@ -6,7 +6,7 @@
                 <template v-if="item.subs">
                     <el-submenu :index="item.index" :key="item.index">
                         <template slot="title">
-                            <i :class="item.icon"></i><span slot="title">{{ item.title }}</span>
+                            <i :class="item.icon" style="padding: 10px"></i><span slot="title">{{ item.title }}</span>
                         </template>
                         <el-menu-item v-for="(subItem,i) in item.subs" :key="i" :index="subItem.index">
                             {{ subItem.title }}
@@ -15,7 +15,7 @@
                 </template>
                 <template v-else >
                     <el-menu-item :index="item.index" :key="item.index">
-                        <i :class="item.icon"></i><span slot="title">{{ item.title }}</span>
+                        <i :class="item.icon"  style="padding: 10px"></i><span slot="title">{{ item.title }}</span>
                     </el-menu-item>
                 </template>
             </template>
@@ -31,12 +31,12 @@
                 collapse: false,
                 items: [
                     {
-                        icon: 'el-icon-edit-outline',
+                        icon: 'shopping-icon-home-fill',
                         index: 'dashboard',
                         title: '概览'
                     },
                     {
-                        icon: 'el-icon-date',
+                        icon: 'shopping-icon-shopping',
                         index: '1',
                         title: '商品管理',
                         subs: [
@@ -60,9 +60,9 @@
                     //     index: 'tabs',
                     //     title: 'tab选项卡'
                     // },
-                   
+
                     {
-                        icon: 'el-icon-star-on',
+                        icon: 'shopping-icon-detail-fill',
                         index: '2',
                         title: '订单管理',
                         subs: [
@@ -77,7 +77,7 @@
                         ]
                     },
                     {
-                        icon: 'el-icon-date',
+                        icon: 'shopping-icon-Dollar',
                         index: '3',
                         title: '资产管理',
                         subs: [

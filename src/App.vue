@@ -3,6 +3,7 @@
         <router-view></router-view>
     </div>
 </template>
+
 <style>
 @import "../static/css/main.css";
 @import "../static/css/color-dark.css"; /*深色主题*/
@@ -10,6 +11,9 @@
 @import "../static/css/cover_el.css";
 .el-scrollbar__wrap {
   overflow-x: hidden;
+}
+#app{
+    font-size: 13px;
 }
 .content{
   padding: 20px 40px;

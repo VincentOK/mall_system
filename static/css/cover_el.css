@@ -74,3 +74,41 @@
 .el-upload-right{
     left: 13.3%;
 }
+  .form-box .el-upload--picture-card{
+    position: relative;
+    width: 100px;
+    height: 100px;
+  }
+  .form-box .el-upload--picture-card i{
+    position: absolute;
+    left: 0;
+    top: 35px;
+    right: 0;
+    bottom: 0;
+  }
+  .container .el-upload-list__item{
+    width: 100px;
+    height: 100px;
+  }
+  .container .el-progress-circle{
+    position: relative;
+  }
+ .container .el-progress-circle svg{
+    width: 90px;
+    height: 90px;
+    margin: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+  .container .el-form-item{
+    margin-bottom: 15px;
+  }
+  .container .button_bottom .el-form-item{
+    margin-bottom: 10px;
+  }
+  .edit_container .ql-container{
+    min-height: 150px;
+  }

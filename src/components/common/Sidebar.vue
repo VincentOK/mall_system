@@ -101,10 +101,10 @@
                     //     index: '404',
                     //     title: '404页面'
                     // }
-                    // {
-                    //     index: 'editor',
-                    //     title: '富文本编辑器'
-                    // },
+                    {
+                        index: 'editor',
+                        title: '富文本编辑器'
+                    },
                     // {
                     //     index: 'markdown',
                     //     title: 'markdown编辑器'

@@ -63,9 +63,9 @@
 .el-dialog__headerbtn{
     display: none;
 }
-.el-dialog__body{
-    height: 300px;
-}
+/*.el-dialog__body{*/
+    /*height: 300px;*/
+/*}*/
 .login_input>.el-input__inner{
     padding-left: 30px;
     padding-top: 20px;
@@ -74,3 +74,6 @@
 .el-upload-right{
     left: 13.3%;
 }
+/*.slider_img .el-carousel__container{*/
+    /*height: 180px;*/
+/*}*/

@@ -13,7 +13,6 @@
                     <div class="form-box">
                         <el-form ref="form" :model="form" label-width="150px">
                             <el-form-item label="商户名称:">
-                                <label style="color: red">*</label>
                                 <el-input v-model="form.name" placeholder="请输入不超过20个字" maxlength="20"></el-input>
                             </el-form-item>
                             <el-form-item label="联系人">
@@ -151,7 +150,7 @@
                             <!--</el-form-item>-->
                             <el-form-item class="submit-button" style="margin: 0;float: right">
                                 <a href="#" class="goback_login">< 返回登陆页&nbsp;</a>
-                                <el-button type="primary" @click="onSubmit">提交审核</el-button>
+                                <el-button type="primary" @click="onSubmit('form')">提交审核</el-button>
                             </el-form-item>
                         </el-form>
                     </div>
@@ -247,8 +246,25 @@
             handleInput(e) {
                 e = e.replace(/[^\d]/g, "");
             },
-            onSubmit() {
-                this.$message.success("提交成功！");
+            onSubmit(formclass) {
+                console.log( this.$refs[formclass])
+                this.$refs[formclass].validate((valid) => {
+
+                    if (valid) {
+
+                        alert('submit!');
+
+                    } else {
+
+                        console.log('error submit!!');
+
+                        return false;
+
+                    }
+
+                })
+                        console.log(JSON.stringify(this.form))
+                // this.$message.success("提交成功！");
             },
             handleRemove(file, fileList) {
                 console.log(file, fileList);

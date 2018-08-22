@@ -1,10 +1,9 @@
 <template>
     <div class="conent_all_h5">
     <div class="title_i">
-        
         <el-carousel indicator-position="none">
             <el-carousel-item>
-                <img class="detail_img" src="/static/img/a1.jpg">
+              <img class="detail_img" src="/static/img/a1.jpg">
             </el-carousel-item>
             <el-carousel-item>
             <img class="detail_img" src="/static/img/a1.jpg">
@@ -16,26 +15,17 @@
             <img class="detail_img" src="/static/img/a1.jpg">
             </el-carousel-item>
         </el-carousel>
-      <!-- <swiper :options="swiperOption">
-        <swiper-slide><img class="detail_img" src="/static/img/a1.jpg"></swiper-slide>
-        <swiper-slide><img  class="detail_img" src="/static/img/a1.jpg"></swiper-slide>
-        <swiper-slide><img  class="detail_img" src="/static/img/a1.jpg"></swiper-slide>
-        <swiper-slide><img class="detail_img"  src="/static/img/a1.jpg"></swiper-slide>
-      </swiper> -->
-
-      <!-- <div class="swiper-pagination" style="width: 40px;height: 22.5px;text-align: center;line-height: 22.5px;background-color: black;opacity:0.5;font-size: 11px;border-radius: 12px;color: white;left: 85%" slot="pagination"></div> -->
-
     </div>
     <div>
         <div class="title_j">
           <p class="detail_tatle">
             <label class="detail_hot">热门</label>
-            <label class="word_hot">越南美女包邮越南美女包邮越南美女包邮越南美女包邮越南美女包邮越南美女包邮越南美女包邮</label>
+            <label class="word_hot">{{form_detail.goodsName?form_detail.goodsName:'秋衣毛裤毛衣裤袜'}}</label>
           </p>
           <p class="detail_money">
-            <label class="money_real"><label class="fontM">￥</label>60.00</label>
-            <label class="money_over"><label class="fontM_i">￥</label>33.00</label>
-            <label class="money_over_count">剩余99件</label>
+            <label class="money_real"><label class="fontM">￥</label>{{form_detail.actual_price?form_detail.actual_price:'60.00'}}</label>
+            <label class="money_over"><label class="fontM_i">￥</label>{{form_detail.suggest_price?form_detail.suggest_price:'76.00'}}</label>
+            <label class="money_over_count">剩余{{form_detail.goods_desc?form_detail.goods_desc:80}}件</label>
           </p>
         </div>
         <div class="null_div"></div>
@@ -54,7 +44,7 @@
               <p class="word_moren">规格</p>
             </div>
             <div class="adress_right">
-              <p>每份300克</p>
+              <p>{{form_detail.specifications?form_detail.specifications:'每份300克'}}</p>
             </div>
           </div>
           <div class="adress_detail">
@@ -62,7 +52,7 @@
               <p class="word_moren">运费</p>
             </div>
             <div class="adress_right">
-              <p>包邮</p>
+              <p>{{form_detail.order_freight?'买家承担':'包邮'}}</p>
             </div>
           </div>
         </div>
@@ -77,7 +67,7 @@
               <button class="add_count">
                 <img src="/static/img/add.png" alt="">
               </button>
-              <input class="number" type="number">
+              <input class="number" type="number" value="1">
               <button  class="reduction">
                 <img src="/static/img/reduction.png" alt="">
               </button>
@@ -88,15 +78,9 @@
         <div class="null_div"></div>
         <div class="detail_detail">
           <p>商品详情</p>
-          <p>
-            商品详情商品详情商品详情商品详情商品详情商品详情商品详情商品详情商品
-            详情商品详情商品详情商品详情商品详情商品详情商品详情
-            商品详情商品详情商品详情商品详情商品详情商品详情商品详情商品详情商品
-            详情商品详情商品详情商品详情商品详情商品详情商品详情
+          <p v-html="goods_detail_html">
           </p>
         </div>
-        <!-- <paymoney-view v-on:childByValue="childByValue" v-if="paymoney"></paymoney-view>
-        <paytime-view v-on:childByValue="childByValue" v-if="paytime"></paytime-view> -->
         <div class="buy_it">
           <button>立即购买</button>
         </div>
@@ -105,24 +89,37 @@
 </template>
 <script>
 export default {
-  name: "detail"
+  name: "detail",
+  props: {
+    form_detail: {
+      type: Object
+    }
+  },
+  computed:{
+    goods_detail_html(){
+      return this.form_detail.desc?this.form_detail.desc:
+      `<img src="/static/img/a1.jpg" style="width:50px;height:50px">
+      <img src="/static/img/a1.jpg" style="width:50px;height:50px">
+      <img src="/static/img/a1.jpg" style="width:50px;height:50px">
+      <img src="/static/img/a1.jpg" style="width:50px;height:50px">
+      <img src="/static/img/a1.jpg" style="width:50px;height:50px">
+      在商品描述中，商品的图片看起来更直观，特别是对于表现商品局部的细节图片，
+      但是顾客无法只通过图片了解商品的所有特征。
+      却忽视了需要加些文字对商品进行更细致的描述。其实这是一个非常大的误区，
+      因为实体店铺卖家与顾客之间的沟通方式很直接顾客也可以直接接触商品，
+      而网络店铺的卖家与顾客之间的沟通无法做到准确全面，
+       于是我们就特别需要利用文字来对商品的一些最基础的属性进行说明。
+      只有顾客对商品的方面面都了解到了，顾客也才更有勇气确定购买。`
+    }
+  }
 };
 </script>
 
 <style scoped>
-.block {
-  display: block;
-}
 .none {
   display: none;
 }
-.detail {
-  /*font-size: 13px;*/
-}
 .buy_it {
-  /* position: absolute; */
-  /* bottom: 25.2%;
-  width: 18.2%; */
   margin: auto;
   padding-bottom: 10px;
   padding-top: 10px;
@@ -162,7 +159,6 @@ export default {
   margin-left: -5px;
 }
 .add_count {
-  /*border: 1px solid red;*/
   float: right;
   background-color: #f5f5f5;
   margin-left: 3px;
@@ -180,7 +176,6 @@ export default {
   text-align: center;
 }
 .reduction {
-  /*border: 1px solid black;*/
   float: right;
   margin-left: 3px;
   background-color: #f5f5f5;
@@ -296,25 +291,10 @@ export default {
   width: 100%;
   background-color: #f8f8f8;
 }
-/**
-  **轮播图
-   */
-.swiper-pagination > .swiper-pagination-bullet-active {
-  background-color: grey;
-}
 .title_i {
   position: relative;
 }
 .detail_img {
   width: 100%;
-}
-#my_pa {
-  position: absolute;
-  color: black;
-  bottom: 10px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  margin: auto;
 }
 </style>

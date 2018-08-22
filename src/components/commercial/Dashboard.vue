@@ -103,13 +103,15 @@
                 </el-row>
             </el-col>
         </el-row>
-        <el-dialog title="公告详情" :visible.sync="dialogVisible" width="40%"  :before-close="handleClose">
-            <span>{{dialogContext}}</span>
-            <span slot="footer" class="dialog-footer">
-                <!-- <el-button @click="dialogVisible = false">取 消</el-button> -->
-                <el-button class="close_dialog" type="primary" @click="dialogVisible = false">关闭窗口</el-button>
-            </span>
-        </el-dialog>
+        <div class="red_header">
+            <el-dialog title="公告详情" :visible.sync="dialogVisible" width="40%"  :before-close="handleClose">
+                <span>{{dialogContext}}</span>
+                <span slot="footer" class="dialog-footer">
+                    <!-- <el-button @click="dialogVisible = false">取 消</el-button> -->
+                    <el-button class="close_dialog" type="primary" @click="dialogVisible = false">关闭窗口</el-button>
+                </span>
+            </el-dialog>
+        </div>
     </div>
 </template>
 
@@ -150,15 +152,15 @@ export default {
     };
   },
   methods: {
-      getRowClass({ row, column, rowIndex, columnIndex }) {
-          if (rowIndex == 0) {
-              return 'background:#EFEFEF'
-          } else {
-              return ''
-          }
-      },
+    getRowClass({ row, column, rowIndex, columnIndex }) {
+      if (rowIndex == 0) {
+        return "background:#EFEFEF";
+      } else {
+        return "";
+      }
+    },
 
-      handleClose(done) {
+    handleClose(done) {
       this.dialogVisible = true;
       done();
     },
@@ -177,26 +179,26 @@ export default {
 
 
 <style scoped>
-    .grid-num{
-        position: relative;
-    }
-    .grid-con-1{
-        margin-top: 25px;
-    }
-    .look_goods{
-        position: absolute;
-        right: 50px;
-        bottom: 0;
-        /*margin-left: 30px;*/
-        font-size: 14px;
-        color: cornflowerblue;
-        font-weight: normal;
-    }
-    .word_goods{
-        margin: 15px 0;
-        font-size: 16px;
-        color: black;
-    }
+.grid-num {
+  position: relative;
+}
+.grid-con-1 {
+  margin-top: 25px;
+}
+.look_goods {
+  position: absolute;
+  right: 50px;
+  bottom: 0;
+  /*margin-left: 30px;*/
+  font-size: 14px;
+  color: cornflowerblue;
+  font-weight: normal;
+}
+.word_goods {
+  margin: 15px 0;
+  font-size: 16px;
+  color: black;
+}
 .padding-top-10 {
   padding-top: 10px;
 }

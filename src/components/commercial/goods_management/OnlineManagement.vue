@@ -200,16 +200,16 @@
             </span>
         </el-dialog>
 
-        <!-- 删除提示框 -->
-        <el-dialog id="el-title" title="下架商品" :visible.sync="delVisible" width="460px" center top="300px" :show-close="false">
-            <div class="del-dialog-cnt">确定下架以下商品？</div>
-            <div class="del-dialog-goods">{{del_value}}</div>
-            <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="deleteRow">确 定</el-button>
-                <el-button @click="delVisible = false">取 消</el-button>
-            </span>
-        </el-dialog>
-      
+        <div class="del_goods_wrap">
+          <el-dialog id="el-title" title="下架商品" :visible.sync="delVisible" width="460px" center top="300px" :show-close="false">
+              <div class="del-dialog-cnt">确定下架以下商品？</div>
+              <div class="del-dialog-goods">{{del_value}}</div>
+              <span slot="footer" class="dialog-footer">
+                  <el-button type="primary" @click="deleteRow">确 定</el-button>
+                  <el-button @click="delVisible = false">取 消</el-button>
+              </span>
+          </el-dialog>
+        </div>
       </div>
     </div>
 </template>

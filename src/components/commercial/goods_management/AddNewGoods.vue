@@ -5,8 +5,8 @@
             <h4>新增商品</h4>
             <div class="form-box">
                 <el-form ref="form" :model="form" :rules="rules" label-width="120px">
-                    <div class="el-upload-collect">
-                        <p>图片轮播图</p>
+                    <el-form-item label="图片轮播图" prop="uploadImg">
+                      <div class="el-upload-collect">
                         <p>（最多5张）</p>
                         <div class="el-upload-right">
                             <el-upload
@@ -20,6 +20,7 @@
                             </el-upload>
                         </div>
                     </div>
+                    </el-form-item>
                     <el-form-item label="商品名称:" prop="goodsName">
                         <el-input v-model="form.goodsName" placeholder="请输入不超过20个字"></el-input>
                     </el-form-item>
@@ -96,30 +97,23 @@
                 </el-form>
             </div>
         </div>
+
         <el-dialog :visible.sync="dialogVisible" top="5vh">
-        <img width="100%" :src="dialogImageUrl" alt="">
+           <img width="100%" :src="dialogImageUrl" alt="">
         </el-dialog>
+
         <el-dialog :visible.sync="previewPhoneDialog" top="5vh" width="0" :show-close="false">
           <div class="preview_wrap">
              <img src="static/img/demo.png">
              <div class="preview_content">
                <el-scrollbar style="height:100%;">
-                  <preview-dialog></preview-dialog>
+                  <preview-dialog :form_detail="form"></preview-dialog>
                 </el-scrollbar>
             </div>
-            <el-button type="primary">提交审核</el-button>
-            <el-button type="success" class="close_buttom">关闭</el-button>
+            <el-button type="primary"  @click="submitForm('form')">提交审核</el-button>
+            <el-button type="success" class="close_buttom" @click="previewPhoneDialog = false">关闭</el-button>
           </div>
         </el-dialog>
-        <!-- <div v-show="previewPhoneDialog">
-          <div class="wrap_preview"></div>
-          <div class="preview_bg">
-            <img src="static/img/demo.png">
-            <div class="preview_content">
-                hello!
-            </div>
-          </div>
-        </div> -->
     </div>
 </template>
 
@@ -175,6 +169,9 @@ export default {
         desc: ""
       },
       rules: {
+        uploadImg: [
+          {required: true, message: "至少一张图片", trigger: "blur" }
+        ],
         goodsName: [
           { required: true, message: "请输入商品名称", trigger: "blur" },
           { min: 3, max: 20, message: "长度在 3 到 20 个字符", trigger: "blur" }
@@ -236,51 +233,11 @@ export default {
             trigger: "change"
           }
         ],
-        region: [
-          { required: true, message: "请选择活动区域", trigger: "change" }
-        ],
-        date1: [
-          {
-            type: "date",
-            required: true,
-            message: "请选择日期",
-            trigger: "change"
-          }
-        ],
-        date2: [
-          {
-            type: "date",
-            required: true,
-            message: "请选择时间",
-            trigger: "change"
-          }
-        ],
-        type: [
-          {
-            type: "array",
-            required: true,
-            message: "请至少选择一个活动性质",
-            trigger: "change"
-          }
-        ],
         desc: [{ required: true, message: "必填", trigger: "blur" }]
       }
     };
   },
-  //   watch: {
-  //     searchGoodsName: function() {
-  //       if (!this.searchGoodsName.replace(/[^0-9]+/g, "")) {
-  //         this.$message.error("上传图片只能是Image格式!");
-  //       }
-  //     }
-  //   },
   methods: {
-    handleInput(e) {
-      e = e.replace(/[^\d]/g, "");
-    },
-    onSubmit() {
-      this.$message.success("提交成功！");
-    },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -346,24 +303,16 @@ export default {
   font-size: 14px;
   color: #606266;
   text-align: left;
-  margin-bottom: 15px;
 }
 .el-upload-dragger {
   width: 148px;
   height: 148px;
 }
-.el-upload-collect p:first-child {
-  color: #606266;
-}
 .el-upload-collect p {
-  padding-top: 20px;
-  padding-left: 32px;
-  color: #ec414d;
-}
-.el-upload-right {
   position: absolute;
-  left: 14.5%;
-  top: 0;
+  top: 45px;
+  left: -85px;
+  color: #ec414d;
 }
 .product-details {
   font-size: 14px;
@@ -408,7 +357,7 @@ export default {
   top: 40px;
   left: -110px;
 }
-.preview_wrap button{
+.preview_wrap button {
   position: absolute;
   top: 625px;
   left: 210px;

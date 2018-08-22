@@ -49,21 +49,21 @@
   #viewDetail .el-dialog__body{
     padding-right: 0;
   }
-.el-dialog__header{
+.red_header .el-dialog__header{
     background-color: #EC414D;
     font-size: 16px;
     font-weight: 600;
 }
-.el-dialog__title{
+.red_header .el-dialog__title{
     color: white;
 }
-.el-dialog__footer{
+.red_header .el-dialog__footer{
     border-top: 1px solid #eeeeee;
 }
-.el-dialog__headerbtn{
+.red_header .el-dialog__headerbtn{
     display: none;
 }
-.el-dialog__body{
+.red_header .el-dialog__body{
     height: 300px;
 }
 .login_input>.el-input__inner{

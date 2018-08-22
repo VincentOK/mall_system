@@ -183,13 +183,14 @@
                   </ul>
                   <ul>
                     <li class="left" @click="move(600, 1, speed)">
-                      you
+                      <i class="el-icon-arrow-left"></i>
                     </li>
                     <li class="right" @click="move(600, -1, speed)">
-                      zuo
+                      <i class="el-icon-arrow-right"></i>
                     </li>
                   </ul>
                 </div>
+                <div class="sliderImg_length">商品轮播图(共{{sliders.length}}张)</div>
               </div>
               </el-scrollbar>
             </div>
@@ -199,16 +200,16 @@
             </span>
         </el-dialog>
 
-        <!-- 删除提示框 -->
-        <el-dialog id="el-title" title="下架商品" :visible.sync="delVisible" width="460px" center top="300px" :show-close="false">
-            <div class="del-dialog-cnt">确定下架以下商品？</div>
-            <div class="del-dialog-goods">{{del_value}}</div>
-            <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="deleteRow">确 定</el-button>
-                <el-button @click="delVisible = false">取 消</el-button>
-            </span>
-        </el-dialog>
-      
+        <div class="del_goods_wrap">
+          <el-dialog id="el-title" title="下架商品" :visible.sync="delVisible" width="460px" center top="300px" :show-close="false">
+              <div class="del-dialog-cnt">确定下架以下商品？</div>
+              <div class="del-dialog-goods">{{del_value}}</div>
+              <span slot="footer" class="dialog-footer">
+                  <el-button type="primary" @click="deleteRow">确 定</el-button>
+                  <el-button @click="delVisible = false">取 消</el-button>
+              </span>
+          </el-dialog>
+        </div>
       </div>
     </div>
 </template>
@@ -216,7 +217,7 @@
 <script>
 export default {
   name: "basetable",
-    props: {
+  props: {
     initialSpeed: {
       type: Number,
       default: 30
@@ -243,25 +244,25 @@ export default {
         address: ""
       },
       idx: -1,
-      sliders:[
+      sliders: [
         {
-          img:'../../static/img/1.png'
+          img: "../../static/img/a.jpg"
         },
         {
-          img:'../../static/img/b.jpg'
+          img: "../../static/img/b.jpg"
         },
         {
-          img:'../../static/img/c.jpg'
+          img: "../../static/img/c.jpg"
         },
         {
-          img:'../../static/img/d.jpg'
+          img: "../../static/img/d.jpg"
         },
         {
-          img:'../../static/img/e.jpg'
-        },
+          img: "../../static/img/e.jpg"
+        }
       ],
-      currentIndex:1,
-      distance:-600,
+      currentIndex: 1,
+      distance: -600,
       transitionEnd: true,
       speed: this.initialSpeed
     };
@@ -292,8 +293,8 @@ export default {
     },
     containerStyle() {
       return {
-        transform:`translate3d(${this.distance}px, 0, 0)`
-      }
+        transform: `translate3d(${this.distance}px, 0, 0)`
+      };
     }
   },
   methods: {
@@ -417,32 +418,37 @@ export default {
       this.delVisible = false;
     },
     move(offset, direction, speed) {
-      if (!this.transitionEnd) return
-      this.transitionEnd = false
-      direction === -1 ? this.currentIndex += offset/600 : this.currentIndex -= offset/600
-      if (this.currentIndex > 5) this.currentIndex = 1
-      if (this.currentIndex < 1) this.currentIndex = 5
+      if (!this.transitionEnd) return;
+      this.transitionEnd = false;
+      direction === -1
+        ? (this.currentIndex += offset / 600)
+        : (this.currentIndex -= offset / 600);
+      if (this.currentIndex > 5) this.currentIndex = 1;
+      if (this.currentIndex < 1) this.currentIndex = 5;
 
-      const destination = this.distance + offset * direction
-      this.animate(destination, direction, speed)
+      const destination = this.distance + offset * direction;
+      this.animate(destination, direction, speed);
     },
     animate(des, direc, speed) {
-      if (this.temp) { 
-        window.clearInterval(this.temp)
-        this.temp = null 
+      if (this.temp) {
+        window.clearInterval(this.temp);
+        this.temp = null;
       }
       this.temp = window.setInterval(() => {
-        if ((direc === -1 && des < this.distance) || (direc === 1 && des > this.distance)) {
-          this.distance += speed * direc
+        if (
+          (direc === -1 && des < this.distance) ||
+          (direc === 1 && des > this.distance)
+        ) {
+          this.distance += speed * direc;
         } else {
-          this.transitionEnd = true
-          window.clearInterval(this.temp)
-          this.distance = des
-          if (des < -3000) this.distance = -600
-          if (des > -600) this.distance = -3000
+          this.transitionEnd = true;
+          window.clearInterval(this.temp);
+          this.distance = des;
+          if (des < -3000) this.distance = -600;
+          if (des > -600) this.distance = -3000;
         }
-      }, 20)
-    },
+      }, 20);
+    }
   }
 };
 </script>
@@ -559,7 +565,7 @@ export default {
   width: 100%;
 }
 .product_detail {
-  padding: 20px 20px 0 80px;
+  padding: 20px 60px 0 80px;
 }
 .product_detail label {
   float: left;
@@ -567,48 +573,66 @@ export default {
 .product_detail p {
   margin-left: 70px;
 }
-#img_slider{
+#img_slider {
+  margin-top: 15px;
   text-align: center;
 }
-.img_window{
-  position:relative;
-  width:600px;
-  height:400px;
-  margin:0 auto;
-  overflow:hidden;
+.img_window {
+  position: relative;
+  width: 550px;
+  height: 300px;
+  margin: 0 auto;
+  overflow: hidden;
 }
-.img_container{
-  display:flex;
-  position:absolute;
+.img_container {
+  display: flex;
+  position: absolute;
 }
-.img_container li{
+.img_container li {
   width: 600px;
   height: 400px;
 }
-.left, .right{
-  position:absolute;
-  top:50%;
-  transform:translateY(-50%);
-  width:50px;
-  height:50px;
-  background-color:rgba(0,0,0,.3);
-  border-radius:50%;
-  cursor:pointer;
+.left,
+.right {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  cursor: pointer;
 }
-.left{
-  left:3%;
-  padding-left:12px;
-  padding-top:10px;
+.left i,
+.right i{
+  font-size: 30px;
+  margin-top: 5px;
+  color: #2c3e50;
+  font-weight: bold;
 }
-.right{
-  right:3%;
-  padding-right:12px;
-  padding-top:10px;
+.left {
+  left: 3%;
+  padding-left: 12px;
+  padding-top: 10px;
 }
-#img_slider img{
+.right {
+  right: 3%;
+  padding-right: 12px;
+  padding-top: 10px;
+}
+.left i {
+  margin-right: 10px;
+}
+.right i {
+  margin-left: 10px;
+}
+#img_slider img {
   user-select: none;
   width: 100%;
   height: 100%;
+}
+.sliderImg_length {
+  margin-top: 5px;
 }
 </style>
 

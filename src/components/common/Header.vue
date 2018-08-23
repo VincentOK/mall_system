@@ -15,7 +15,7 @@
                 </div> -->
                 <!-- 消息中心 -->
                 <div class="btn-bell">
-                    <el-tooltip effect="dark" :content="message?`有${message}条未读消息`:`消息中心`" placement="bottom">
+                    <el-tooltip effect="light" :content="message?`有${message}条未读消息`:`消息中心`" placement="bottom">
                         <!-- <router-link to="/tabs">
                             <i class="el-icon-bell"><span>消息</span></i>
                         </router-link> -->
@@ -53,19 +53,21 @@
                     </span>
                     <el-dropdown-menu slot="dropdown">
 
-                        <el-dropdown-item>修改密码</el-dropdown-item>
+                        <el-dropdown-item><router-link :to="'/edxpassword'" class="router_link">修改密码</router-link></el-dropdown-item>
                         <el-dropdown-item divided  command="loginout">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </div>
         </div>
-        <el-dialog title="消息详情" :visible.sync="dialogVisible" width="40%" :before-close="handleClose">
-            <span>{{dialogContext}}</span>
-            <span slot="footer" class="dialog-footer">
-                <!-- <el-button @click="dialogVisible = false">取 消</el-button> -->
-                <el-button type="primary" @click="dialogVisible = false">关闭窗口</el-button>
-            </span>
-        </el-dialog>
+        <div class="red_header">
+            <el-dialog title="消息详情" :visible.sync="dialogVisible" width="40%" :before-close="handleClose">
+                <span>{{dialogContext}}</span>
+                <span slot="footer" class="dialog-footer">
+                    <!-- <el-button @click="dialogVisible = false">取 消</el-button> -->
+                    <el-button type="primary" @click="dialogVisible = false">关闭窗口</el-button>
+                </span>
+            </el-dialog>
+        </div>
     </div>
 </template>
 <script>
@@ -132,6 +134,14 @@ export default {
     }
   },
   methods: {
+      /**
+       * 修改密码
+       * @param command
+       */
+      edxpassword(){
+          console.log("修改密码")
+          this.$router.push('/edxpassword')
+      },
     // 用户名下拉菜单选择事件
     handleCommand(command) {
       if (command == "loginout") {
@@ -192,6 +202,13 @@ export default {
 };
 </script>
 <style scoped>
+
+    .router_link{
+        color: #283446
+    }
+    .router_link:hover{
+        color: #ec414d;
+    }
 .header {
   position: relative;
   box-sizing: border-box;

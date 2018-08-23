@@ -86,6 +86,11 @@ const myrouter =[
         ]
     },
     {
+        path: '/edxpassword',
+        component: resolve => require(['../components/common/edxpassword.vue'], resolve),
+        meta: { title: '修改密码' }
+    },
+    {
         path: '/login',
         component: resolve => require(['../components/page/Login.vue'], resolve)
     },

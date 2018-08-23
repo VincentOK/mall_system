@@ -503,10 +503,6 @@
     .word_more p:nth-child(2),.word_more p:last-child{
         color: #9d9d9d9d;
     }
-    .word_one{
-        font-size: 12px;
-        height: 40px;
-    }
     .word_one span:first-child{
         width: 50px;
         float: left;
@@ -515,57 +511,12 @@
         width: 50px;
         float: right;
     }
-    .dialog_two{
-        font-size: 16px;
-        background-color: darkgray;
-        color: white;
-        display: block;
-        height: 35px;
-        line-height: 35px;
-        width: 35px;
-        text-align: center;
-        border-radius: 50%;
-        position: absolute;
-        right: 0;
-        z-index: 10;
-    }
-    .dialog_one{
-        font-size: 16px;
-        background-color: #ec414d;
-        color: white;
-        display: block;
-        height: 35px;
-        line-height: 35px;
-        width: 35px;
-        text-align: center;
-        border-radius: 50%;
-        position: absolute;
-        left: 0;
-        z-index: 10;
-    }
     .dialog_rela p{
         height: 5px;
         background-color: #ec414d;
         width: 100%;
         position: absolute;
         top: 15px;
-    }
-    .dialog_rela{
-        position: relative;
-        height: 35px;
-        width: 100%;
-        margin: auto;
-    }
-    .sure_agree{
-        width: 65%;
-        margin: auto;
-        text-align: center;
-    }
-    .refund_title_word{
-        width: 90%;
-        margin: auto;
-        text-align: left;
-        padding: 0px 0 10px 0;
     }
     .buy_notive{
         font-size: 12px;
@@ -612,22 +563,9 @@
     .clear-button {
         margin-left: 2px;
     }
-    .select-date {
-        font-weight: 400;
-        font-size: 14px;
-        color: #606266;
-        cursor: text;
-    }
-    .date-options {
-        position: absolute;
-        right: 30%;
-    }
     .pagination {
         text-align: center;
     }
-    /*.goods_detail {*/
-    /*height: 700px;*/
-    /*}*/
     .goods_detail_left {
         flex: 1;
     }
@@ -641,53 +579,15 @@
     .goods_detail_right {
         flex: 1;
     }
-
-    .product_detail {
-        padding: 20px 20px 0 80px;
-    }
     .product_detail label {
         float: left;
     }
     .product_detail p {
         margin-left: 70px;
     }
-    #img_slider{
-        text-align: center;
-    }
-    .img_window{
-        position:relative;
-        width:600px;
-        height:400px;
-        margin:0 auto;
-        overflow:hidden;
-    }
-    .img_container{
-        display:flex;
-        position:absolute;
-    }
     .img_container li{
         width: 600px;
         height: 400px;
-    }
-    .left, .right{
-        position:absolute;
-        top:50%;
-        transform:translateY(-50%);
-        width:50px;
-        height:50px;
-        background-color:rgba(0,0,0,.3);
-        border-radius:50%;
-        cursor:pointer;
-    }
-    .left{
-        left:3%;
-        padding-left:12px;
-        padding-top:10px;
-    }
-    .right{
-        right:3%;
-        padding-right:12px;
-        padding-top:10px;
     }
     #img_slider img{
         user-select: none;

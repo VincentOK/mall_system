@@ -112,3 +112,16 @@
   .edit_container .ql-container{
     min-height: 150px;
   }
+  .IDcard img{
+      height: 80px;
+      width: 80px;
+  }
+  .avatar-uploader .el-upload--text, .avatar-uploader .el-upload--text .avatar-uploader-icon{
+      width: 100px;
+      height: 100px;
+      line-height: 100px;
+  }
+
+  .getcode .el-input{
+      width: 60%;
+  }

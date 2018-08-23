@@ -20,9 +20,10 @@
                             <el-input type="password"  class="login_input" placeholder="密码" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')"></el-input>
                         </el-form-item>
 
-                        <el-form-item prop="checkword">
+                        <el-form-item prop="checkword" class="getcode">
                             <i class="shopping-icon-safetycertificate login_iconfont"></i>
                             <el-input   class="login_input" placeholder="验证码" v-model="ruleForm.checkword" @keyup.enter.native="submitForm('ruleForm')"></el-input>
+                            <img src="/static/img/e.jpg" class="redcolor" alt="">
                         </el-form-item>
 
                         <div class="login-btn">
@@ -79,6 +80,25 @@
 </script>
 
 <style scoped>
+    .getcode{
+        position: relative;
+    }
+    .redcolor{
+        background-color: #ec414d;
+        position: absolute;
+        right: 0;
+        color: white;
+        height: 42px;
+        border: none;
+        width: 100px;
+        line-height: 42px;
+        text-align: center;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+
+
 .login_iconfont{
     position: absolute;
     top: 5px;

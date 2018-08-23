@@ -87,11 +87,11 @@ export default {
   name: "incomeDetail",
   data() {
     return {
-      ruleForm:{
+      ruleForm: {
         backMoney: "",
-        payee:`阿曼达`,
+        payee: `阿曼达`,
         banknumber: "464546456454543",
-        backname: "中国银行",
+        backname: "中国银行"
       },
       incomeDialog: false,
       rules: {
@@ -102,9 +102,9 @@ export default {
       }
     };
   },
-  computed:{
-    drawLines(){
-      let backMoneyNumber = Number(this.ruleForm.backMoney)
+  computed: {
+    drawLines() {
+      let backMoneyNumber = Number(this.ruleForm.backMoney);
       return backMoneyNumber - backMoneyNumber * 0.05;
     }
   },
@@ -123,23 +123,23 @@ export default {
         }
       });
     },
-    commitIncome(){
-
-    },
+    commitIncome() {}
   },
-  filters:{
-   formatMoney(value){
-        var html,_val;
-        let hasdot = value.toString().indexOf('.') > 0
-        value =hasdot?value.toString().substr(0,value.toString().indexOf(".")+3):Number(value).toFixed(2);
-        if(value==0){
-            value=0;
-            return html = "0.00";
-        }else if(value.split('.')[1].substring(1)==0){
-            value = Number(value).toFixed(2);
-        }
-        _val = value.split('.');
-        return html = _val[0]+"."+_val[1];
+  filters: {
+    formatMoney(value) {
+      var html, _val;
+      let hasdot = value.toString().indexOf(".") > 0;
+      value = hasdot
+        ? value.toString().substr(0, value.toString().indexOf(".") + 3)
+        : Number(value).toFixed(2);
+      if (value == 0) {
+        value = 0;
+        return (html = "0.00");
+      } else if (value.split(".")[1].substring(1) == 0) {
+        value = Number(value).toFixed(2);
+      }
+      _val = value.split(".");
+      return (html = _val[0] + "." + _val[1]);
     }
   }
 };
@@ -211,10 +211,9 @@ export default {
   padding-bottom: 15px;
 }
 .income_dialog {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  align-content: space-around;
+  width: 70%;
+  text-align: left;
+  margin: auto;
 }
 .top_dialog {
   height: 120px;
@@ -226,7 +225,6 @@ export default {
 .bottom_dialog {
   display: flex;
   flex-direction: column;
-  margin-left: 60px;
 }
 .order_income {
   display: flex;
@@ -237,9 +235,6 @@ export default {
   flex-direction: column;
   justify-content: space-between;
   margin-top: 15px;
-}
-.order_income p:last-child {
-  margin-left: 20px;
 }
 .order_income p span:first-child {
   margin-bottom: 15px;

@@ -39,15 +39,15 @@
                             <div class="grid-content grid-con-1" :body-style="{padding: '0px',marginTop:'25px'}">
                                 <div class="grid-cont-right">
                                     <div class="word_goods">总收益</div>
-                                    <div class="grid-num">1234个<a class="look_goods">查看</a></div>
+                                    <div class="grid-num">1234个<router-link class="look_goods" :to="'/Incomestatistics'">查看</router-link></div>
                                 </div>
                                 <div class="grid-cont-right">
                                     <div  class="word_goods">待发货订单</div>
-                                    <div class="grid-num">1234个<a class="look_goods">查看</a></div>
+                                    <div class="grid-num">1234个<router-link class="look_goods" :to="'/untreatedOrders'">查看</router-link></div>
                                 </div>
                                 <div class="grid-cont-right">
                                     <div class="word_goods">待退款订单</div>
-                                    <div class="grid-num">1234个<a class="look_goods">查看</a></div>
+                                    <div class="grid-num">1234个<router-link class="look_goods" :to="'/untreatedOrders'">查看</router-link></div>
                                 </div>
                                 <div class="grid-cont-right">
                                     <div class="word_goods">待补货商品</div>

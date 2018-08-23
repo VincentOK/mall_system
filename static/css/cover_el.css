@@ -125,3 +125,13 @@
   .getcode .el-input{
       width: 60%;
   }
+.income_statistics .el-card{
+  border: 1px solid #ddd;
+}
+.income_form .el-form-item{
+  margin-bottom: 30px;
+}
+.income_form .el-form-item__label{
+  font-weight: bold;
+  color: #303133;
+}

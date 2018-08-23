@@ -106,7 +106,7 @@
           <div class="preview_wrap">
              <img src="static/img/demo.png">
              <div class="preview_content">
-               <el-scrollbar style="height:100%;">
+                <el-scrollbar style="height:100%;">
                   <preview-dialog :form_detail="form"></preview-dialog>
                 </el-scrollbar>
             </div>

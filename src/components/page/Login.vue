@@ -33,6 +33,9 @@
                             <router-link :to="'/tenants'" style="float: left;color: #5394ec">商家入驻申请</router-link>
                             <router-link :to="'/forgetpassword'" style="float: right;color: #5394ec">忘记密码？</router-link>
                         </p>
+                        <p v-if="loginStatus">{{loginWord}}</p>
+                        <input type="text" v-model="val">
+                        <button @click="testMuta">提交</button>
                     </el-form>
                 </div>
             </div>
@@ -42,6 +45,8 @@
 </template>
 
 <script>
+    import {testa} from '../common/request/request'
+    import {mapState, mapMutations,mapActions} from 'vuex'
     export default {
         data: function(){
             return {
@@ -50,6 +55,7 @@
                     password: '',
                     checkword:''
                 },
+                val:'',
                 rules: {
                     username: [
                         { required: true, message: '请输入用户名', trigger: 'blur' }
@@ -63,7 +69,30 @@
                 }
             }
         },
+        computed:{
+            ...mapState([
+                'loginWord','loginStatus'
+            ])
+        },
+        mounted(){
+            console.log('8888');
+            // testa(1).then(res =>{
+            //     console.log(res)
+            // }).catch(err =>{
+            //     console.log(err)
+            // })
+        },
         methods: {
+            ...mapMutations([
+                'RECORD_ADDRESS'
+            ]),
+            ...mapActions([
+                'mytestfun'
+            ]),
+            async testMuta(){
+                console.log(this.val)
+                this.RECORD_ADDRESS(this.val);
+            },
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {

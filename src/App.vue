@@ -14,8 +14,12 @@
 
         },
         mounted(){
-            console.log("APP.VUE")
-            this.GET_LOCALUSERINFO();
+            console.log("APP.VUE");
+            try {
+                this.GET_LOCALUSERINFO();
+            }catch (e) {
+                alert('用户信息错误')
+            }
         },
         methods:{
             ...mapMutations([

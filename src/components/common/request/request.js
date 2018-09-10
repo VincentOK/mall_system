@@ -7,7 +7,6 @@ import { Decrypt } from "../commonJS/secert";
 let token = null;
 if(getStorage('token')){
     token = Decrypt(getStorage('token'));
-
 }
 /**
  * 获取验证码
@@ -26,7 +25,7 @@ export const userLoginaaa=(username,password,captcha) =>fetch('/timestoremanage/
     userName:username,
     password:password,
     captcha:captcha
-},'POST',token);
+},'POST',token,'multipart/form-data;');
 
 /**
  * 获取首页默认地址

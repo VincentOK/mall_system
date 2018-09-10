@@ -8,12 +8,12 @@
  */
 let baseUrl = '';
 let imgBaseUrl = '';
-let key = "15935725AWCNHVUG";  //十六位十六进制数作为密钥
-let iv = 'KHGTHNBF15896325';   //十六位十六进制数作为密钥偏移量
+let key = "14935725AWCNHVUG";  //十六位十六进制数作为密钥
+let iv = 'KHGTHNBF14896325';   //十六位十六进制数作为密钥偏移量
 
 console.log(process.env.NODE_ENV)
 if (process.env.NODE_ENV == 'development') {
-    baseUrl = 'http://192.168.0.146:8989';
+    baseUrl = 'http://192.168.0.141:8989';
     // imgBaseUrl = '/img/';
 }else if(process.env.NODE_ENV == 'production'){
     baseUrl = 'http://l92.168.0.146:8989';

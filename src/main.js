@@ -25,61 +25,42 @@ import { Decrypt } from "./components/common/commonJS/secert";
 // Vue.prototype.$axios = axios;
 //使用钩子函数对路由进行权限跳转
 router.beforeEach((to, from, next) => {
-    console.log("路由权限:"+getStorage('userInfo'));
-
     let role = getStorage('userInfo');
-    console.log("路由权限："+role);
-    // if(role){
-    //     try {
-    //         let RoleAuthorization = JSON.parse(Decrypt(role));
-    //         RoleAuthorization.userType === '1' ? next() : next('/403');
-    //         if(to.meta.permission){
-    //             // 如果是管理员权限则可进入
-    //             RoleAuthorization.userType === '1' ? next() : next('/403');
-    //         }else {
-    //             next();
-    //         }
-    //         throw new Error('用户不存在');
-    //     }catch (e) {
-    //         console.log("用户不存在:"+e)
-    //         alert('用户不存在')
-    //         if (to.path === '/403') { //这就是跳出循环的关键
-    //             console.log('403')
-    //             next()
-    //         } else {
-    //             console.log('400')
-    //            next();
-    //         }
-    //     }
-    // }else {
-    //     console.log(to.path)
-    //     if(to.path !== '/login' && to.path !== '/tenants' && to.path !== '/forgetpassword'){
-    //         next('/login');
-    //     }else {
-    //         if(to.path === '/login' || to.path === '/tenants' || to.path === '/forgetpassword')
-    //         next()
-    //     }
-    // }
-
-
-
-
-    if(!role && to.path !== '/login' && to.path !== '/tenants' && to.path !== '/forgetpassword'){
-        console.log("路径："+to.path);
-        next('/login');
-    }else if(to.meta.permission){
-        // 如果是管理员权限则可进入
-        let RoleAuthorization = JSON.parse(Decrypt(getStorage('userInfo')));
-        RoleAuthorization.userType === '1' ? next() : next('/403');
-    }else{
-        // 简单的判断IE10及以下不进入富文本编辑器，该组件不兼容
-        if(navigator.userAgent.indexOf('MSIE') > -1 && to.path === '/editor'){
-            Vue.prototype.$alert('vue-quill-editor组件不兼容IE10及以下浏览器，请使用更高版本的浏览器查看', '浏览器不兼容通知', {
-                confirmButtonText: '确定'
-            });
-        }else{
-            console.log("uuuuu："+role);
-            next();
+    if(role){
+        try {
+            let RoleAuthorization = JSON.parse(Decrypt(role));
+            console.log("用户存在："+JSON.stringify(RoleAuthorization));
+            if(RoleAuthorization.userType !== ""){
+                if(to.meta.permission){
+                    if(RoleAuthorization.userType === "1"){
+                        next()
+                    }else {
+                        if(to.path === '/403'){
+                            next()
+                        }else {
+                            next('/403')
+                        }
+                    }
+                }else {
+                    next()
+                }
+            }
+        }catch (e) {
+            console.log("用户不存在:"+e);
+            alert('用户不存在000');
+            if (to.path === '/login') {
+                next()
+            } else {
+                next('/login')
+            }
+        }
+    }else {
+        console.log(to.path)
+        if(to.path !== '/login' && to.path !== '/tenants' && to.path !== '/forgetpassword'){
+            next('/login');
+        }else {
+            if(to.path === '/login' || to.path === '/tenants' || to.path === '/forgetpassword')
+            next()
         }
     }
 });

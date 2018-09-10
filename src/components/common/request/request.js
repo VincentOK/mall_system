@@ -7,6 +7,7 @@ import { Decrypt } from "../commonJS/secert";
 let token = null;
 if(getStorage('token')){
     token = Decrypt(getStorage('token'));
+
 }
 /**
  * 获取验证码

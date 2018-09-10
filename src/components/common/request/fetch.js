@@ -19,7 +19,14 @@ export default async(url, data = {}, type = 'GET',token,configType) => {
                 url = url + '?' + dataStr
             }
             console.log("get请求获取到的token:"+token);
-            axios.get(url,{headers:{'token':token}})
+            let config = null;
+
+            if(token){
+                config = {
+                    headers:{'token':token}
+                }
+            }
+            axios.get(url,config)
                 .then(function (response) {
                     console.log("请求返回数据："+JSON.stringify(response));
                     resolve(response)
@@ -28,15 +35,23 @@ export default async(url, data = {}, type = 'GET',token,configType) => {
                     reject(error)
                 })
         }else {
-            let config = null
+            let config = null;
             if(!configType){
                 data = qs.stringify(data);
-                config = {headers:{'token':token}}
+                if(token){
+                    config = {headers:{'token':token}}
+                }
             }else {
-                config = {headers:{
-                    'Content-Type': configType,
-                    'token':token
-                }}
+                if(token){
+                    config = {headers:{
+                            'Content-Type': configType,
+                            'token':token
+                        }}
+                }else {
+                    config = {headers:{
+                            'Content-Type': configType,
+                        }}
+                }
             }
             console.log("post请求请求头："+JSON.stringify(config));
             axios.post(url, data,config)

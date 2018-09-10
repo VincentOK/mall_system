@@ -52,6 +52,9 @@
                                 <div class="grid-cont-right">
                                     <div class="word_goods">待补货商品</div>
                                     <div class="grid-num">1234个<a class="look_goods">查看</a></div>
+
+                                    <button @click="testqqq">asdas</button>
+
                                 </div>
                             </div>
                         </el-card>
@@ -104,12 +107,14 @@
 </template>
 
 <script>
+    import {userLoginaaa} from '../common/request/request'
 export default {
   name: "dashboard",
   data() {
     return {
       dialogVisible: false,
       dialogContext: "",
+        token:'',
       name: localStorage.getItem("ms_username"),
       todoList: [
         {
@@ -139,7 +144,19 @@ export default {
       ]
     };
   },
+    computed:{
+        role() {
+            return this.name === "admin" ? "超级管理员" : "普通用户";
+        },
+    },
   methods: {
+      testqqq:function(){
+          userLoginaaa().then(res =>{
+              console.log(res)
+          }).catch(err =>{
+              console.log(err)
+          })
+      },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
         return "background:#EFEFEF";
@@ -157,11 +174,6 @@ export default {
       this.dialogVisible = true;
     }
   },
-  computed: {
-    role() {
-      return this.name === "admin" ? "超级管理员" : "普通用户";
-    }
-  }
 };
 </script>
 

@@ -6,11 +6,9 @@ import mutations from './mutations'
 Vue.use(Vuex);
 
 const state = {
-    loginStatus:true,
-    loginWord:'登陆',
-    word:'a',
-    lay:'b',
-    user_id:''
+    token:null,
+    userInfo:null,
+    resourceList:null
 };
 export default new Vuex.Store({
     state,

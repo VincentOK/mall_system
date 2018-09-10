@@ -3,13 +3,11 @@ import Router from 'vue-router';
 
 Vue.use(Router);
 const myrouter =[
-    {
-        path: '/',
-        redirect: '/dashboard'
-    },
+    //商户端后台
     {
         path: '/',
         component: resolve => require(['../components/common/Home.vue'], resolve),
+        redirect: '/dashboard',
         meta: { title: '自述文件' },
         children:[
             {
@@ -48,61 +46,75 @@ const myrouter =[
                 meta: { title: '结算明细' }
             },
             {
-                // 富文本编辑器组件
-                path: '/editor',
-                component: resolve => require(['../components/page/VueEditor.vue'], resolve),
-                meta: { title: '富文本编辑器' }
+                path: '/edxpassword',
+                component: resolve => require(['../components/common/edxpassword.vue'], resolve),
+                meta: { title: '修改密码' }
             },
-            {
-                // markdown组件
-                path: '/markdown',
-                component: resolve => require(['../components/page/Markdown.vue'], resolve),
-                meta: { title: 'markdown编辑器' }
-            },
-            {
-                // 图片上传组件
-                path: '/upload',
-                component: resolve => require(['../components/page/Upload.vue'], resolve),
-                meta: { title: '文件上传' }
-            },
-            {
-                // vue-schart组件
-                path: '/charts',
-                component: resolve => require(['../components/page/BaseCharts.vue'], resolve),
-                meta: { title: 'schart图表' }
-            },
-            {
-                // 拖拽列表组件
-                path: '/drag',
-                component: resolve => require(['../components/page/DragList.vue'], resolve),
-                meta: { title: '拖拽列表' }
-            },
-            {
-                // 权限页面
-                path: '/permission',
-                component: resolve => require(['../components/page/Permission.vue'], resolve),
-                meta: { title: '权限测试', permission: true }
-            }
+            // {
+            //     // 富文本编辑器组件
+            //     path: '/editor',
+            //     component: resolve => require(['../components/page/VueEditor.vue'], resolve),
+            //     meta: { title: '富文本编辑器' }
+            // },
+            // {
+            //     // markdown组件
+            //     path: '/markdown',
+            //     component: resolve => require(['../components/page/Markdown.vue'], resolve),
+            //     meta: { title: 'markdown编辑器' }
+            // },
+            // {
+            //     // 图片上传组件
+            //     path: '/upload',
+            //     component: resolve => require(['../components/page/Upload.vue'], resolve),
+            //     meta: { title: '文件上传' }
+            // },
+            // {
+            //     // vue-schart组件
+            //     path: '/charts',
+            //     component: resolve => require(['../components/page/BaseCharts.vue'], resolve),
+            //     meta: { title: 'schart图表' }
+            // },
+            // {
+            //     // 拖拽列表组件
+            //     path: '/drag',
+            //     component: resolve => require(['../components/page/DragList.vue'], resolve),
+            //     meta: { title: '拖拽列表' }
+            // },
+            // {
+            //     // 权限页面
+            //     path: '/permission',
+            //     component: resolve => require(['../components/page/Permission.vue'], resolve),
+            //     meta: { title: '权限测试', permission: true }
+            // }
         ]
     },
+    //管理端后台
     {
-        path: '/edxpassword',
-        component: resolve => require(['../components/common/edxpassword.vue'], resolve),
-        meta: { title: '修改密码' }
+        path: '/admin',
+        component: resolve => require(['../components/common/Home.vue'], resolve),
+        redirect: '/testadmin',
+        meta: { title: '自述文件' },
+        children:[
+            {
+                path: '/testadmin',
+                component: resolve => require(['../components/administrator/testadmin.vue'], resolve),
+                meta: { title: '系统首页' ,permission:true }
+            }
+         ]
     },
     {
         path: '/login',
-        component: resolve => require(['../components/page/Login.vue'], resolve)
+        component: resolve => require(['../components/page/Login.vue'], resolve),
     },
     {
         path: '/tenants',
         component: resolve => require(['../components/commercial/tenants.vue'], resolve),
-        meta: { title: '商家入驻', permission: true }
+        meta: { title: '商家入驻'}
     },
     {
         path: '/forgetpassword',
         component: resolve => require(['../components/commercial/forgetpassword.vue'], resolve),
-        meta: { title: '忘记密码', permission: true }
+        meta: { title: '忘记密码'}
     },
     {
         path: '/404',
@@ -116,7 +128,7 @@ const myrouter =[
         path: '*',
         redirect: '/404'
     }
-]
+];
 export default new Router({
     routes: myrouter
 })

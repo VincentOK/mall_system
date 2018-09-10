@@ -6,20 +6,23 @@
  * imgBaseUrl: 图片所在域名地址
  *
  */
-
 let baseUrl = '';
 let imgBaseUrl = '';
+let key = "15935725AWCNHVUG";  //十六位十六进制数作为密钥
+let iv = 'KHGTHNBF15896325';   //十六位十六进制数作为密钥偏移量
 
 console.log(process.env.NODE_ENV)
 if (process.env.NODE_ENV == 'development') {
-    baseUrl = 'http://192.168.0.154:8080/timestore/';
-    imgBaseUrl = '/img/';
+    baseUrl = 'http://192.168.0.146:8989';
+    // imgBaseUrl = '/img/';
 }else if(process.env.NODE_ENV == 'production'){
-    baseUrl = 'http://192.168.0.154:8080/timestore/';
+    baseUrl = 'http://l92.168.0.146:8989';
     // imgBaseUrl = 'http://www.ninhaotime.com/';
 }
 
 export {
     baseUrl,
+    key,
+    iv,
     imgBaseUrl,
 }

@@ -3,7 +3,27 @@
         <router-view></router-view>
     </div>
 </template>
+<script>
+    import {mapState, mapMutations,mapActions} from 'vuex'
+    export default {
+        data() {
+            return {
+            }
+        },
+        computed:{
 
+        },
+        mounted(){
+            console.log("APP.VUE")
+            this.GET_LOCALUSERINFO();
+        },
+        methods:{
+            ...mapMutations([
+                'GET_LOCALUSERINFO'
+            ]),
+        }
+    };
+</script>
 <style>
 @import "../static/css/main.css";
 @import "../static/css/color-dark.css"; /*深色主题*/

@@ -1,4 +1,4 @@
-const CryptoJS = require('crypto-js');  //引用AES源码js
+const CryptoJS = require('crypto-js');
 import {
     key,
     iv
@@ -16,9 +16,8 @@ export const Encrypt = (word) =>{
         return encrypted.ciphertext.toString().toUpperCase();
     }catch (e) {
         console.log(e);
-        return '加密错误';
+        return '加密错误：'+e+'';
     }
-
 };
 /**
  * 解密方法
@@ -35,7 +34,7 @@ export const Decrypt = (word) =>{
         return decryptedStr.toString();
     }catch (e) {
         console.log(e);
-        return '解密错误';
+        return '解密错误：'+e+'';
     }
 
 };

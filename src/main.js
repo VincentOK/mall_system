@@ -55,7 +55,7 @@ router.beforeEach((to, from, next) => {
             }
         }
     }else {
-        console.log(to.path)
+        console.log(to.path);
         if(to.path !== '/login' && to.path !== '/tenants' && to.path !== '/forgetpassword'){
             next('/login');
         }else {

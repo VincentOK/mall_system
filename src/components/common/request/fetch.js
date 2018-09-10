@@ -1,11 +1,15 @@
 import {
     baseUrl
 } from './url'
+import {showFullScreenLoading,tryHideFullScreenLoading} from "./requestLoading";
 import axios from 'axios'
 import qs from 'qs'
 axios.defaults.withCredentials = true;
-export default async(url, data = {}, type = 'GET',token = null,configType = null) => {
+export default async(url, data = {}, type = 'GET',loading = false,token = null,configType = null) => {
     let config = {headers:{'token':token}};
+    if(loading){
+        showFullScreenLoading();
+    }
     return new Promise((resolve, reject) => {
         url = baseUrl + url;
         console.log("请求url:"+url);
@@ -21,6 +25,7 @@ export default async(url, data = {}, type = 'GET',token = null,configType = null
             console.log("get请求请求头:"+token);
             axios.get(url,config)
                 .then(function (response) {
+                    tryHideFullScreenLoading()
                     console.log("请求返回数据："+JSON.stringify(response));
                     if(response.status === 200){
                         resolve(response.data)
@@ -30,6 +35,7 @@ export default async(url, data = {}, type = 'GET',token = null,configType = null
                 })
                 .catch(function (error) {
                     reject(error)
+                    tryHideFullScreenLoading()
                 })
         }else {
             if(!configType){
@@ -40,6 +46,7 @@ export default async(url, data = {}, type = 'GET',token = null,configType = null
             console.log("post请求请求头："+JSON.stringify(config));
             axios.post(url, data,config)
                 .then(function (response) {
+                    tryHideFullScreenLoading()
                     console.log("请求返回数据:"+JSON.stringify(response));
                     if(response.status === 200){
                         resolve(response.data)
@@ -48,6 +55,7 @@ export default async(url, data = {}, type = 'GET',token = null,configType = null
                     }
                 })
                 .catch(function (error) {
+                    tryHideFullScreenLoading()
                     reject(error)
                 })
         }

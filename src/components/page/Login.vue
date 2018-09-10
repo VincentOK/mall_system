@@ -36,7 +36,6 @@
                     </el-form>
                 </div>
             </div>
-
         </div>
     </div>
 </template>
@@ -47,7 +46,7 @@
     export default {
         data: function(){
             return {
-                imgCode:'http://192.168.0.141:8989/timestoremanage/common/captcha',
+                imgCode:getCode(),
                 ruleForm: {
                     username: 'zhanglong',
                     password: '123456',
@@ -153,6 +152,7 @@
                         // }
                         userLogin(this.ruleForm.username,this.ruleForm.password,this.ruleForm.checkword).then(res =>{
                             console.log(JSON.stringify(res));
+
                             if(res.code === '0'){
                                 this.GET_USERTOKEN(res.data.token);
                                 this.GET_USERINFO(res.data.user);
@@ -166,9 +166,10 @@
                                 alert(res.msg)
                             }
 
-
                         }).catch(err =>{
-                            console.log(err)
+                            console.log(err);
+                            alert('请求失败')
+                            // loading.close();
                         });
                     } else {
                         console.log('error submit!!');

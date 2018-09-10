@@ -3,7 +3,11 @@
  */
 import fetch from './fetch'
 import {getStorage} from "../commonJS/localStorage";
-
+import { Decrypt } from "../commonJS/secert";
+let token = null;
+if(getStorage('token')){
+    token = Decrypt(getStorage('token'));
+}
 /**
  * 获取验证码
  */
@@ -21,7 +25,7 @@ export const userLoginaaa=(username,password,captcha) =>fetch('/timestoremanage/
     userName:username,
     password:password,
     captcha:captcha
-},'POST',{header: {'Authorization': getStorage('token')}});
+},'POST',token);
 
 /**
  * 获取首页默认地址

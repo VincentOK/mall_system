@@ -4,8 +4,8 @@ import {
 import axios from 'axios'
 import qs from 'qs'
 axios.defaults.withCredentials = true;
-export default async(url, data = {}, type = 'GET',config) => {
-    console.log("请求头："+JSON.stringify(config));
+
+export default async(url, data = {}, type = 'GET',token,configType) => {
     return new Promise((resolve, reject) => {
         url = baseUrl + url;
         console.log("请求url:"+url);
@@ -18,7 +18,8 @@ export default async(url, data = {}, type = 'GET',config) => {
                 dataStr = dataStr.substr(0, dataStr.lastIndexOf('&'))
                 url = url + '?' + dataStr
             }
-            axios.get(url,config)
+            console.log("get请求获取到的token:"+token);
+            axios.get(url,{headers:{'token':token}})
                 .then(function (response) {
                     console.log("请求返回数据："+JSON.stringify(response));
                     resolve(response)
@@ -27,11 +28,17 @@ export default async(url, data = {}, type = 'GET',config) => {
                     reject(error)
                 })
         }else {
-
-            if(!config){
-                console.log("上传图片");
-                data = qs.stringify(data)
+            let config = null
+            if(!configType){
+                data = qs.stringify(data);
+                config = {headers:{'token':token}}
+            }else {
+                config = {headers:{
+                    'Content-Type': configType,
+                    'token':token
+                }}
             }
+            console.log("post请求请求头："+JSON.stringify(config));
             axios.post(url, data,config)
                 .then(function (response) {
                     console.log(JSON.stringify(response.data));

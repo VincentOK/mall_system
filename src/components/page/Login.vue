@@ -23,7 +23,7 @@
                         <el-form-item prop="checkword" class="getcode">
                             <i class="shopping-icon-safetycertificate login_iconfont"></i>
                             <el-input   class="login_input" placeholder="验证码" v-model="ruleForm.checkword" @keyup.enter.native="submitForm('ruleForm')"></el-input>
-                            <img src="/static/img/e.jpg" class="redcolor" alt="">
+                            <!--<img src="http://192.168.0.146:8989/timestoremanage/common/captcha" @click="removeCode" class="redcolor" alt="">-->
                         </el-form-item>
 
                         <div class="login-btn">
@@ -42,14 +42,17 @@
 </template>
 
 <script>
+    import {getCode,userLogin} from '../common/request/request'
+    import {mapState, mapMutations,mapActions} from 'vuex'
     export default {
         data: function(){
             return {
                 ruleForm: {
-                    username: '',
-                    password: '',
+                    username: 'zhanglong',
+                    password: '123456',
                     checkword:''
                 },
+                val:'',
                 rules: {
                     username: [
                         { required: true, message: '请输入用户名', trigger: 'blur' }
@@ -63,17 +66,134 @@
                 }
             }
         },
+        created(){
+        },
+        computed:{
+            ...mapState([
+            ]),
+
+        },
+        mounted(){
+            // console.log('8888');
+            // this.getNewCode();
+            // testa(1).then(res =>{
+            //     console.log(res)
+            // }).catch(err =>{
+            //     console.log(err)
+            // })
+        },
         methods: {
+            ...mapMutations([
+                'GET_RESOURCE','GET_USERINFO','GET_USERTOKEN'
+            ]),
+            ...mapActions([
+            ]),
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        localStorage.setItem('ms_username',this.ruleForm.username);
-                        this.$router.push('/');
+                        console.log(JSON.stringify(this.ruleForm));
+                        let msg = {"token":"3d8a6855-e661-458a-906f-1e602a27a910",
+                            "sysResources":[
+                                {icon:'shopping-icon-home-fill',index:'dashboard',title:'概览'},
+                                {
+                                    icon: 'shopping-icon-shopping',
+                                    index: '1',
+                                    title: '商品管理',
+                                    subs: [
+                                        {
+                                            index: 'onlineManagement',
+                                            title: '线上商品管理'
+                                        },
+                                        {
+                                            index: 'addnewgoods',
+                                            title: '新增商品'
+                                        }
+                                    ]
+                                },
+                                {
+                                    icon: 'shopping-icon-detail-fill',
+                                    index: '4',
+                                    title: '订单管理',
+                                    subs: [
+                                        {
+                                            index: 'untreatedOrders',
+                                            title: '待处理订单'
+                                        },
+                                        {
+                                            index: 'processedOrder',
+                                            title: '已处理订单'
+                                        }
+                                    ]
+                                },
+                                {
+                                    icon: 'shopping-icon-Dollar',
+                                    index: '3',
+                                    title: '资产管理',
+                                    subs: [
+                                        {
+                                            index: 'Incomestatistics',
+                                            title: '收益统计与结算'
+                                        },
+                                        {
+                                            index: 'returnsdetailed',
+                                            title: '结算明细'
+                                        }
+                                    ]
+                                }],
+                            // "sysResources":[
+                            //     {icon:'shopping-icon-home-fill',index:'admin',title:'管理员权限'},
+                            // ],
+                            "user":{"id":1,"uid":"123456","userName":"zhanglong","password":"ad434c4a1cd5c0b7e5338c03a819281c","passwordSalt":"HelloTime","userType":"2","commercialType":null,"commercialName":null,"commercialIntroduction":null,"linkPhone":null,"linkName":null,"province":null,"city":null,"bankNo":null,"cardNo":null,"cardFrontImgPath":null,"cardBackImgPath":null,"cardHandheldImgPath":null,"creditCode":null,"licenseImgPath":null,"otherImgPath":null,"auditUser":null,"auditTime":null,"auditOpinion":null,"createTime":null,"updateTime":null,"availability":"1","status":"0"}}
+                        this.GET_USERTOKEN(msg.token);
+                        this.GET_USERINFO(msg.user);
+                        this.GET_RESOURCE(msg.sysResources);
+                        if(msg.user.userType === "2"){
+                            this.$router.push('/');
+                        }else {
+                            this.$router.push('/admin');
+                        }
+
+                        // userLogin(this.ruleForm.username,this.ruleForm.password,this.ruleForm.checkword).then(res =>{
+                        //     console.log(JSON.stringify(res));
+                        //     this.GET_USERTOKEN(res.token)
+                        //     this.GET_USERINFO(res.user);
+                        //     this.GET_RESOURCE(res.sysResources);
+                        //     this.$router.push('/');
+                        // }).catch(err =>{
+                        //     console.log(err)
+                        // });
+                        // let res = {
+                        //     userInfo:{
+                        //         ms_username:'admin'
+                        //     },
+                        //     resourceList:[
+                        //         {main:'主页'},
+                        //         {order:'订单管理'}
+                        //         ]};
+
+
                     } else {
                         console.log('error submit!!');
                         return false;
                     }
                 });
+            },
+            /**
+             *
+             *
+           **/
+            removeCode(){
+                this.getNewCode()
+            },
+            /**
+             * 获取验证码
+             */
+            getNewCode(){
+                getCode().then(res =>{
+                    console.log(res)
+                }).catch(err =>{
+                    console.log(err)
+                })
             }
         }
     }
@@ -84,7 +204,6 @@
         position: relative;
     }
     .redcolor{
-        background-color: #ec414d;
         position: absolute;
         right: 0;
         color: white;
@@ -95,6 +214,7 @@
         text-align: center;
         border-radius: 5px;
         cursor: pointer;
+        border: 1px solid #ec414d;
     }
 
 

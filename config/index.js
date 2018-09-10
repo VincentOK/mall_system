@@ -11,27 +11,34 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/api':{
-          target:'http://jsonplaceholder.typicode.com',
-          changeOrigin:true,
-          pathRewrite:{
-              '/api':''
-          }
-      },
+      // '/api':{
+      //     target:'http://jsonplaceholder.typicode.com',
+      //     changeOrigin:true,
+      //     pathRewrite:{
+      //         '/api':''
+      //     }
+      // },
+        '/timestoremanage':{
+            target:'http://192.168.0.146:8989',
+            changeOrigin:true,
+            pathRewrite:{
+                '/api':'http://192.168.0.146:8989'
+            }
+        },
       '/ms':{
           target: 'https://www.easy-mock.com/mock/592501a391470c0ac1fab128',
           changeOrigin: true
       }
     },
     // Various Dev Server settings
-    host: 'localhost', // can be overwritten by process.env.HOST
+    host: '0.0.0.0', // can be overwritten by process.env.HOST
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
     notifyOnErrors: true,
     poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
 
-    
+
     /**
      * Source Maps
      */

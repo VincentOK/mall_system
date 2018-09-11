@@ -409,7 +409,6 @@
              * 个人商户与企业商户切换
              */
             personComponey(){
-                console.log(8888888)
                 let status = this.person_commoney;
                 if(status.status){
                     this.person_commoney = {
@@ -429,6 +428,7 @@
             onSubmit(formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
+                        console.log(JSON.stringify(this.form))
                         this.$message.success("提交成功！");
                     } else {
                         this.$message.error("提交失败!");

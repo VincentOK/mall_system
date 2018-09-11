@@ -151,7 +151,7 @@ export default {
     },
   methods: {
       testqqq:function(){
-          userLoginaaa().then(res =>{
+          userLoginaaa('aa','bb','cc').then(res =>{
               console.log(res)
           }).catch(err =>{
               console.log(err)

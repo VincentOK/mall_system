@@ -4,9 +4,14 @@ import {
 import {showFullScreenLoading,tryHideFullScreenLoading} from "./requestLoading";
 import axios from 'axios'
 import qs from 'qs'
+import store from "../../../store/store";
 axios.defaults.withCredentials = true;
-export default async(url, data = {}, type = 'GET',loading = false,token = null,configType = null) => {
-    let config = {headers:{'token':token}};
+export default async(url, data = {}, type = 'GET',loading = false,configType = null) => {
+    let token = store.state.token;
+    let config = null;
+    if(token){
+        config = {headers:{'token':token}};
+    }
     if(loading){
         showFullScreenLoading();
     }
@@ -22,10 +27,10 @@ export default async(url, data = {}, type = 'GET',loading = false,token = null,c
                 dataStr = dataStr.substr(0, dataStr.lastIndexOf('&'));
                 url = url + '?' + dataStr
             }
-            console.log("get请求请求头:"+token);
+            console.log("get请求请求头:"+JSON.stringify(token));
             axios.get(url,config)
                 .then(function (response) {
-                    tryHideFullScreenLoading()
+                    tryHideFullScreenLoading();
                     console.log("请求返回数据："+JSON.stringify(response));
                     if(response.status === 200){
                         resolve(response.data)

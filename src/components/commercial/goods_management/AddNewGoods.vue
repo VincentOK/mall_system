@@ -5,12 +5,12 @@
             <h4>新增商品</h4>
             <div class="form-box">
                 <el-form ref="form" :model="form" :rules="rules" label-width="120px">
-                    <!-- <el-form-item label="图片轮播图" prop="uploadImg">
+                    <el-form-item label="图片轮播图" prop="uploadImg">
                       <div class="el-upload-collect">
                         <p>（最多5张）</p>
                         <div class="el-upload-right">
                             <el-upload
-                                action="../../common/request/addStoreCommodity"
+                                action="http://localhost:8989/timestoremanage/storeCommodity/uploadImages"
                                 list-type="picture-card"
                                 :limit="5"
                                 :on-preview="handlePictureCardPreview"
@@ -20,7 +20,7 @@
                             </el-upload>
                         </div>
                     </div>
-                    </el-form-item> -->
+                    </el-form-item>
                     <el-form-item label="商品名称:" prop="commodityName">
                         <el-input v-model="form.commodityName" placeholder="请输入不超过20个字"></el-input>
                     </el-form-item>
@@ -128,7 +128,7 @@ import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
 import { quillEditor } from "vue-quill-editor";
 import previewDialog from "./preview_dialog/PreviewDialog.vue";
-import { addStoreCommodity } from "../../common/request/request";
+import { addStoreCommodity,uploadImages } from "../../common/request/request";
 export default {
   name: "baseform",
   components: {

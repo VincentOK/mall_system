@@ -90,87 +90,87 @@
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         console.log(JSON.stringify(this.ruleForm));
-                        // let msg = {"token":"3d8a6855-e661-458a-906f-1e602a27a910",
-                        //     "sysResources":[
-                        //         {icon:'shopping-icon-home-fill',index:'dashboard',title:'概览'},
-                        //         {
-                        //             icon: 'shopping-icon-shopping',
-                        //             index: '1',
-                        //             title: '商品管理',
-                        //             subs: [
-                        //                 {
-                        //                     index: 'onlineManagement',
-                        //                     title: '线上商品管理'
-                        //                 },
-                        //                 {
-                        //                     index: 'addnewgoods',
-                        //                     title: '新增商品'
-                        //                 }
-                        //             ]
-                        //         },
-                        //         {
-                        //             icon: 'shopping-icon-detail-fill',
-                        //             index: '4',
-                        //             title: '订单管理',
-                        //             subs: [
-                        //                 {
-                        //                     index: 'untreatedOrders',
-                        //                     title: '待处理订单'
-                        //                 },
-                        //                 {
-                        //                     index: 'processedOrder',
-                        //                     title: '已处理订单'
-                        //                 }
-                        //             ]
-                        //         },
-                        //         {
-                        //             icon: 'shopping-icon-Dollar',
-                        //             index: '3',
-                        //             title: '资产管理',
-                        //             subs: [
-                        //                 {
-                        //                     index: 'Incomestatistics',
-                        //                     title: '收益统计与结算'
-                        //                 },
-                        //                 {
-                        //                     index: 'returnsdetailed',
-                        //                     title: '结算明细'
-                        //                 }
-                        //             ]
-                        //         }],
-                        //     // "sysResources":[
-                        //     //     {icon:'shopping-icon-home-fill',index:'admin',title:'管理员权限'},
-                        //     // ],
-                        //     "user":{"id":1,"uid":"123456","userName":"zhanglong","password":"ad434c4a1cd5c0b7e5338c03a819281c","passwordSalt":"HelloTime","userType":"2","commercialType":null,"commercialName":null,"commercialIntroduction":null,"linkPhone":null,"linkName":null,"province":null,"city":null,"bankNo":null,"cardNo":null,"cardFrontImgPath":null,"cardBackImgPath":null,"cardHandheldImgPath":null,"creditCode":null,"licenseImgPath":null,"otherImgPath":null,"auditUser":null,"auditTime":null,"auditOpinion":null,"createTime":null,"updateTime":null,"availability":"1","status":"0"}}
-                        // this.GET_USERTOKEN(msg.token);
-                        // this.GET_USERINFO(msg.user);
-                        // this.GET_RESOURCE(msg.sysResources);
-                        // if(msg.user.userType === "2"){
-                        //     this.$router.push('/');
-                        // }else {
-                        //     this.$router.push('/admin');
-                        // }
-                        userLogin(this.ruleForm.username,this.ruleForm.password,this.ruleForm.checkword).then(res =>{
-                            console.log(JSON.stringify(res));
+                        let msg = {"token":"3d8a6855-e661-458a-906f-1e602a27a910",
+                            "sysResources":[
+                                {icon:'shopping-icon-home-fill',index:'dashboard',title:'概览'},
+                                {
+                                    icon: 'shopping-icon-shopping',
+                                    index: '1',
+                                    title: '商品管理',
+                                    subs: [
+                                        {
+                                            index: 'onlineManagement',
+                                            title: '线上商品管理'
+                                        },
+                                        {
+                                            index: 'addnewgoods',
+                                            title: '新增商品'
+                                        }
+                                    ]
+                                },
+                                {
+                                    icon: 'shopping-icon-detail-fill',
+                                    index: '4',
+                                    title: '订单管理',
+                                    subs: [
+                                        {
+                                            index: 'untreatedOrders',
+                                            title: '待处理订单'
+                                        },
+                                        {
+                                            index: 'processedOrder',
+                                            title: '已处理订单'
+                                        }
+                                    ]
+                                },
+                                {
+                                    icon: 'shopping-icon-Dollar',
+                                    index: '3',
+                                    title: '资产管理',
+                                    subs: [
+                                        {
+                                            index: 'Incomestatistics',
+                                            title: '收益统计与结算'
+                                        },
+                                        {
+                                            index: 'returnsdetailed',
+                                            title: '结算明细'
+                                        }
+                                    ]
+                                }],
+                            // "sysResources":[
+                            //     {icon:'shopping-icon-home-fill',index:'admin',title:'管理员权限'},
+                            // ],
+                            "user":{"id":1,"uid":"123456","userName":"zhanglong","password":"ad434c4a1cd5c0b7e5338c03a819281c","passwordSalt":"HelloTime","userType":"2","commercialType":null,"commercialName":null,"commercialIntroduction":null,"linkPhone":null,"linkName":null,"province":null,"city":null,"bankNo":null,"cardNo":null,"cardFrontImgPath":null,"cardBackImgPath":null,"cardHandheldImgPath":null,"creditCode":null,"licenseImgPath":null,"otherImgPath":null,"auditUser":null,"auditTime":null,"auditOpinion":null,"createTime":null,"updateTime":null,"availability":"1","status":"0"}}
+                        this.GET_USERTOKEN(msg.token);
+                        this.GET_USERINFO(msg.user);
+                        this.GET_RESOURCE(msg.sysResources);
+                        if(msg.user.userType === "2"){
+                            this.$router.push('/');
+                        }else {
+                            this.$router.push('/admin');
+                        }
+                        // userLogin(this.ruleForm.username,this.ruleForm.password,this.ruleForm.checkword).then(res =>{
+                        //     console.log(JSON.stringify(res));
 
-                            if(res.code === '0'){
-                                this.GET_USERTOKEN(res.data.token);
-                                this.GET_USERINFO(res.data.user);
-                                this.GET_RESOURCE(res.data.sysResources);
-                                if(res.data.user.userType === '1'){
-                                    this.$router.push('/admin');
-                                }else if(res.data.user.userType === '2'){
-                                    this.$router.push('/');
-                                }
-                            }else{
-                                alert(res.msg)
-                            }
+                        //     if(res.code === '0'){
+                        //         this.GET_USERTOKEN(res.data.token);
+                        //         this.GET_USERINFO(res.data.user);
+                        //         this.GET_RESOURCE(res.data.sysResources);
+                        //         if(res.data.user.userType === '1'){
+                        //             this.$router.push('/admin');
+                        //         }else if(res.data.user.userType === '2'){
+                        //             this.$router.push('/');
+                        //         }
+                        //     }else{
+                        //         alert(res.msg)
+                        //     }
 
-                        }).catch(err =>{
-                            console.log(err);
-                            alert('请求失败')
-                            // loading.close();
-                        });
+                        // }).catch(err =>{
+                        //     console.log(err);
+                        //     alert('请求失败')
+                        //     // loading.close();
+                        // });
                     } else {
                         console.log('error submit!!');
                         return false;

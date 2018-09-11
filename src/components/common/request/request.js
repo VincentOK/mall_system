@@ -3,16 +3,6 @@
  */
 import { baseUrl } from './url'
 import fetch from './fetch'
-import { getStorage } from "../commonJS/localStorage";
-import { Decrypt } from "../commonJS/secert";
-let token = null;
-if (getStorage('token')) {
-    try {
-        token = Decrypt(getStorage('token'));
-    } catch (e) {
-        alert('token值不存在')
-    }
-}
 /**
  * 获取验证码
  */

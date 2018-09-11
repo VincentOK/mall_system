@@ -4,6 +4,7 @@
     </div>
 </template>
 <script>
+    import { removeStorage } from "./components/common/commonJS/localStorage";
     import {mapState, mapMutations,mapActions} from 'vuex'
     export default {
         data() {
@@ -18,7 +19,11 @@
             try {
                 this.GET_LOCALUSERINFO();
             }catch (e) {
-                alert('用户信息错误')
+                alert('用户信息错误');
+                removeStorage('token');
+                removeStorage('userInfo');
+                removeStorage('resourceList');
+                this.$router.push('/login');
             }
         },
         methods:{

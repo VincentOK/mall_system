@@ -9,14 +9,10 @@ function startLoading() {
         background: 'rgba(0, 0, 0, 0.7)'
     })
 }
-
 function endLoading() {
     loading.close()
 }
-
-
 let needLoadingRequestCount = 0
-
 export function showFullScreenLoading() {
     if (needLoadingRequestCount === 0) {
         startLoading()

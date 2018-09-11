@@ -55,8 +55,6 @@
                                             </div>
                                         </div>
                                     </el-form-item>
-
-
                                     <el-form-item label="法定代表人证件照片" prop="uploadImg">
                                         <div class="el-upload-collect" style="height: 100px">
                                             <div class="el-upload-right" style="left: 0">

@@ -71,7 +71,8 @@
     </div>
 </template>
 <script>
-import bus from "../common/bus";
+    import { removeStorage } from "./commonJS/localStorage";
+    import bus from "../common/bus";
 export default {
   data() {
     return {
@@ -145,9 +146,9 @@ export default {
     // 用户名下拉菜单选择事件
     handleCommand(command) {
       if (command == "loginout") {
-          localStorage.removeItem("token");
-        localStorage.removeItem("userInfo");
-          localStorage.removeItem("resourceList");
+          removeStorage('token');
+          removeStorage('userInfo');
+          removeStorage('resourceList');
         this.$router.push("/login");
       }
     },

@@ -6,18 +6,26 @@ import axios from 'axios'
 import qs from 'qs'
 import store from "../../../store/store";
 axios.defaults.withCredentials = true;
-export default async(url, data = {}, type = 'GET',loading = false,configType = null) => {
+export default async(url, data = {}, type = 'GET',loading = false,configType = 'application/json;charset=UTF-8') => {
     let token = store.state.token;
     let config = null;
-    if(token){
-        config = {headers:{'token':token}};
+    if (token) {
+        config = {
+            headers: {
+                'Content-Type': configType,
+                'token': token
+            }
+        }
+    } else {
+        config = {
+            headers: {'Content-Type': configType}
+        }
     }
     if(loading){
         showFullScreenLoading();
     }
     return new Promise((resolve, reject) => {
         url = baseUrl + url;
-        console.log("请求url:"+url);
         if(type == 'GET'){
             let dataStr = '';
             Object.keys(data).forEach(key => {
@@ -27,7 +35,7 @@ export default async(url, data = {}, type = 'GET',loading = false,configType = n
                 dataStr = dataStr.substr(0, dataStr.lastIndexOf('&'));
                 url = url + '?' + dataStr
             }
-            console.log("get请求请求头:"+JSON.stringify(token));
+            console.log("get请求请求头:"+JSON.stringify(token)+'============='+"get请求url+参数:"+url);
             axios.get(url,config)
                 .then(function (response) {
                     tryHideFullScreenLoading();
@@ -43,12 +51,10 @@ export default async(url, data = {}, type = 'GET',loading = false,configType = n
                     tryHideFullScreenLoading()
                 })
         }else {
-            if(!configType){
+            if(configType !== 'application/json;charset=UTF-8'){
                 data = qs.stringify(data);
-            }else {
-                config.headers['Content-Type'] = configType
             }
-            console.log("post请求请求头："+JSON.stringify(config));
+            console.log("post请求请求头："+JSON.stringify(config)+'========'+"post请求参数JSON.stringify："+JSON.stringify(data)+"============JSON:"+data);
             axios.post(url, data,config)
                 .then(function (response) {
                     tryHideFullScreenLoading()

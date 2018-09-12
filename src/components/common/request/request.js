@@ -4,6 +4,11 @@
 import {baseUrl} from './url'
 import fetch from './fetch'
 /**
+ * 上传files图片
+ *
+ */
+export const uploadGoodsImg = ()=>{return baseUrl+'/timestoremanage/storeCommodity/uploadImages'};
+/**
  * 获取验证码
  */
 export const getCode = () =>{return baseUrl+'/timestoremanage/common/captcha'};

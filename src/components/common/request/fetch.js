@@ -51,13 +51,15 @@ export default async(url, data = {}, type = 'GET',loading = false,configType = '
                     tryHideFullScreenLoading()
                 })
         }else {
-            if(configType !== 'application/json;charset=UTF-8'){
+            if(configType === 'application/json;charset=UTF-8'){
+                data = JSON.stringify(data);
+            }else if(configType === 'x-www-form-urlencoded' || configType === 'application/x-www-form-urlencoded'){
                 data = qs.stringify(data);
             }
             console.log("post请求请求头："+JSON.stringify(config)+'========'+"post请求参数JSON.stringify："+JSON.stringify(data)+"============JSON:"+data);
             axios.post(url, data,config)
                 .then(function (response) {
-                    tryHideFullScreenLoading()
+                    tryHideFullScreenLoading();
                     console.log("请求返回数据:"+JSON.stringify(response));
                     if(response.status === 200){
                         resolve(response.data)

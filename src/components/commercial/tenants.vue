@@ -4,40 +4,39 @@
         <p class="tenants_title">商城后台系统</p>
         <div class="a_link">
             <a href="#">&nbsp;&nbsp;&nbsp;时间商城</a>/
-            <a href="#">{{person_commoney.msg}}入驻</a>
+            <a href="#">{{person_commoney}}入驻</a>
         </div>
         <div class="form_tenants">
             <div>
-                <p class="tenants_person" @click="personComponey">&nbsp;&nbsp;&nbsp;{{person_commoney.msg}}请点击此处申请>></p>
+                <p class="tenants_person" @click="personComponey">&nbsp;&nbsp;&nbsp;{{person_commoney}}请点击此处申请>></p>
                 <!--<div class="container" style="height: 700px;overflow-y: scroll">-->
                     <el-scrollbar style="height:850px;">
                         <div class="container" style="border: none">
                             <div class="form-box">
                                 <el-form ref="form" :rules="rules" :model="form" label-width="150px">
-                                    <el-form-item label="商户名称:" prop="name">
-                                        <el-input v-model="form.name" placeholder="请输入不超过20个字" maxlength="20"></el-input>
+                                    <el-form-item label="商户名称:" prop="commercialName">
+                                        <el-input v-model="form.commercialName" @blur="loseBlur({'commercialName':form.commercialName})" placeholder="请输入不超过20个字" maxlength="20"></el-input>
                                     </el-form-item>
-                                    <el-form-item label="联系人" prop="username">
-                                        <el-input v-model="form.username" placeholder="请选择商品出售的单位规格，如“每份 300克”、“一双”" maxlength="20"></el-input>
+                                    <el-form-item label="联系人" prop="linkName">
+                                        <el-input v-model="form.linkName" placeholder="请输入联系人姓名" maxlength="20"></el-input>
                                     </el-form-item>
-                                    <el-form-item label="手机号码:" prop="phone">
-                                        <el-input v-model.number="form.phone" type="number" placeholder="请输入单位实际售价" maxlength="20" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'></el-input>
-                                    </el-form-item>
+
+
                                     <el-form-item label="收款人" prop="moneyPerson">
                                         <el-input v-model.number="form.moneyPerson" type="number" placeholder="请输入单位建议售价，即删除线价格" maxlength="20" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'></el-input>
                                     </el-form-item>
-                                    <el-form-item label="银行卡号" prop="bankCard">
-                                        <el-input v-model="form.bankCard"></el-input>
+                                    <el-form-item label="银行卡号" prop="bankNo">
+                                        <el-input v-model="form.bankNo"></el-input>
                                         <p class="bank_word">(用于商城结算收款，请谨慎填写)</p>
                                     </el-form-item>
-                                    <el-form-item v-if="person_commoney.status" label="营业执照名称" prop="specification">
+                                    <el-form-item v-if="form.commercialType === 'corporate'" label="营业执照名称" prop="specification">
                                         <el-input v-model="form.specification"></el-input>
                                     </el-form-item>
-                                    <el-form-item v-if="person_commoney.status" label="统一社会信用代码" prop="specificationCode">
-                                        <el-input v-model="form.specificationCode"></el-input>
+                                    <el-form-item v-if="form.commercialType === 'corporate'"  label="统一社会信用代码" prop="creditCode">
+                                        <el-input v-model="form.creditCode"></el-input>
                                     </el-form-item>
 
-                                    <el-form-item v-if="person_commoney.status" label="营业执照（副本）" prop="personalUploadImg">
+                                    <el-form-item v-if="form.commercialType === 'corporate'"  label="营业执照（副本）" prop="licenseImgPath">
                                         <div class="el-upload-collect" style="height: 100px">
                                             <div class="el-upload-right" style="left: 0">
                                                 <el-upload
@@ -60,7 +59,7 @@
 
                                     <div class="allCardImg">
                                         <div class="linecard">
-                                            <el-form-item label="法定代表人证件照片" prop="cardUploadImg">
+                                            <el-form-item label="法定代表人证件照片" prop="cardFrontImgPath">
                                                 <div class="el-upload-collect" style="height: 100px">
                                                     <div class="el-upload-right" style="left: 0">
                                                         <el-upload
@@ -83,7 +82,7 @@
                                         </div>
 
                                     <div class="cardFimg">
-                                    <el-form-item prop="cardFUploadImg">
+                                    <el-form-item prop="cardBackImgPath">
                                         <div class="el-upload-collect" style="height: 100px;position: absolute;left: 200px;width: 0;">
                                             <div class="el-upload-right" style="left: 15%">
                                                 <el-upload
@@ -107,7 +106,7 @@
 
 
 
-                                    <el-form-item label="其他" >
+                                    <el-form-item label="其他">
                                         <div class="el-upload-collect" style="height: 100px">
                                             <div class="el-upload-right" style="left: 0">
                                                 <el-upload
@@ -115,6 +114,7 @@
                                                     name="files"
                                                     list-type="picture-card"
                                                     :limit="0"
+                                                    :on-success="handleAvatarSuccessOther"
                                                     :on-preview="handlePictureCardPreview"
                                                     :on-remove="handleRemove"
                                                     :before-upload="beforeAvatarUpload">
@@ -125,15 +125,25 @@
                                     </el-form-item>
 
                                     <p class="word_two">2.填写账号注册信息<label class="word_two_i">（请牢记账号信息，用于登陆商户后台）</label></p>
-                                    <el-form-item label="用户名" prop="loginname">
-                                        <el-input v-model="form.loginname"></el-input>
+                                    <el-form-item label="登陆名:" prop="linkPhone">
+                                        <el-input v-model.number="form.linkPhone" @blur="loseBlur({'userName':form.linkPhone})"  type="number" placeholder="请输入手机号码" maxlength="20" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'></el-input>
                                     </el-form-item>
-                                    <el-form-item label="密码" prop="loginpassword">
-                                        <el-input v-model="form.loginpassword"></el-input>
+                                    <el-form-item label="验证码" class="getcode" prop="logincode">
+                                        <span  v-show="show" class="redcolor" @click="getMobileCode">发送验证码</span>
+                                        <span  v-show="!show" class="greycolor" :disabled="true">{{count}}s</span>
+                                        <el-input v-model="form.logincode"></el-input>
                                     </el-form-item>
-                                    <el-form-item label="确认密码" prop="againpassword">
-                                        <el-input v-model="form.againpassword"></el-input>
+
+
+
+
+                                    <el-form-item label="密码" prop="password">
+                                        <el-input type="password" v-model="form.password" auto-complete="off"></el-input>
                                     </el-form-item>
+                                    <el-form-item label="确认密码" prop="checkPass">
+                                        <el-input type="password" v-model="form.checkPass" auto-complete="off"></el-input>
+                                    </el-form-item>
+
                                     <el-form-item label="" prop="againpassword">
                                         <el-checkbox v-model="checked">我已阅读并同意<label style="color: #66b1ff;cursor: pointer" @click="alertTimeComponey">《时间商城商户入驻协议》</label></el-checkbox>
                                     </el-form-item>
@@ -344,12 +354,35 @@
 </template>
 
 <script>
-    import { uploadGoodsImg } from "../common/request/request";
-
+    import { uploadGoodsImg,userRegister,checkUser } from "../common/request/request";
     export default {
         name: "tenants",
         data(){
+            var validatePass = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('请输入密码'));
+                } else {
+                    if (this.form.checkPass !== '') {
+                        this.$refs.form.validateField('checkPass');
+                    }
+                    callback();
+                }
+            };
+            var validatePass2 = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('请再次输入密码'));
+                } else if (value !== this.form.password) {
+                    callback(new Error('两次输入密码不一致!'));
+                } else {
+                    callback();
+                }
+            };
             return {
+                show: true,
+                count: '',
+                timer: null,
+
+
                 uploadUrl:'',
                 editVisible:false,
                 card:true,
@@ -357,69 +390,72 @@
                 imageUrl: '',
                 cardimageUrl:'',
                 cardfimageUrl:'',
-                person_commoney:{
-                    status:false,
-                    msg:'个人商户'
-                },
+                person_commoney:'个人商户',
                 checked:true,
                 dialogImageUrl: "",
                 dialogVisible: false,
                 searchGoodsName: 0,
                 val: 0,
                 form: {
-                    name: "",
-                    username: "",
-                    phone: null,
+                    commercialType:'individual',//商户类型(individual:个体,corporate:团体)
+                    commercialName: "",//商户名称
+                    linkName: "",//联系人姓名
+                    linkPhone: null,//联系人电话
                     moneyPerson: null,
-                    bankCard: "",
+                    bankNo: "",//银行卡卡号
                     specification:'',
-                    specificationCode:'',
-                    personalUploadImg:'',
-                    cardUploadImg:'',
-                    cardFUploadImg:'',
+                    creditCode:'',//企业统一信用代码
+                    licenseImgPath:'',//营业执照图片
+                    cardFrontImgPath:'',//身份证正面照
+                    cardBackImgPath:'',//身份证反面照
+                    otherImgPath:'',
                     loginname:'',
-                    loginpassword:'',
-                    againpassword:'',
+                    logincode:'',
+                    password:'',//登陆密码
+                    checkPass: '',
                 },
                 rules:{
-                    cardFUploadImg:[
+                    logincode:[
+                        {required: true, message: "请输入验证码", trigger: "blur" }
+                    ],
+                    cardBackImgPath:[
                         {required: true, message: "请上传身份证反面照", trigger: "blur" }
                     ],
-                    cardUploadImg:[
+                    cardFrontImgPath:[
                         {required: true, message: "请上传身份证正面照", trigger: "blur" }
                     ],
-                    personalUploadImg:[
+                    licenseImgPath:[
                         {required: true, message: "请上传营业执照", trigger: "blur" }
                     ],
-                    name: [
+                    commercialName: [
                         {required: true, message: "请填写商户名称", trigger: "blur" }
                     ],
-                    username: [
-                        {required: true, message: "请联系人姓名", trigger: "blur" }
+                    linkName: [
+                        {required: true, message: "请联系人联系人姓名", trigger: "blur" }
                     ],
-                    phone: [
-                        {required: true, message: "请输入手机号码", trigger: "blur" }
+                    linkPhone: [
+                        {required: true, message: "请输入联系电话", trigger: "blur" }
                     ],
                     moneyPerson: [
                         {required: true, message: "请输入收款人姓名", trigger: "blur" }
                     ],
-                    bankCard: [
+                    bankNo: [
                         {required: true, message: "请输入收款人银行卡号", trigger: "blur" }
                     ],
                     specification: [
                         {required: true, message: "请输入营业执照名称", trigger: "blur" }
                     ],
-                    specificationCode: [
+                    creditCode: [
                         {required: true, message: "请输入统一社会信用代码", trigger: "blur" }
                     ],
                     loginname: [
                         {required: true, message: "请输入用户名", trigger: "blur" }
                     ],
-                    loginpassword: [
-                        {required: true, message: "请输入登陆密码", trigger: "blur" }
+                    password: [
+                        { validator: validatePass, trigger: 'blur' }
                     ],
-                    againpassword: [
-                        {required: true, message: "请再次输入密码", trigger: "blur" }
+                    checkPass: [
+                        { validator: validatePass2, trigger: 'blur' }
                     ],
                 }
             };
@@ -428,6 +464,47 @@
             this.uploadUrl = uploadGoodsImg()
         },
         methods: {
+            /**
+             * 输入框失去焦点触发
+             */
+            loseBlur(e){
+                console.log(e)
+                let that = this
+                if(e.commercialName || e.userName){
+                    checkUser(e).then(res =>{
+                        console.log(res)
+                        if(res.code === "0"){
+                            console.log(that.form.linkPhone,+"===="+that.rules.linkPhone[0].message);
+                            that.form.linkPhone === '';
+                            that.rules.linkPhone[0].message === res.data;
+                        }else {
+
+                        }
+                    }).catch(err =>{
+                        console.log(err)
+                    })
+                }
+            },
+            /**
+             * 获取手机验证码
+             */
+            getMobileCode(){
+                debugger;
+                const TIME_COUNT = 60;
+                if (!this.timer) {
+                    this.count = TIME_COUNT;
+                    this.show = false;
+                    this.timer = setInterval(() => {
+                        if (this.count > 0 && this.count <= TIME_COUNT) {
+                            this.count--;
+                        } else {
+                            this.show = true;
+                            clearInterval(this.timer);
+                            this.timer = null;
+                        }
+                    }, 1000)
+                }
+            },
             /**
              * 用户协议
             */
@@ -439,17 +516,13 @@
              * 个人商户与企业商户切换
              */
             personComponey(){
-                let status = this.person_commoney;
-                if(status.status){
-                    this.person_commoney = {
-                        status:false,
-                        msg:'个人商户'
-                    }
+                let status = this.form.commercialType;
+                if(status === 'individual'){
+                    this.form.commercialType = 'corporate';
+                    this.person_commoney = '团体商户'
                 }else {
-                    this.person_commoney = {
-                        status:true,
-                        msg:'企业商户'
-                    }
+                    this.form.commercialType = 'individual'
+                    this.person_commoney = '个人商户'
                 }
             },
             handleInput(e) {
@@ -474,28 +547,64 @@
                 this.dialogImageUrl = file.url;
                 this.dialogVisible = true;
             },
+            /**
+             *成功上传营业执照
+             *
+             */
             handleAvatarSuccess(res, file) {
                 console.log("Files:"+JSON.stringify(file));
                 console.log("res:"+JSON.stringify(res));
                 if(res.code === "0"){
-                    this.form.personalUploadImg = res.data
+                    this.form.licenseImgPath = res.data
+                    this.imageUrl = URL.createObjectURL(file.raw);
                 }
-                this.imageUrl = URL.createObjectURL(file.raw);
+
             },
+            /**
+             * 成功上传身份证正面照
+             * @param res
+             * @param file
+             */
             handleAvatarSuccessCard(res, file){
                 if(res.code === "0"){
                     this.card = false
-                    this.form.cardUploadImg  = res.data
+                    this.form.cardFrontImgPath  = res.data
+                    this.cardimageUrl = URL.createObjectURL(file.raw);
                 }
-                this.cardimageUrl = URL.createObjectURL(file.raw);
+
             },
+            /**
+             * 成功上传身份证反面照
+             * @param res
+             * @param file
+             */
             handleAvatarSuccessCardF(res,file){
                 if(res.code === "0"){
                     this.cardF = false
-                    this.form.cardFUploadImg  = res.data
+                    this.form.cardBackImgPath  = res.data
+                    this.cardfimageUrl = URL.createObjectURL(file.raw);
                 }
-                this.cardfimageUrl = URL.createObjectURL(file.raw);
+
             },
+            /**
+             * 上传其他照片
+             */
+            handleAvatarSuccessOther(res,file){
+                console.log(res);
+                console.log(file);
+                if(res.code === "0"){
+                    if( this.form.otherImgPath){
+                        this.form.otherImgPath  = res.data
+                    }else {
+                        this.form.otherImgPath  = this.form.otherImgPath+'#'+res.data
+                    }
+                }
+            },
+            /**
+             * 开始上传
+             * @param file
+             * @returns {boolean}
+             */
             beforeAvatarUpload(file) {
                 console.log(file);
                 const isJPG = file.type === 'image/jpeg';
@@ -521,6 +630,69 @@
 </script>
 
 <style scoped>
+    .getcode{
+        position: relative;
+    }
+    .redcolor{
+        background-color: #ec414d;
+        position: absolute;
+        right: 0;
+        color: white;
+        height: 30px;
+        border: none;
+        width: 80px;
+        line-height: 30px;
+        text-align: center;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .greycolor{
+        background-color: darkgray;
+        position: absolute;
+        right: 0;
+        color: white;
+        height: 30px;
+        border: none;
+        width: 80px;
+        line-height: 30px;
+        text-align: center;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .form_tenants{
+        background-color: white;
+    }
+    .a_link{
+        background-color: white;
+        padding: 10px 10px 10px 0;
+        color: #EC414D;
+        font-size: 16px;
+        margin: 10px 0px 20px 0px;
+    }
+    .a_link a:first-child{
+        border-left: 2px solid #EC414D;
+    }
+    .a_link a{
+        color: #EC414D;
+
+    }
+    .tenants{
+        height: 100%;
+        width: 100%;
+        background-color: #eeeeee;
+    }
+    .tenants_title{
+        background-color: #EC414D;
+        margin: 0;
+        padding: 10px 10px 10px 0;
+        text-indent: 15px;
+        color: white;
+        font-size: 20px;
+    }
+
+
+
     .linecard {
         position: absolute;
         left: 0;

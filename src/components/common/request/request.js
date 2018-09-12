@@ -22,12 +22,44 @@ export const userLogin = (username, password, captcha) => fetch('/timestoremanag
     password: password,
     captcha: captcha
 }, 'POST', true);
-
+/**
+ * 测试接口
+ * @param username
+ * @param password
+ * @param captcha
+ * @returns {Promise<*>}
+ */
 export const userLoginaaa = (username, password, captcha) => fetch('/timestoremanage/storeCommodity/add', {
     userName: username,
     password: password,
     captcha: captcha
-}, 'POST', token, 'multipart/form-data;');
+}, 'POST');
+/**
+ * 商户入驻申请
+ * @param msgObj
+ * @returns {Promise<*>}
+ */
+export const userRegister = (msgObj) => fetch('/timestoremanage/register', {
+    userName: msgObj.userName,
+    password: msgObj.password,
+    commercialType: msgObj.commercialType,
+    commercialName: msgObj.commercialName,
+    commercialIntroduction: msgObj.commercialIntroduction,
+    linkPhone: msgObj.linkPhone,
+    linkName: msgObj.linkName,
+    bankNo: msgObj.bankNo,
+    cardNo: msgObj.cardNo,
+    cardFrontImgPath: msgObj.cardFrontImgPath,
+    cardBackImgPath: msgObj.cardBackImgPath,
+    creditCode: msgObj.creditCode,
+    licenseImgPath: msgObj.licenseImgPath,
+    otherImgPath: msgObj.otherImgPath
+}, 'POST', true);
+
+
+export const checkUser = (val) => fetch('/timestoremanage/common/queryUserNameOrCommercialName', val, 'POST');
+
+
 
 /**
  * 获取首页默认地址

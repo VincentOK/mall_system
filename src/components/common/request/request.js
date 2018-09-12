@@ -53,13 +53,17 @@ export const addStoreCommodity = (param) => fetch('/timestoremanage/storeCommodi
     promotion: param.promotion,
     images: param.images
         // param: param
-}, 'POST');
+}, 'POST', true, 'application/json; charset=UTF-8');
 
 // 新增商品图片上传
 export const uploadImages = (files) => fetch('/timestoremanage/storeCommodity/uploadImages', {
     files: files,
-}, 'POST');
+}, 'POST', false, 'application/json; charset=UTF-8');
+//支付方式列表
+export const payTypeList = () => fetch('/timestoremanage/payType/list', {}, 'POST', false, 'application/json; charset=UTF-8');
 
+//发票列表
+export const invoiceList = () => fetch('/timestoremanage/invoice/list', {}, 'POST', false, 'application/json; charset=UTF-8');
 
 
 /**
@@ -67,53 +71,53 @@ export const uploadImages = (files) => fetch('/timestoremanage/storeCommodity/up
  */
 
 //出售中列表
-export const listSell = (pageNumber, pageSize, tenantUid, startTime, endTime, keyword) => fetch('/timestoremanage/storeCommodity/listSell', {
-    pageNumber: pageNumber,
-    pageSize: pageSize,
-    tenantUid: tenantUid,
-    startTime: startTime,
-    endTime: endTime,
-    keyword: keyword
-}, 'POST');
+export const listSell = (param) => fetch('/timestoremanage/storeCommodity/listSell', {
+    pageNumber: param.pageNumber,
+    pageSize: param.pageSize,
+    tenantUid: param.tenantUid,
+    startTime: param.startTime,
+    endTime: param.endTime,
+    keyword: param.keyword
+}, 'POST', true, 'application/json; charset=UTF-8');
 
 //出售中/已下架商品详情
 export const storeCommodityDetail = (commodityId) => fetch('/timestoremanage/storeCommodity/detail', {
     commodityId: commodityId
-}, 'POST');
+}, 'POST', false, 'application/json; charset=UTF-8');
 
 //下架
 export const soldOut = (commodityId) => fetch('/timestoremanage/storeCommodity/soldOut', {
     commodityId: commodityId
-}, 'POST');
+}, 'POST', false, 'application/json; charset=UTF-8');
 
 //编辑
-export const edit = (commodityId, realityPrice, suggestPrice, inventory) => fetch('/timestoremanage/storeCommodity/edit', {
-    commodityId: commodityId,
-    realityPrice: realityPrice,
-    suggestPrice: suggestPrice,
-    inventory: inventory
-}, 'POST');
+export const edit = (param) => fetch('/timestoremanage/storeCommodity/edit', {
+    commodityId: param.commodityId,
+    realityPrice: param.realityPrice,
+    suggestPrice: param.suggestPrice,
+    inventory: param.inventory
+}, 'POST', false, 'application/json; charset=UTF-8');
 
 //已下架商品列表
-export const listSoldOut = (tenantUid, startTime, endTime, keyword, sort) => fetch('/timestoremanage/storeCommodity/listSoldOut', {
-    tenantUid: tenantUid,
-    startTime: startTime,
-    endTime: endTime,
-    keyword: keyword,
-    sort: sort
-}, 'POST');
+export const listSoldOut = (param) => fetch('/timestoremanage/storeCommodity/listSoldOut', {
+    tenantUid: param.tenantUid,
+    startTime: param.startTime,
+    endTime: param.endTime,
+    keyword: param.keyword,
+    sort: param.sort
+}, 'POST', true, 'application/json; charset=UTF-8');
 
 //审核中商品列表接口
-export const listCheck = (pageNumber, pageSize, tenantUid, startTime, endTime, keyword) => fetch('/timestoremanage/storeCommodity/listCheck', {
-    pageNumber: pageNumber,
-    pageSize: pageSize,
-    tenantUid: tenantUid,
-    startTime: startTime,
-    endTime: endTime,
-    keyword: keyword
-}, 'POST');
+export const listCheck = (param) => fetch('/timestoremanage/storeCommodity/listCheck', {
+    pageNumber: param.pageNumber,
+    pageSize: param.pageSize,
+    tenantUid: param.tenantUid,
+    startTime: param.startTime,
+    endTime: param.endTime,
+    keyword: param.keyword
+}, 'POST', true, 'application/json; charset=UTF-8');
 
 //审核中商品详情接口
 export const getCheckDetail = (commodityId) => fetch('/timestoremanage/storeCommodity/getCheckDetail', {
     commodityId: commodityId
-}, 'POST');
+}, 'POST', false, 'application/json; charset=UTF-8');

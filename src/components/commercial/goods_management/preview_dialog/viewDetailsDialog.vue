@@ -85,13 +85,15 @@
 </template>
 
 <script>
+import { storeCommodityDetail } from "../../../common/request/request.js";
 export default {
   name: "viewDetailDialog",
   props: {
     initialSpeed: {
       type: Number,
       default: 30
-    }
+    },
+    commodityId: String
   },
   data() {
     return {
@@ -118,7 +120,20 @@ export default {
       ]
     };
   },
+  mounted() {
+    this.getStoreCommodityDetail()
+  },
   methods: {
+    getStoreCommodityDetail() {
+      let self = this;  
+      storeCommodityDetail(self.commodityId)
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     move(offset, direction, speed) {
       if (!this.transitionEnd) return;
       this.transitionEnd = false;

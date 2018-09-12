@@ -126,7 +126,7 @@
             }
         },
         mounted(){
-            console.log(JSON.stringify(this.resourceList));
+            // console.log(JSON.stringify(this.resourceList));
         },
         methods:{
             getRousource(){

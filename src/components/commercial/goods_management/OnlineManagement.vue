@@ -50,24 +50,24 @@
                 </span>
             </div>
             <el-table :data="data"  ref="multipleTable" :header-cell-style="getRowClass" @selection-change="handleSelectionChange">
-                <el-table-column prop="address" label="商品" :formatter="formatter"></el-table-column>
-                <el-table-column prop="name" label="出售规格" width="100"></el-table-column>
-                <el-table-column prop="address" label="实际售价" :formatter="formatter">
+                <el-table-column prop="commodityName" label="商品"></el-table-column>
+                <el-table-column prop="unit" label="出售规格" width="100"></el-table-column>
+                <el-table-column prop="realityPrice" label="实际售价">
                   <template slot-scope="{row,$index}">
                     <el-input v-if="row.showEdit" v-model="row.address" size="small" style="width:120px"></el-input>
                     <span v-if="!row.showEdit">{{row.address}}</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="address" label="建议售价" :formatter="formatter">
+                <el-table-column prop="suggestPrice" label="建议售价">
                   <template slot-scope="{row,$index}">
                     <el-input v-if="row.showEdit" v-model="row.address"  size="small" style="width:120px"></el-input>
                     <span v-if="!row.showEdit">{{row.address}}</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="address" label="总浏览量" :formatter="formatter"></el-table-column>
-                <el-table-column prop="address" label="独立浏览量" :formatter="formatter"></el-table-column>
-                <el-table-column prop="address" label="已售" :formatter="formatter"></el-table-column>
-                <el-table-column prop="address" label="剩余库存" :formatter="formatter">
+                <el-table-column prop="totalBrowseNumber" label="总浏览量"></el-table-column>
+                <el-table-column prop="userBrowseNumber" label="独立浏览量"></el-table-column>
+                <el-table-column prop="sales" label="已售"></el-table-column>
+                <el-table-column prop="inventory" label="剩余库存">
                   
                   <template slot-scope="{row,$index}">
                     <div class="surplus_stock">
@@ -102,7 +102,7 @@
                   :page-size="100"
                   :pager-count="11"
                   layout="prev, pager, next, jumper"
-                  :total="1000">
+                  :total="1000">  
                 </el-pagination>
             </div>
         </div>
@@ -111,7 +111,7 @@
         <el-dialog id="viewDetail" title="查看详情" :visible.sync="editVisible" width="40%" :lock-scroll='true' top="5vh">
             <div class="goods_detail">
               <el-scrollbar style="height:100%;">
-                <view-detail-dialog></view-detail-dialog>
+                <view-detail-dialog :commodityId="uid"></view-detail-dialog>
               </el-scrollbar>
             </div>
             <span slot="footer" class="dialog-footer">
@@ -136,14 +136,26 @@
 
 <script>
 import viewDetailDialog from "./preview_dialog/viewDetailsDialog.vue";
+import { mapState, mapMutations, mapActions } from "vuex";
+import {
+  listSell,
+  storeCommodityDetail,
+  soldOut,
+  edit,
+  listSoldOut,
+  listCheck,
+  getCheckDetail
+} from "../../common/request/request";
+import store from "../../../store/store";
 export default {
   name: "basetable",
-  components:{
+  components: {
     viewDetailDialog
   },
-  
+
   data() {
     return {
+      uid: "",
       activeName: "first",
       url: "./static/vuetable.json",
       dateValue: "",
@@ -162,15 +174,19 @@ export default {
         date: "",
         address: ""
       },
-      idx: -1,
-      
-      
+      idx: -1
     };
   },
   created() {
-    this.getData();
+    let self = this;
+    self.uid = self.userInfo.uid;
+    this.getlistSell();
+    // this.getlistSoldOut();
+    // this.getlistCheck();
   },
+  mounted() {},
   computed: {
+    ...mapState(["userInfo"]),
     data() {
       return this.tableData.filter(d => {
         let is_del = false;
@@ -182,20 +198,22 @@ export default {
         }
         if (!is_del) {
           if (
-            d.address.indexOf(this.select_cate) > -1 &&
-            (d.name.indexOf(this.select_word) > -1 ||
-              d.address.indexOf(this.select_word) > -1)
+            d.realityPrice.indexOf(this.select_cate) > -1 &&
+            (d.commodityName.indexOf(this.select_word) > -1 ||
+              d.commodityName.indexOf(this.select_word) > -1)
           ) {
             return d;
           }
         }
       });
-    },
+    }
   },
   methods: {
     handleClick(tab, e) {
       this.activeName = tab.name;
       console.log(tab.index, tab.name, tab.label, this.activeName);
+      if (this.activeName == "first") {
+      }
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
@@ -206,23 +224,121 @@ export default {
     // 分页导航
     handleCurrentChange(val) {
       this.cur_page = val;
-      this.getData();
+      // this.getlistSell();
     },
-    // 获取 easy-mock 的模拟数据
-    getData() {
-      // 开发环境使用 easy-mock 数据，正式环境使用 json 文件
-      if (process.env.NODE_ENV === "development") {
-        this.url = "/ms/table/list";
-      }
-      this.$axios
-        .post(this.url, {
-          page: this.cur_page
-        })
+    getlistSell() {
+      let self = this;
+
+      // this.$axios
+      //   .post(this.url, {
+      //     page: this.cur_page
+      //   })
+      //   .then(res => {
+      //     this.tableData = res.data.dataList;
+      //     for (var i = 0; i < res.data.list.length; i++) {
+      //       this.$set(this.tableData[i], "showEdit", false);
+      //     }
+      //   });
+      let param = {
+        pageNumber: this.cur_page,
+        pageSize: 10,
+        tenantUid: self.uid,
+        startTime: "",
+        endTime: "",
+        keyword: ""
+      };
+      listSell(param)
         .then(res => {
-          this.tableData = res.data.list;
-          for (var i = 0; i < res.data.list.length; i++) {
-            this.$set(this.tableData[i], "showEdit", false);
+          console.log(res);
+          self.tableData = res.data.dataList;
+          for (var i = 0; i < res.data.dataList.length; i++) {
+            self.$set(self.tableData[i], "showEdit", false);
           }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    getlistSoldOut() {
+      let self = this;
+      let param = {
+        pageNumber: this.cur_page,
+        pageSize: 10,
+        tenantUid: self.uid,
+        startTime: "",
+        endTime: "",
+        keyword: "",
+        sort: ""
+      };
+      listSoldOut(param)
+        .then(res => {
+          console.log(res);
+          // this.tableData = res.data.dataList;
+          // for (var i = 0; i < res.data.dataList.length; i++) {
+          //   this.$set(this.tableData[i], "showEdit", false);
+          // }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    getlistCheck() {
+      let self = this;
+      let param = {
+        pageNumber: this.cur_page,
+        pageSize: 10,
+        tenantUid: self.uid,
+        startTime: "",
+        endTime: "",
+        keyword: "",
+        sort: ""
+      };
+      listCheck(param)
+        .then(res => {
+          console.log(res);
+          // this.tableData = res.data.dataList;
+          // for (var i = 0; i < res.data.dataList.length; i++) {
+          //   this.$set(this.tableData[i], "showEdit", false);
+          // }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    getsoldOut() {
+      let self = this;
+      soldOut(param)
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    getedit() {
+      let self = this;
+      let param = {
+        commodityId: self.uid,
+        realityPrice: self.realityPrice,
+        suggestPrice: self.suggestPrice,
+        inventory: self.inventory
+      };
+      edit(param)
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    getCheckDetail() {
+      let self = this;
+      getCheckDetail(self.uid)
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => {
+          console.log(err);
         });
     },
     search() {
@@ -305,8 +421,7 @@ export default {
       this.tableData.splice(this.idx, 1);
       this.$message.success("下架成功");
       this.delVisible = false;
-    },
-   
+    }
   }
 };
 </script>
@@ -383,6 +498,5 @@ export default {
 .goods_detail {
   height: 700px;
 }
-
 </style>
 

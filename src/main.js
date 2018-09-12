@@ -25,27 +25,27 @@ import { Decrypt } from "./components/common/commonJS/secert";
 //使用钩子函数对路由进行权限跳转
 router.beforeEach((to, from, next) => {
     let role = getStorage('userInfo');
-    if(role){
+    if (role) {
         try {
             let RoleAuthorization = JSON.parse(Decrypt(role));
-            console.log("用户存在："+JSON.stringify(RoleAuthorization));
-            if(RoleAuthorization.userType !== ""){
-                if(to.meta.permission){
-                    if(RoleAuthorization.userType === "1"){
+            // console.log("用户存在："+JSON.stringify(RoleAuthorization));
+            if (RoleAuthorization.userType !== "") {
+                if (to.meta.permission) {
+                    if (RoleAuthorization.userType === "1") {
                         next()
-                    }else {
-                        if(to.path === '/403'){
+                    } else {
+                        if (to.path === '/403') {
                             next()
-                        }else {
+                        } else {
                             next('/403')
                         }
                     }
-                }else {
+                } else {
                     next()
                 }
             }
-        }catch (e) {
-            console.log("用户不存在:"+e);
+        } catch (e) {
+            console.log("用户不存在:" + e);
             alert('用户不存在000');
             if (to.path === '/login') {
                 next()
@@ -53,13 +53,13 @@ router.beforeEach((to, from, next) => {
                 next('/login')
             }
         }
-    }else {
+    } else {
         console.log(to.path);
-        if(to.path !== '/login' && to.path !== '/tenants' && to.path !== '/forgetpassword'){
+        if (to.path !== '/login' && to.path !== '/tenants' && to.path !== '/forgetpassword') {
             next('/login');
-        }else {
-            if(to.path === '/login' || to.path === '/tenants' || to.path === '/forgetpassword')
-            next()
+        } else {
+            if (to.path === '/login' || to.path === '/tenants' || to.path === '/forgetpassword')
+                next()
         }
     }
 });

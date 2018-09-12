@@ -4,6 +4,13 @@
 import { baseUrl } from './url'
 import fetch from './fetch'
 /**
+ * 上传files图片
+ *
+ */
+export const uploadGoodsImg = (file) => fetch('/timestoremanage/storeCommodity/uploadImages', {
+    file: file
+}, 'POST', true);
+/**
  * 获取验证码
  */
 export const getCode = () => { return baseUrl + '/timestoremanage/common/captcha' };
@@ -53,17 +60,17 @@ export const addStoreCommodity = (param) => fetch('/timestoremanage/storeCommodi
     promotion: param.promotion,
     images: param.images
         // param: param
-}, 'POST', true, 'application/json; charset=UTF-8');
+}, 'POST', true);
 
 // 新增商品图片上传
 export const uploadImages = (files) => fetch('/timestoremanage/storeCommodity/uploadImages', {
     files: files,
-}, 'POST', false, 'application/json; charset=UTF-8');
+}, 'POST', false);
 //支付方式列表
-export const payTypeList = () => fetch('/timestoremanage/payType/list', {}, 'POST', false, 'application/json; charset=UTF-8');
+export const payTypeList = () => fetch('/timestoremanage/payType/list', {}, 'POST', false);
 
 //发票列表
-export const invoiceList = () => fetch('/timestoremanage/invoice/list', {}, 'POST', false, 'application/json; charset=UTF-8');
+export const invoiceList = () => fetch('/timestoremanage/invoice/list', {}, 'POST', false);
 
 
 /**
@@ -78,17 +85,17 @@ export const listSell = (param) => fetch('/timestoremanage/storeCommodity/listSe
     startTime: param.startTime,
     endTime: param.endTime,
     keyword: param.keyword
-}, 'POST', true, 'application/json; charset=UTF-8');
+}, 'POST', true);
 
 //出售中/已下架商品详情
 export const storeCommodityDetail = (commodityId) => fetch('/timestoremanage/storeCommodity/detail', {
     commodityId: commodityId
-}, 'POST', false, 'application/json; charset=UTF-8');
+}, 'POST', false);
 
 //下架
 export const soldOut = (commodityId) => fetch('/timestoremanage/storeCommodity/soldOut', {
     commodityId: commodityId
-}, 'POST', false, 'application/json; charset=UTF-8');
+}, 'POST', false);
 
 //编辑
 export const edit = (param) => fetch('/timestoremanage/storeCommodity/edit', {
@@ -96,7 +103,7 @@ export const edit = (param) => fetch('/timestoremanage/storeCommodity/edit', {
     realityPrice: param.realityPrice,
     suggestPrice: param.suggestPrice,
     inventory: param.inventory
-}, 'POST', false, 'application/json; charset=UTF-8');
+}, 'POST', false);
 
 //已下架商品列表
 export const listSoldOut = (param) => fetch('/timestoremanage/storeCommodity/listSoldOut', {
@@ -105,7 +112,7 @@ export const listSoldOut = (param) => fetch('/timestoremanage/storeCommodity/lis
     endTime: param.endTime,
     keyword: param.keyword,
     sort: param.sort
-}, 'POST', true, 'application/json; charset=UTF-8');
+}, 'POST', true);
 
 //审核中商品列表接口
 export const listCheck = (param) => fetch('/timestoremanage/storeCommodity/listCheck', {
@@ -115,9 +122,9 @@ export const listCheck = (param) => fetch('/timestoremanage/storeCommodity/listC
     startTime: param.startTime,
     endTime: param.endTime,
     keyword: param.keyword
-}, 'POST', true, 'application/json; charset=UTF-8');
+}, 'POST', true);
 
 //审核中商品详情接口
 export const getCheckDetail = (commodityId) => fetch('/timestoremanage/storeCommodity/getCheckDetail', {
     commodityId: commodityId
-}, 'POST', false, 'application/json; charset=UTF-8');
+}, 'POST', false);

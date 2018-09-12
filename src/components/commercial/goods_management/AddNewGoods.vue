@@ -5,22 +5,29 @@
             <h4>新增商品</h4>
             <div class="form-box">
                 <el-form ref="form" :model="form" :rules="rules" label-width="120px">
-                    <!-- <el-form-item label="图片轮播图" prop="uploadImg">
+                    <el-form-item label="图片轮播图" prop="uploadImg">
                       <div class="el-upload-collect">
+                        <!-- http://192.168.0.154:8989/timestoremanage/storeCommodity/uploadImages -->
                         <p>（最多5张）</p>
                         <div class="el-upload-right">
                             <el-upload
-                                action="http://localhost:8989/timestoremanage/storeCommodity/uploadImages"
+                                id="demos"
+                                ref="uploadImage"
+                                action=""
                                 list-type="picture-card"
                                 :limit="5"
+                                :http-request="handlePost"
+                                :file-list="form.uploadImg"
                                 :on-preview="handlePictureCardPreview"
+                                :on-success="handleAvatarSuccess"
                                 :on-remove="handleRemove"
-                                :before-upload="beforeAvatarUpload">
+                                :before-upload="setImage">
+                                <!-- <img v-if="cropImg" :src="cropImg" width="100px" height="100px"> -->
                                 <i class="el-icon-plus"></i>
                             </el-upload>
                         </div>
                     </div>
-                    </el-form-item> -->
+                    </el-form-item>
                     <el-form-item label="商品名称:" prop="commodityName">
                         <el-input v-model="form.commodityName" placeholder="请输入不超过20个字"></el-input>
                     </el-form-item>
@@ -104,7 +111,7 @@
         </div>
 
         <el-dialog :visible.sync="dialogVisible" top="5vh">
-           <img width="100%" :src="dialogImageUrl" alt="">
+           <img width="100%" :src="dialogImageUrl" alt="">  
         </el-dialog>
 
         <el-dialog :visible.sync="previewPhoneDialog" top="5vh" width="0" :show-close="false">
@@ -119,6 +126,14 @@
             <el-button type="success" class="close_buttom" @click="previewPhoneDialog = false">关闭</el-button>
           </div>
         </el-dialog>
+
+          <!-- <el-dialog title="裁剪图片" :visible.sync="dialogimgVisible" width="30%">
+                <vue-cropper ref='cropper' :src="imgSrc" :ready="cropImage" :zoom="cropImage" :cropmove="cropImage" style="width:100%;height:300px;"></vue-cropper>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="cancelCrop">取 消</el-button>
+                    <el-button type="primary" @click="dialogimgVisible = false">确 定</el-button>
+                </span>
+            </el-dialog> -->
     </div>
 </template>
 
@@ -126,21 +141,30 @@
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
+import VueCropper from "vue-cropperjs";
 import { quillEditor } from "vue-quill-editor";
 import previewDialog from "./preview_dialog/PreviewDialog.vue";
 import { mapState, mapMutations, mapActions } from "vuex";
-import { addStoreCommodity, uploadImages } from "../../common/request/request";
+import {
+  addStoreCommodity,
+  uploadGoodsImg
+} from "../../common/request/request";
 export default {
   name: "baseform",
   components: {
     quillEditor,
-    previewDialog
+    previewDialog,
+    VueCropper
   },
   data: function() {
     let self = this;
     return {
       dialogImageUrl: "",
       dialogVisible: false,
+      dialogimgVisible: false,
+      fileList: [],
+      imgSrc: "",
+      cropImg: "",
       previewPhoneDialog: false,
       searchGoodsName: 0,
       checkAll: false,
@@ -162,6 +186,7 @@ export default {
         }
       },
       form: {
+        uploadImg: [],
         commodityName: "",
         unit: "",
         realityPrice: "",
@@ -281,11 +306,34 @@ export default {
   //     }
   //   }
   // },
-  mounted(){
-    
-  },
+  mounted() {},
   methods: {
-    
+    setImage(file) {
+      // const file = e;
+      // const reader = new FileReader();
+      // reader.onload = event => {
+      //   this.dialogimgVisible = true;
+      //   this.imgSrc = event.target.result;
+      //   this.$refs.cropper && this.$refs.cropper.replace(event.target.result);
+      // };
+      // reader.readAsDataURL(file);
+      const isImage = /\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(file.name);
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isImage) {
+        this.$message.error("上传图片只能是Image格式!");
+      }
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 2MB!");
+      }
+      return isImage && isLt2M;
+    },
+    cropImage() {
+      this.cropImg = this.$refs.cropper.getCroppedCanvas().toDataURL();
+    },
+    cancelCrop() {
+      this.dialogimgVisible = false;
+    },
     submitForm(formName) {
       let self = this;
       self.$refs[formName].validate(valid => {
@@ -314,22 +362,35 @@ export default {
     handleRemove(file, fileList) {
       console.log(file, fileList);
     },
+    handleAvatarSuccess(res, file) {
+      this.$refs.form.clearValidate();
+    },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     },
-    beforeAvatarUpload(file) {
-      const isImage = /\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(file.name);
-      const isLt2M = file.size / 1024 / 1024 < 2;
-
-      if (!isImage) {
-        this.$message.error("上传图片只能是Image格式!");
-      }
-      if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
-      }
-      return isImage && isLt2M;
+    handlePost(file) {
+      // var demos = document.getElementById("demos")
+      // var a = new window.FormData(demos)
+      // a.append('file', file)
+      const fmtData = new window.FormData(file);
+      fmtData.append("files", file);
+      uploadGoodsImg(file).then(res => {
+        console.log(res);
+      });
     },
+    // beforeAvatarUpload(file) {
+    //   const isImage = /\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(file.name);
+    //   const isLt2M = file.size / 1024 / 1024 < 2;
+
+    //   if (!isImage) {
+    //     this.$message.error("上传图片只能是Image格式!");
+    //   }
+    //   if (!isLt2M) {
+    //     this.$message.error("上传头像图片大小不能超过 2MB!");
+    //   }
+    //   return isImage && isLt2M;
+    // },
     handleCheckAllChange(val) {
       this.form.payType = val ? this.checkedBuyTypes : [];
       this.isIndeterminate = false;

@@ -30,19 +30,20 @@
                                         <el-input v-model="form.bankCard"></el-input>
                                         <p class="bank_word">(用于商城结算收款，请谨慎填写)</p>
                                     </el-form-item>
-                                    <el-form-item v-show="person_commoney.status" label="营业执照名称" prop="specification">
+                                    <el-form-item v-if="person_commoney.status" label="营业执照名称" prop="specification">
                                         <el-input v-model="form.specification"></el-input>
                                     </el-form-item>
-                                    <el-form-item v-show="person_commoney.status" label="统一社会信用代码" prop="specificationCode">
+                                    <el-form-item v-if="person_commoney.status" label="统一社会信用代码" prop="specificationCode">
                                         <el-input v-model="form.specificationCode"></el-input>
                                     </el-form-item>
 
-                                    <el-form-item v-show="person_commoney.status" label="营业执照（副本）" prop="uploadImg">
+                                    <el-form-item v-if="person_commoney.status" label="营业执照（副本）" prop="personalUploadImg">
                                         <div class="el-upload-collect" style="height: 100px">
                                             <div class="el-upload-right" style="left: 0">
                                                 <el-upload
                                                     class="avatar-uploader"
-                                                    action="https://jsonplaceholder.typicode.com/posts/"
+                                                    v-bind:action= "uploadUrl"
+                                                    name="files"
                                                     :show-file-list="false"
                                                     :on-preview="handlePictureCardPreview"
                                                     :on-remove="handleRemove"
@@ -51,51 +52,67 @@
                                                     <img v-if="imageUrl" :src="imageUrl" class="avatar" style="width: 100%;height: 100%">
                                                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                                                 </el-upload>
-
                                             </div>
                                         </div>
                                     </el-form-item>
-                                    <el-form-item label="法定代表人证件照片" prop="uploadImg">
-                                        <div class="el-upload-collect" style="height: 100px">
-                                            <div class="el-upload-right" style="left: 0">
-                                                <el-upload
-                                                    class="avatar-uploader"
-                                                    action="https://jsonplaceholder.typicode.com/posts/"
-                                                    :show-file-list="false"
-                                                    :on-preview="handlePictureCardPreview"
-                                                    :on-remove="handleRemove"
-                                                    :on-success="handleAvatarSuccessCard"
-                                                    :before-upload="beforeAvatarUpload">
-                                                    <img v-if="cardimageUrl" :src="cardimageUrl" class="avatar" style="width: 100%;height: 100%">
-                                                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                                                </el-upload>
 
-                                                <label class="photo_word" v-show="card">身份证正面照</label>
-                                            </div>
 
+
+                                    <div class="allCardImg">
+                                        <div class="linecard">
+                                            <el-form-item label="法定代表人证件照片" prop="cardUploadImg">
+                                                <div class="el-upload-collect" style="height: 100px">
+                                                    <div class="el-upload-right" style="left: 0">
+                                                        <el-upload
+                                                            class="avatar-uploader"
+                                                            v-bind:action= "uploadUrl"
+                                                            name="files"
+                                                            :show-file-list="false"
+                                                            :on-preview="handlePictureCardPreview"
+                                                            :on-remove="handleRemove"
+                                                            :on-success="handleAvatarSuccessCard"
+                                                            :before-upload="beforeAvatarUpload">
+                                                            <img v-if="cardimageUrl" :src="cardimageUrl" class="avatar" style="width: 100%;height: 100%">
+                                                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                                        </el-upload>
+
+                                                        <label class="photo_word" v-show="card">身份证正面照</label>
+                                                    </div>
+                                                </div>
+                                            </el-form-item>
+                                        </div>
+
+                                    <div class="cardFimg">
+                                    <el-form-item prop="cardFUploadImg">
+                                        <div class="el-upload-collect" style="height: 100px;position: absolute;left: 200px;width: 0;">
                                             <div class="el-upload-right" style="left: 15%">
                                                 <el-upload
                                                     class="avatar-uploader"
-                                                    action="https://jsonplaceholder.typicode.com/posts/"
+                                                    v-bind:action= "uploadUrl"
+                                                    name="files"
                                                     :show-file-list="false"
                                                     :on-preview="handlePictureCardPreview"
                                                     :on-remove="handleRemove"
                                                     :on-success="handleAvatarSuccessCardF"
                                                     :before-upload="beforeAvatarUpload">
                                                     <img v-if="cardfimageUrl" :src="cardfimageUrl" class="avatar" style="width: 100%;height: 100%">
-                                                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                                    <i v-else class="el-icon-plus avatar-uploader-icon"></i >
                                                 </el-upload>
                                                 <label class="photo_word"  v-show="cardF">身份证反面照</label>
                                             </div>
                                         </div>
                                     </el-form-item>
+                                    </div>
+                                    </div>
+
 
 
                                     <el-form-item label="其他" >
                                         <div class="el-upload-collect" style="height: 100px">
                                             <div class="el-upload-right" style="left: 0">
                                                 <el-upload
-                                                    action="https://jsonplaceholder.typicode.com/posts/"
+                                                    v-bind:action= "uploadUrl"
+                                                    name="files"
                                                     list-type="picture-card"
                                                     :limit="0"
                                                     :on-preview="handlePictureCardPreview"
@@ -327,10 +344,13 @@
 </template>
 
 <script>
+    import { uploadGoodsImg } from "../common/request/request";
+
     export default {
         name: "tenants",
         data(){
             return {
+                uploadUrl:'',
                 editVisible:false,
                 card:true,
                 cardF:true,
@@ -354,12 +374,21 @@
                     bankCard: "",
                     specification:'',
                     specificationCode:'',
+                    personalUploadImg:'',
+                    cardUploadImg:'',
+                    cardFUploadImg:'',
                     loginname:'',
                     loginpassword:'',
                     againpassword:'',
                 },
                 rules:{
-                    uploadImg:[
+                    cardFUploadImg:[
+                        {required: true, message: "请上传身份证反面照", trigger: "blur" }
+                    ],
+                    cardUploadImg:[
+                        {required: true, message: "请上传身份证正面照", trigger: "blur" }
+                    ],
+                    personalUploadImg:[
                         {required: true, message: "请上传营业执照", trigger: "blur" }
                     ],
                     name: [
@@ -395,6 +424,9 @@
                 }
             };
         },
+        created(){
+            this.uploadUrl = uploadGoodsImg()
+        },
         methods: {
             /**
              * 用户协议
@@ -426,7 +458,7 @@
             onSubmit(formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
-                        console.log(JSON.stringify(this.form))
+                        console.log(JSON.stringify(this.form));
                         this.$message.success("提交成功！");
                     } else {
                         this.$message.error("提交失败!");
@@ -443,26 +475,44 @@
                 this.dialogVisible = true;
             },
             handleAvatarSuccess(res, file) {
+                console.log("Files:"+JSON.stringify(file));
+                console.log("res:"+JSON.stringify(res));
+                if(res.code === "0"){
+                    this.form.personalUploadImg = res.data
+                }
                 this.imageUrl = URL.createObjectURL(file.raw);
             },
             handleAvatarSuccessCard(res, file){
-                this.card = false
+                if(res.code === "0"){
+                    this.card = false
+                    this.form.cardUploadImg  = res.data
+                }
                 this.cardimageUrl = URL.createObjectURL(file.raw);
             },
             handleAvatarSuccessCardF(res,file){
-                this.cardF = false
+                if(res.code === "0"){
+                    this.cardF = false
+                    this.form.cardFUploadImg  = res.data
+                }
                 this.cardfimageUrl = URL.createObjectURL(file.raw);
             },
             beforeAvatarUpload(file) {
+                console.log(file);
                 const isJPG = file.type === 'image/jpeg';
                 const isLt2M = file.size / 1024 / 1024 < 2;
-
                 if (!isJPG) {
                     this.$message.error('上传头像图片只能是 JPG 格式!');
                 }
                 if (!isLt2M) {
                     this.$message.error('上传头像图片大小不能超过 2MB!');
                 }
+                // let param = new FormData(); // 创建form对象
+                // param.append('files', file,file.name);// 通过append向form对象添加数据
+                // uploadGoodsImg(param).then(res =>{
+                //     console.log(res)
+                // }).catch(err =>{
+                //     console.log(err)
+                // });
                 return isJPG && isLt2M;
             }
         }
@@ -471,6 +521,18 @@
 </script>
 
 <style scoped>
+    .linecard {
+        position: absolute;
+        left: 0;
+    }
+    .allCardImg{
+        position: relative;
+        height: 150px;
+    }
+    .cardFimg{
+        position: absolute;
+        top: 0;
+    }
     .title_two{
         font-size: 16px;
         color: #0e0908;

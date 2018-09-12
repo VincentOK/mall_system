@@ -17,4 +17,7 @@ const formatMoney = (value, statusId) => {
             return hasdot ? value.substr(0,value.indexOf(".")+3) : value;
     }
 }
+/**
+ * 上传图片
+ */
 export { formatMoney }

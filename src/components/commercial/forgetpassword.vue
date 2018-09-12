@@ -91,7 +91,18 @@
                         }
                     }, 1000)
                 }
-            }
+            },
+            onSubmit(formName) {
+                this.$refs[formName].validate(valid => {
+                    if (valid) {
+                        console.log(JSON.stringify(this.form));
+                        this.$message.success("提交成功！");
+                    } else {
+                        this.$message.error("提交失败!");
+                        return false;
+                    }
+                });
+            },
         }
     }
 </script>

@@ -2,15 +2,14 @@ import Vue from 'vue';
 import Router from 'vue-router';
 
 Vue.use(Router);
-const myrouter =[
+const myrouter = [
     //商户端后台
     {
         path: '/',
         component: resolve => require(['../components/common/Home.vue'], resolve),
         redirect: '/dashboard',
         meta: { title: '自述文件' },
-        children:[
-            {
+        children: [{
                 path: '/dashboard',
                 component: resolve => require(['../components/commercial/Dashboard.vue'], resolve),
                 meta: { title: '系统首页' }
@@ -62,12 +61,12 @@ const myrouter =[
             //     component: resolve => require(['../components/page/Markdown.vue'], resolve),
             //     meta: { title: 'markdown编辑器' }
             // },
-            // {
-            //     // 图片上传组件
-            //     path: '/upload',
-            //     component: resolve => require(['../components/page/Upload.vue'], resolve),
-            //     meta: { title: '文件上传' }
-            // },
+            {
+                // 图片上传组件
+                path: '/upload',
+                component: resolve => require(['../components/page/Upload.vue'], resolve),
+                meta: { title: '文件上传' }
+            },
             // {
             //     // vue-schart组件
             //     path: '/charts',
@@ -94,13 +93,11 @@ const myrouter =[
         component: resolve => require(['../components/common/Home.vue'], resolve),
         redirect: '/testadmin',
         meta: { title: '自述文件' },
-        children:[
-            {
-                path: '/testadmin',
-                component: resolve => require(['../components/administrator/testadmin.vue'], resolve),
-                meta: { title: '系统首页' ,permission:true }
-            }
-         ]
+        children: [{
+            path: '/testadmin',
+            component: resolve => require(['../components/administrator/testadmin.vue'], resolve),
+            meta: { title: '系统首页', permission: true }
+        }]
     },
     {
         path: '/login',
@@ -109,12 +106,12 @@ const myrouter =[
     {
         path: '/tenants',
         component: resolve => require(['../components/commercial/tenants.vue'], resolve),
-        meta: { title: '商家入驻'}
+        meta: { title: '商家入驻' }
     },
     {
         path: '/forgetpassword',
         component: resolve => require(['../components/commercial/forgetpassword.vue'], resolve),
-        meta: { title: '忘记密码'}
+        meta: { title: '忘记密码' }
     },
     {
         path: '/404',

@@ -16,7 +16,7 @@ export const getCode = () => { return baseUrl + '/timestoremanage/common/captcha
  * 用户登陆
  */
 export const userLogin = (username, password, captcha) => fetch('/timestoremanage/ajaxLogin', {
-    userName: username,
+    userPhone: username,
     password: password,
     captcha: captcha
 }, 'POST', true);
@@ -54,11 +54,29 @@ export const userRegister = (msgObj) => fetch('/timestoremanage/register', {
     otherImgPath: msgObj.otherImgPath
 }, 'POST', true);
 
-
+/**
+ * 检验商户名是否可用
+ * @param val
+ * @returns {Promise<*>}
+ */
 export const checkUser = (val) => fetch('/timestoremanage/common/queryUserNameOrCommercialName', val, 'POST');
 
+/**
+ * 发送短信验证码
+ * @param phone
+ * @returns {Promise<*>}
+ */
+export const sendPhoneCode = (phone) => fetch('/timestoremanage/common/forgotPasswordSendVcode', {
+    phoneNum: phone
+}, 'POST');
 
 
+export const getUntreatedOrdersList = (pageNumber, pageSize, tenantUid, keyword) => fetch('/timestoremanage/order/listStaySend', {
+    pageNumber: pageNumber,
+    pageSize: pageSize,
+    tenantUid: tenantUid,
+    keyword: keyword
+}, 'POST');
 /**
  * 获取首页默认地址
  */

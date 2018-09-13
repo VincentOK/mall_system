@@ -56,7 +56,7 @@ export default async(url, data = {}, type = 'GET', loading = false, configType =
             } else if (configType === 'x-www-form-urlencoded' || configType === 'application/x-www-form-urlencoded') {
                 data = qs.stringify(data);
             }
-            console.log("post请求请求头：" + JSON.stringify(config) + '========' + "post请求参数JSON.stringify：" + JSON.stringify(data) + "============JSON:" + data);
+            console.log("============请求url:" + url + "post请求请求头：" + JSON.stringify(config) + '========' + "post请求参数：" + data);
             axios.post(url, data, config)
                 .then(function(response) {
                     tryHideFullScreenLoading();

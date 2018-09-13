@@ -40,6 +40,7 @@
 </template>
 
 <script>
+    import { sendPhoneCode } from "../common/request/request";
     export default {
         name: "forgrtpassword",
         data(){

@@ -28,10 +28,10 @@ router.beforeEach((to, from, next) => {
     if (role) {
         try {
             let RoleAuthorization = JSON.parse(Decrypt(role));
-            // console.log("用户存在："+JSON.stringify(RoleAuthorization));
+            console.log("用户存在：" + JSON.stringify(RoleAuthorization));
             if (RoleAuthorization.userType !== "") {
                 if (to.meta.permission) {
-                    if (RoleAuthorization.userType === "1") {
+                    if (RoleAuthorization.userType === "2") {
                         next()
                     } else {
                         if (to.path === '/403') {

@@ -7,9 +7,7 @@ import fetch from './fetch'
  * 上传files图片
  *
  */
-export const uploadGoodsImg = (file) => fetch('/timestoremanage/storeCommodity/uploadImages', {
-    file: file
-}, 'POST', true);
+export const uploadGoodsImg = () => { return baseUrl + '/timestoremanage/storeCommodity/uploadImages' };
 /**
  * 获取验证码
  */
@@ -84,14 +82,13 @@ export const addStoreCommodity = (param) => fetch('/timestoremanage/storeCommodi
     suggestPrice: param.suggestPrice,
     inventory: param.inventory,
     carriage: param.carriage,
-    payType: param.payType,
+    payList: param.payType,
     salesReturn: param.salesReturn,
     invoice: param.invoice,
-    invoiceType: param.invoiceType,
+    invoiceList: param.invoiceType,
     detail: param.detail,
     promotion: param.promotion,
-    images: param.images
-        // param: param
+    imageList: param.imageList
 }, 'POST', true);
 
 // 新增商品图片上传

@@ -179,7 +179,11 @@ export default {
   },
   created() {
     let self = this;
+    if(self.$route.query.activeName){
+      self.activeName = self.$route.query.activeName;
+    }
     self.uid = self.userInfo.uid;
+    self.uid = "18614060970"
     this.getlistSell();
     // this.getlistSoldOut();
     // this.getlistCheck();
@@ -273,10 +277,6 @@ export default {
       listSoldOut(param)
         .then(res => {
           console.log(res);
-          // this.tableData = res.data.dataList;
-          // for (var i = 0; i < res.data.dataList.length; i++) {
-          //   this.$set(this.tableData[i], "showEdit", false);
-          // }
         })
         .catch(err => {
           console.log(err);

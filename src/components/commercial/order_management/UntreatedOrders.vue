@@ -53,17 +53,17 @@
                 </span>
                 </div>
                 <div v-show="activeName == 'first'">
-                    <el-table :data="data"  ref="multipleTable" :header-cell-style="getRowClass" @selection-change="handleSelectionChange">
-                        <el-table-column prop="name" label="商品" :formatter="formatter"></el-table-column>
-                        <el-table-column prop="name" label="出售规格" width="100"></el-table-column>
-                        <el-table-column prop="address" label="购买数量" :formatter="formatter">
+                    <el-table :data="getDatauntreatedOrders"  ref="multipleTable" :header-cell-style="getRowClass" @selection-change="handleSelectionChange">
+                        <el-table-column prop="commodityName" label="商品" :formatter="formatter"></el-table-column>
+                        <el-table-column prop="" label="出售规格" width="100"></el-table-column>
+                        <el-table-column prop="" label="购买数量" :formatter="formatter">
                         </el-table-column>
-                        <el-table-column prop="address" label="支付金额" :formatter="formatter">
+                        <el-table-column prop="" label="支付金额" :formatter="formatter">
                         </el-table-column>
-                        <el-table-column prop="address" label="收货人" :formatter="formatter"></el-table-column>
+                        <el-table-column prop="" label="收货人" :formatter="formatter"></el-table-column>
                         <el-table-column prop="address" label="收货地址" :formatter="formatter"></el-table-column>
-                        <el-table-column prop="address" label="手机号码" :formatter="formatter"></el-table-column>
-                        <el-table-column prop="date" label="下单时间" :formatter="formatter">
+                        <el-table-column prop="" label="手机号码" :formatter="formatter"></el-table-column>
+                        <el-table-column prop="" label="下单时间" :formatter="formatter">
                         </el-table-column>
                         <!--<el-table-column prop="address" label="订单状态" :formatter="formatter"></el-table-column>-->
                         <el-table-column label="操作" align="center" width="280">
@@ -92,7 +92,7 @@
                     </div>
                 </div>
                 <div v-show="activeName == 'second'">
-                    <el-table :data="data"  ref="multipleTable" :header-cell-style="getRowClass" @selection-change="handleSelectionChange">
+                    <el-table :data="getDatauntreatedOrders"  ref="multipleTable" :header-cell-style="getRowClass" @selection-change="handleSelectionChange">
                             <el-table-column prop="address" label="商品" :formatter="formatter"></el-table-column>
                             <el-table-column prop="name" label="出售规格" width="100"></el-table-column>
                             <el-table-column prop="address" label="购买数量" :formatter="formatter">
@@ -312,6 +312,8 @@
 </template>
 
 <script>
+    import { getUntreatedOrdersList } from "../../common/request/request";
+    import {mapState, mapMutations,mapActions} from 'vuex'
     export default {
         name: "basetable",
         props: {
@@ -322,6 +324,8 @@
         },
         data() {
             return {
+                getDatauntreatedOrders:[],//待处理订单数据
+
                 activeName: "first",
                 url: "./static/vuetable.json",
                 dateValue: "",
@@ -362,29 +366,36 @@
             };
         },
         created() {
-            this.getData();
+            let pageSize = 1;
+            let uid = this.userInfo.uid;
+            let pageNum = 10;
+            console.log("用户UID:"+uid);
+            this.getData(pageNum,pageSize,uid);
         },
         computed: {
-            data() {
-                return this.tableData.filter(d => {
-                    let is_del = false;
-                    for (let i = 0; i < this.del_list.length; i++) {
-                        if (d.name === this.del_list[i].name) {
-                            is_del = true;
-                            break;
-                        }
-                    }
-                    if (!is_del) {
-                        if (
-                            d.address.indexOf(this.select_cate) > -1 &&
-                            (d.name.indexOf(this.select_word) > -1 ||
-                                d.address.indexOf(this.select_word) > -1)
-                        ) {
-                            return d;
-                        }
-                    }
-                });
-            },
+            ...mapState([
+                'userInfo'
+            ]),
+            // data() {
+            //     return this.tableData.filter(d => {
+            //         let is_del = false;
+            //         for (let i = 0; i < this.del_list.length; i++) {
+            //             if (d.name === this.del_list[i].name) {
+            //                 is_del = true;
+            //                 break;
+            //             }
+            //         }
+            //         if (!is_del) {
+            //             if (
+            //                 d.address.indexOf(this.select_cate) > -1 &&
+            //                 (d.name.indexOf(this.select_word) > -1 ||
+            //                     d.address.indexOf(this.select_word) > -1)
+            //             ) {
+            //                 return d;
+            //             }
+            //         }
+            //     });
+            // },
             containerStyle() {
                 return {
                     transform:`translate3d(${this.distance}px, 0, 0)`
@@ -399,31 +410,43 @@
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);
             },
-            handleCurrentChange(val) {
-                console.log(`当前页: ${val}`);
-            },
             // 分页导航
             handleCurrentChange(val) {
+                console.log("当前页："+val);
                 this.cur_page = val;
-                this.getData();
             },
-            // 获取 easy-mock 的模拟数据
-            getData() {
+            /**
+             * 获取待发货订单数据
+             * @param pageNum//每页条数
+             * @param pageSize//页码
+             * @param uid//用户id
+             * @param keyword//关键字
+             */
+            getData(pageNum,pageSize,uid,keyword) {
+                getUntreatedOrdersList(pageNum,pageSize,uid,keyword).then(res =>{
+                    console.log("JSON:"+JSON.stringify(res));
+                    this.getDatauntreatedOrders = res.data.dataList;
+                    // for (var i = 0; i < res.data.list.length; i++) {
+                    //     this.$set(this.tableData[i], "showEdit", false);
+                    // }
+                }).catch(err =>{
+                    console.log(err)
+                })
                 // 开发环境使用 easy-mock 数据，正式环境使用 json 文件
-                if (process.env.NODE_ENV === "development") {
-                    this.url = "/ms/table/list";
-                }
-                this.$axios
-                    .post(this.url, {
-                        page: this.cur_page
-                    })
-                    .then(res => {
-                        console.log("JSON:"+JSON.stringify(res))
-                        this.tableData = res.data.list;
-                        for (var i = 0; i < res.data.list.length; i++) {
-                            this.$set(this.tableData[i], "showEdit", false);
-                        }
-                    });
+                // if (process.env.NODE_ENV === "development") {
+                //     this.url = "/ms/table/list";
+                // }
+                // this.$axios
+                //     .post(this.url, {
+                //         page: this.cur_page
+                //     })
+                //     .then(res => {
+                //         console.log("JSON:"+JSON.stringify(res))
+                //         this.tableData = res.data.list;
+                //         for (var i = 0; i < res.data.list.length; i++) {
+                //             this.$set(this.tableData[i], "showEdit", false);
+                //         }
+                //     });
             },
             forTableIndex() {
                 // for (var i = 0; i < 100; i++) {

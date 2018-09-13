@@ -48,7 +48,7 @@
             return {
                 imgCode:getCode(),
                 ruleForm: {
-                    username: 'zhanglong',
+                    username: '18614060970',
                     password: '123456',
                     checkword:'',
                 },
@@ -152,18 +152,18 @@
                         // }
                         userLogin(this.ruleForm.username,this.ruleForm.password,this.ruleForm.checkword).then(res =>{
                             console.log(JSON.stringify(res));
-
                             if(res.code === '0'){
                                 this.GET_USERTOKEN(res.data.token);
                                 this.GET_USERINFO(res.data.user);
                                 this.GET_RESOURCE(res.data.sysResources);
                                 if(res.data.user.userType === '1'){
-                                    this.$router.push('/admin');
-                                }else if(res.data.user.userType === '2'){
                                     this.$router.push('/');
+                                }else if(res.data.user.userType === '2'){
+                                    this.$router.push('/admin');
                                 }
                             }else{
-                                alert(res.msg)
+                                alert(res.msg);
+                                this.getNewCode();
                             }
 
                         }).catch(err =>{

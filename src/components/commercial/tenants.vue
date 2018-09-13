@@ -15,7 +15,7 @@
                             <div class="form-box">
                                 <el-form ref="form" :rules="rules" :model="form" label-width="150px">
                                     <el-form-item label="商户名称:" prop="commercialName">
-                                        <el-input v-model="form.commercialName" @blur="loseBlur({'commercialName':form.commercialName})" placeholder="请输入不超过20个字" maxlength="20"></el-input>
+                                        <el-input v-model="form.commercialName" placeholder="请输入不超过20个字" maxlength="20"></el-input>
                                     </el-form-item>
                                     <el-form-item label="联系人" prop="linkName">
                                         <el-input v-model="form.linkName" placeholder="请输入联系人姓名" maxlength="20"></el-input>
@@ -126,7 +126,7 @@
 
                                     <p class="word_two">2.填写账号注册信息<label class="word_two_i">（请牢记账号信息，用于登陆商户后台）</label></p>
                                     <el-form-item label="登陆名:" prop="linkPhone">
-                                        <el-input v-model.number="form.linkPhone" @blur="loseBlur({'userName':form.linkPhone})"  type="number" placeholder="请输入手机号码" maxlength="20" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'></el-input>
+                                        <el-input v-model="form.linkPhone"   type="number" auto-complete="off" placeholder="请输入手机号码" maxlength="20" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'></el-input>
                                     </el-form-item>
                                     <el-form-item label="验证码" class="getcode" prop="logincode">
                                         <span  v-show="show" class="redcolor" @click="getMobileCode">发送验证码</span>
@@ -358,7 +358,7 @@
     export default {
         name: "tenants",
         data(){
-            var validatePass = (rule, value, callback) => {
+            let validatePass = (rule, value, callback) => {
                 if (value === '') {
                     callback(new Error('请输入密码'));
                 } else {
@@ -368,7 +368,7 @@
                     callback();
                 }
             };
-            var validatePass2 = (rule, value, callback) => {
+            let validatePass2 = (rule, value, callback) => {
                 if (value === '') {
                     callback(new Error('请再次输入密码'));
                 } else if (value !== this.form.password) {
@@ -377,11 +377,27 @@
                     callback();
                 }
             };
+            let commercialNamePass = (rule, value, callback) => {
+                if (value) {
+                    checkUser({'commercialName':value}).then(res =>{
+                        if(res.code === "0"){
+                            console.log(res);
+                            callback();
+                        }else {
+                            this.form.commercialName = '';
+                            callback(new Error(''+res.msg+''));
+                        }
+                    }).catch(err =>{
+                        console.log(err)
+                    })
+                } else {
+                    callback(new Error('请输入商户名'));
+                }
+            };
             return {
                 show: true,
                 count: '',
                 timer: null,
-
 
                 uploadUrl:'',
                 editVisible:false,
@@ -427,14 +443,8 @@
                     licenseImgPath:[
                         {required: true, message: "请上传营业执照", trigger: "blur" }
                     ],
-                    commercialName: [
-                        {required: true, message: "请填写商户名称", trigger: "blur" }
-                    ],
                     linkName: [
                         {required: true, message: "请联系人联系人姓名", trigger: "blur" }
-                    ],
-                    linkPhone: [
-                        {required: true, message: "请输入联系电话", trigger: "blur" }
                     ],
                     moneyPerson: [
                         {required: true, message: "请输入收款人姓名", trigger: "blur" }
@@ -451,11 +461,18 @@
                     loginname: [
                         {required: true, message: "请输入用户名", trigger: "blur" }
                     ],
+
+                    commercialName: [
+                        {required: true,validator: commercialNamePass, trigger: 'blur' }
+                    ],
+                    linkPhone: [
+                        {required: true, message: "请输入用户名", trigger: 'blur' }
+                    ],
                     password: [
-                        { validator: validatePass, trigger: 'blur' }
+                        {required: true, validator: validatePass, trigger: 'blur' }
                     ],
                     checkPass: [
-                        { validator: validatePass2, trigger: 'blur' }
+                        {required: true, validator: validatePass2, trigger: 'blur' }
                     ],
                 }
             };
@@ -467,24 +484,7 @@
             /**
              * 输入框失去焦点触发
              */
-            loseBlur(e){
-                console.log(e)
-                let that = this
-                if(e.commercialName || e.userName){
-                    checkUser(e).then(res =>{
-                        console.log(res)
-                        if(res.code === "0"){
-                            console.log(that.form.linkPhone,+"===="+that.rules.linkPhone[0].message);
-                            that.form.linkPhone === '';
-                            that.rules.linkPhone[0].message === res.data;
-                        }else {
 
-                        }
-                    }).catch(err =>{
-                        console.log(err)
-                    })
-                }
-            },
             /**
              * 获取手机验证码
              */
@@ -529,6 +529,7 @@
                 e = e.replace(/[^\d]/g, "");
             },
             onSubmit(formName) {
+                console.log(this.form);
                 this.$refs[formName].validate(valid => {
                     if (valid) {
                         console.log(JSON.stringify(this.form));

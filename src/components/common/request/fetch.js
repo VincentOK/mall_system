@@ -67,8 +67,13 @@ export default async(url, data = {}, type = 'GET', loading = false, configType =
                         reject('请求返回状态：' + response.status + '')
                     }
                 })
+<<<<<<< HEAD
                 .catch(function(error) {
                     tryHideFullScreenLoading()
+=======
+                .catch(function (error) {
+                    tryHideFullScreenLoading();
+>>>>>>> 36d096016f33111c124189b9d9e4bf740a4f819f
                     reject(error)
                 })
         }

@@ -13,57 +13,25 @@
                     <span class="on-offer" v-show="activeName == 'first'">待发货</span>
                     <span class="on-offer" v-show="activeName == 'second'">待退款</span>
                     <!--<span class="on-offer" v-show="activeName == 'third'">审核中</span>-->
-                    <span class="good-total">共10.231个商品</span>
-                    <!--<span class="ordering-rule" v-show="activeName == 'second'">排序规则：-->
-                <!--<el-select v-model="select_cate" placeholder="请选择排序规则" class="handle-select mr10">-->
-                    <!--&lt;!&ndash; <el-option key="1" label="广东省" value="广东省"></el-option>-->
-                    <!--<el-option key="2" label="湖南省" value="湖南省"></el-option> &ndash;&gt;-->
-                    <!--<el-option key="1" label="默认" value="默认（按上架时间从近至远）"></el-option>-->
-                    <!--<el-option key="2" label="按总浏览量从高至低" value="按总浏览量从高至"></el-option>-->
-                    <!--<el-option key="3" label="按总浏览量从低至高" value="按总浏览量从低至"></el-option>-->
-                    <!--<el-option key="4" label="按销量从高至低" value="按销量从高至低"></el-option>-->
-                    <!--<el-option key="5" label="" value="按销量从低至高" class="last-el-option"></el-option>-->
-                <!--</el-select>-->
-                <!--</span>-->
-
-                    <!--<span class="ordering-rule" v-show="activeName != 'second'">结算状态：-->
-                <!--<el-select v-model="select_cate" placeholder="全部" class="handle-select mr10">-->
-                    <!--<el-option key="1" label="默认" value="默认（按上架时间从近至远）"></el-option>-->
-                    <!--<el-option key="2" label="按总浏览量从高至低" value="按总浏览量从高至"></el-option>-->
-                    <!--<el-option key="3" label="按总浏览量从低至高" value="按总浏览量从低至"></el-option>-->
-                    <!--<el-option key="4" label="按销量从高至低" value="按销量从高至低"></el-option>-->
-                    <!--<el-option key="5" label="" value="按销量从低至高" class="last-el-option"></el-option>-->
-                <!--</el-select>-->
-                <!--</span>-->
-
-                    <!--<span class="date-options">-->
-                    <!--<span class="select-date">选择日期：</span>-->
-                    <!--<el-date-picker-->
-                        <!--v-model="dateValue"-->
-                        <!--type="daterange"-->
-                        <!--range-separator="~"-->
-                        <!--start-placeholder="开始日期"-->
-                        <!--end-placeholder="结束日期">-->
-                        <!--</el-date-picker>-->
-                <!--</span>-->
+                    <span class="good-total" v-if="activeName == 'first'">共{{untreatedordersCount}}个商品</span>
+                    <span class="good-total" v-if="activeName == 'second'">共{{refundordersCount}}个商品</span>
                     <span class="search-option">
                     <el-input v-model="select_word" placeholder="按商品名称搜索" class="handle-input mr10"></el-input>
-                    <el-button type="primary" icon="search" @click="search">搜索</el-button>
-                    <el-button class="clear-button" type="default" icon="search" @click="search">清空</el-button>
+                    <el-button type="primary" icon="search" @click="search(select_word)">搜索</el-button>
                 </span>
                 </div>
-                <div v-show="activeName == 'first'">
-                    <el-table :data="getDatauntreatedOrders"  ref="multipleTable" :header-cell-style="getRowClass" @selection-change="handleSelectionChange">
-                        <el-table-column prop="commodityName" label="商品" :formatter="formatter"></el-table-column>
-                        <el-table-column prop="" label="出售规格" width="100"></el-table-column>
-                        <el-table-column prop="" label="购买数量" :formatter="formatter">
+                <div v-if="activeName == 'first'">
+                    <el-table :data="getDatauntreatedOrders"  ref="multipleTable" :header-cell-style="getRowClass">
+                        <el-table-column prop="commodityName" label="商品" :formatter="formatter.commodityName"></el-table-column>
+                        <el-table-column prop="unit" label="出售规格" :formatter="formatter.unit" width="100"></el-table-column>
+                        <el-table-column prop="count" label="购买数量" :formatter="formatter.count">
                         </el-table-column>
-                        <el-table-column prop="" label="支付金额" :formatter="formatter">
+                        <el-table-column prop="totalPrice" label="支付金额" :formatter="formatter.totalPrice">
                         </el-table-column>
-                        <el-table-column prop="" label="收货人" :formatter="formatter"></el-table-column>
-                        <el-table-column prop="address" label="收货地址" :formatter="formatter"></el-table-column>
-                        <el-table-column prop="" label="手机号码" :formatter="formatter"></el-table-column>
-                        <el-table-column prop="" label="下单时间" :formatter="formatter">
+                        <el-table-column prop="shippingName" label="收货人" :formatter="formatter.shippingName"></el-table-column>
+                        <el-table-column prop="address" label="收货地址" :formatter="formatter.address"></el-table-column>
+                        <el-table-column prop="shippingPhone" label="手机号码" :formatter="formatter.shippingPhone"></el-table-column>
+                        <el-table-column prop="orderTime" label="下单时间" :formatter="formatter.orderTime">
                         </el-table-column>
                         <!--<el-table-column prop="address" label="订单状态" :formatter="formatter"></el-table-column>-->
                         <el-table-column label="操作" align="center" width="280">
@@ -71,9 +39,9 @@
                                 <!--<el-button size="small" type="text" style="color:#66b1ff;"-->
                                 <!--@click="viewDetails($index, row)">查看详情</el-button>-->
                                 <el-button size="small" type="text" style="color:#66b1ff;"
-                                           @click="viewDetails($index, row)">查看详情</el-button>
+                                           @click="viewDetails($index,row.orderNumber)">查看详情</el-button>
                                 <el-button size="small" type="text" style="color:#66b1ff;"
-                                           @click="handleSave($index, row)">确认发货</el-button>
+                                           @click="handleSave($index, row.orderNumber)">确认发货</el-button>
                                 <el-button size="small" type="text"
                                            @click="handleDelete($index, row)">拒绝发货</el-button>
                             </template>
@@ -82,35 +50,34 @@
                     <div class="pagination">
                         <el-pagination
                             background
-                            @size-change="handleSizeChange"
+                            @size-change="sizeChange"
                             @current-change="handleCurrentChange"
-                            :page-size="100"
-                            :pager-count="11"
+                            :page-size="pageSize"
                             layout="prev, pager, next, jumper"
-                            :total="1000">
+                            :total="untreatedordersCount">
                         </el-pagination>
                     </div>
                 </div>
-                <div v-show="activeName == 'second'">
-                    <el-table :data="getDatauntreatedOrders"  ref="multipleTable" :header-cell-style="getRowClass" @selection-change="handleSelectionChange">
-                            <el-table-column prop="address" label="商品" :formatter="formatter"></el-table-column>
-                            <el-table-column prop="name" label="出售规格" width="100"></el-table-column>
-                            <el-table-column prop="address" label="购买数量" :formatter="formatter">
+                <div v-if="activeName == 'second'">
+                    <el-table :data="getDatarefundOrders"  ref="multipleTable" :header-cell-style="getRowClass">
+                            <el-table-column prop="commodityName" label="商品" :formatter="formatterrefund.commodityName"></el-table-column>
+                            <el-table-column prop="unit" label="出售规格"  :formatter="formatterrefund.unit" width="100"></el-table-column>
+                            <el-table-column prop="count" label="购买数量" :formatter="formatterrefund.count">
                             </el-table-column>
-                            <el-table-column prop="address" label="支付金额" :formatter="formatter">
+                            <el-table-column prop="totalPrice" label="支付金额" :formatter="formatterrefund.totalPrice">
                             </el-table-column>
-                            <el-table-column prop="address" label="退款原因" :formatter="formatter"></el-table-column>
-                            <el-table-column prop="address" label="联系人" :formatter="formatter"></el-table-column>
-                            <el-table-column prop="address" label="联系电话" :formatter="formatter"></el-table-column>
-                            <el-table-column prop="address" label="退款申请时间" :formatter="formatter">
+                            <el-table-column prop="reason" label="退款原因" :formatter="formatterrefund.reason"></el-table-column>
+                            <el-table-column prop="shippingName" label="联系人" :formatter="formatterrefund.shippingName"></el-table-column>
+                            <el-table-column prop="shippingPhone" label="联系电话" :formatter="formatterrefund.shippingPhone"></el-table-column>
+                            <el-table-column prop="createTime" label="退款申请时间" :formatter="formatterrefund.createTime">
                             </el-table-column>
-                            <!--<el-table-column prop="address" label="订单状态" :formatter="formatter"></el-table-column>-->
+
                             <el-table-column label="操作" align="center" width="280">
                                 <template slot-scope="{row,$index}">
                                     <!--<el-button size="small" type="text" style="color:#66b1ff;"-->
                                                <!--@click="viewDetails($index, row)">查看详情</el-button>-->
                                     <el-button size="small" type="text" style="color:#66b1ff;"
-                                               @click="viewDetails($index, row)">查看详情</el-button>
+                                               @click="viewDetails($index, row.orderNumber)">查看详情</el-button>
                                     <el-button size="small" type="text" style="color:#66b1ff;"
                                                @click="agreeDetails($index, row)" >同意退款</el-button>
                                     <el-button size="small" type="text"
@@ -121,46 +88,45 @@
                     <div class="pagination">
                             <el-pagination
                                 background
-                                @size-change="handleSizeChange"
-                                @current-change="handleCurrentChange"
-                                :page-size="100"
-                                :pager-count="11"
+                                @current-change="handleCurrentChangeRefund"
+                                :page-size="pageSizerefund"
+                                :pager-count="pageNumrefund"
                                 layout="prev, pager, next, jumper"
-                                :total="1000">
+                                :total="refundordersCount">
                             </el-pagination>
                         </div>
                 </div>
             </div>
 
             <!-- 详情弹出框 -->
-            <el-dialog id="viewDetail" title="订单详情-待发货" :visible.sync="editVisible" width="40%" :lock-scroll='true' top="100px">
+            <el-dialog id="viewDetail" v-if="order_detail" title="订单详情-待发货" :visible.sync="editVisible" width="40%" :lock-scroll='true' top="100px">
                 <div class="goods_detail">
                     <el-scrollbar style="height:300px;">
                         <h4>订单信息</h4>
                         <div class="one_detail">
                             <div class="goods_detail_left">
                                 <div>
-                                    商品名称：<label>山东烟台苹果</label>
+                                    商品名称：<label>{{order_detail.commodityName}}</label>
                                 </div>
                                 <div>
-                                    出售规格：<label>每份300克</label>
+                                    出售规格：<label>{{order_detail.unit}}</label>
                                 </div>
                                 <div>
-                                    购买数量：<label>3</label>
+                                    购买数量：<label>{{order_detail.count}}</label>
                                 </div>
                                 <div>
-                                    下单时间：<label>2018-08-20</label>
+                                    下单时间：<label>{{order_detail.orderTime}}</label>
                                 </div>
                             </div>
                             <div class="goods_detail_right">
                                 <div>
-                                    订单号：<label>JFU008899665</label>
+                                    订单号：<label>{{order_detail.orderNumber}}</label>
                                 </div>
                                 <div>
-                                    支付流水号：<label>JFU008899665</label>
+                                    支付流水号：<label>{{order_detail.payNumber}}</label>
                                 </div>
                                 <div>
-                                    支付金额：<label>￥188.00</label>
+                                    支付金额：<label>{{order_detail.totalPrice}}</label>
                                 </div>
                             </div>
                         </div>
@@ -168,18 +134,18 @@
                         <div class="one_detail">
                             <div class="goods_detail_left">
                                 <div>
-                                    买家昵称：<label>阿曼达</label>
+                                    买家昵称：<label>{{order_detail.nickName}}</label>
                                 </div>
                                 <div>
-                                    手机号：<label>18376614866</label>
+                                    手机号：<label>{{order_detail.shippingPhone}}</label>
                                 </div>
                             </div>
                             <div class="goods_detail_right">
                                 <div>
-                                    收货人：<label>大头老师</label>
+                                    收货人：<label>{{order_detail.shippingName}}</label>
                                 </div>
                                 <div>
-                                    收货地址：<label>广东省深圳市男生区田厦金牛广场</label>
+                                    收货地址：<label>{{order_detail.address}}</label>
                                 </div>
                             </div>
                         </div>
@@ -187,12 +153,24 @@
                         <div class="one_detail">
                             <div class="goods_detail_left">
                                 <div>
-                                    买家索要发票：<label>是</label>
+                                    买家索要发票：<label>{{order_detail.support}}</label>
                                 </div>
                             </div>
                             <div class="goods_detail_right">
                                 <div>
-                                    发票类型：<label>增值税专用发票</label>
+                                    发票类型：<label>{{order_detail.typeName}}</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="one_detail" v-if="order_detail.support === '是'">
+                            <div class="goods_detail_left">
+                                <div>
+                                    发票单位名称：<label>{{order_detail.nameEntity}}</label>
+                                </div>
+                            </div>
+                            <div class="goods_detail_right">
+                                <div>
+                                    纳税人识别号：<label>{{order_detail.identifyNumber}}</label>
                                 </div>
                             </div>
                         </div>
@@ -208,17 +186,17 @@
             <!-- 确认发货提示框 -->
             <el-dialog id="el-title" title="确认发货" :visible.sync="ConfirmTheDelivery" width="460px" center top="300px" :show-close="false">
                 <div>
-                    <el-form ref="form" :model="form" label-width="100px">
-                        <el-form-item label="快递公司:">
-                          <el-input v-model="form.name" placeholder="请输入快递公司名称" ></el-input>
+                    <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+                        <el-form-item label="快递公司:" prop="logisticsName">
+                          <el-input v-model="form.logisticsName" placeholder="请输入快递公司名称" ></el-input>
                         </el-form-item>
-                        <el-form-item label="快递单号:">
-                            <el-input v-model="form.number" placeholder="请输入快递单号"></el-input>
+                        <el-form-item label="快递单号:" prop="logisticsNumber">
+                            <el-input v-model="form.logisticsNumber" placeholder="请输入快递单号"></el-input>
                         </el-form-item>
                     </el-form>
                 </div>
                 <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="DeliveryRow">确 定</el-button>
+                <el-button type="primary" @click="submitForm('form')">确 定</el-button>
                 <el-button @click="ConfirmTheDelivery = false">取 消</el-button>
             </span>
             </el-dialog>
@@ -227,15 +205,15 @@
             <el-dialog id="el-title" title="拒绝发货" :visible.sync="delVisible" width="460px" center top="300px" :show-close="false">
                 <div class="">
                     <div class="refund_title_word">拒绝买家<label style="color: #ec414d">{{refund_name}}</label>的发货请求？</div>
-                    <el-form ref="form" :model="form_refund" label-width="100px">
-                        <el-form-item label="拒绝原因：">
-                            <el-input type="textarea" v-model="form_refund.desc"></el-input>
+                    <el-form ref="refund_form" :model="form_refund" :rules="refundRules" label-width="100px">
+                        <el-form-item label="拒绝原因：" prop="surereason">
+                            <el-input type="textarea" v-model="form_refund.surereason"></el-input>
                         </el-form-item>
                     </el-form>
                 </div>
 
                 <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="notdelVisible">确 定</el-button>
+                <el-button type="primary" @click="notdelVisible('refund_form')">确 定</el-button>
                 <el-button @click="delVisible = false">取 消</el-button>
             </span>
             </el-dialog>
@@ -246,21 +224,21 @@
             <el-dialog id="el-title" title="同意退款" :visible.sync="agreeVisible" width="460px" center top="300px" :show-close="false">
                 <div class="">
                     <div class="refund_title_word">同意买家<label style="color: #ec414d">{{refund_name}}</label>的退货退款请求？</div>
-                    <el-form ref="form" :model="form_agree" label-width="100px">
-                        <el-form-item label="收件人:">
-                            <el-input v-model="form_agree.name" placeholder="请输入收件人" ></el-input>
+                    <el-form ref="agreerulesform" :model="form_agree" :rules="form_agreerules"   label-width="100px">
+                        <el-form-item label="收件人:" prop="shippingName">
+                            <el-input v-model="form_agree.shippingName" placeholder="请输入收件人" ></el-input>
                         </el-form-item>
-                        <el-form-item label="收货地址:">
-                            <el-input v-model="form_agree.address" placeholder="请输入收货地址" ></el-input>
+                        <el-form-item label="联系电话:" prop="shippingPhone">
+                            <el-input v-model="form_agree.shippingPhone" placeholder="请输入联系电话" ></el-input>
                         </el-form-item>
-                        <el-form-item label="联系电话:">
-                            <el-input v-model="form_agree.tel" placeholder="请输入联系电话" ></el-input>
+                        <el-form-item label="收货地址:" prop="detailAddress">
+                            <el-input v-model="form_agree.detailAddress" placeholder="请输入收货地址" ></el-input>
                         </el-form-item>
                     </el-form>
                 </div>
 
                 <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="agreedelVisible">确 定</el-button>
+                <el-button type="primary" @click="agreedelVisible('agreerulesform')">确 定</el-button>
                 <el-button @click="agreeVisible = false">取 消</el-button>
             </span>
             </el-dialog>
@@ -312,7 +290,14 @@
 </template>
 
 <script>
-    import { getUntreatedOrdersList } from "../../common/request/request";
+    import {
+        getUntreatedOrdersList,
+        orderDetail,
+        ConfirmDelivery,
+        RefuseDelivery,
+        listRefund,
+        confrimRefund
+    } from "../../common/request/request";
     import {mapState, mapMutations,mapActions} from 'vuex'
     export default {
         name: "basetable",
@@ -325,38 +310,73 @@
         data() {
             return {
                 getDatauntreatedOrders:[],//待处理订单数据
+                untreatedordersCount:null,//待处理订单总数
+                getDatarefundOrders:[],//待退款订单数据
+                refundordersCount:null,//待退款订单总数
 
+
+                pageNum: 1,//页码
+                pageSize:5,//每页条数
+                pageNumrefund:1,
+                pageSizerefund:5,
+
+                order_detail:null,
                 activeName: "first",
-                url: "./static/vuetable.json",
                 dateValue: "",
                 tableData: [],
-                cur_page: 1,
                 multipleSelection: [],
                 select_cate: "",
-                select_word: "",
+                select_word: "",//待发货搜索关键字
                 del_list: [],
-                is_search: false,
                 editVisible: false,//商品详情提示框
                 delVisible: false,//拒绝发货提示框
                 ConfirmTheDelivery:false,//确认发货提示框
                 agreeVisible:false,//同意退款提示框
                 notagreeVisible:false,//拒绝退款提示框
                 sureagree:false,//同意执行退款
-                refund_name:'',
+                refund_name:'',//弹框详情的用户名
                 form_notrefund:{
                     des:''
                 },
                 form_agree:{
-                    name:'',
-                    address:'',
-                    tel:''
+                    uid:'',
+                    shippingName:'',
+                    detailAddress:'',
+                    shippingPhone:'',
+                    shippingAddress:''
+                },
+                form_agreerules: {
+                    shippingName: [
+                        { required: true, message: '请输入收货名', trigger: 'blur' }
+                    ],
+                    detailAddress: [
+                        { required: true, message: '请输入收货地址', trigger: 'blur' }
+                    ],
+                    shippingPhone: [
+                        { required: true, message: '请输入手机号码', trigger: 'blur' }
+                    ]
                 },
                 form:{
-                    name:'',
-                    number:''
+                    ordernumber:'',
+                    logisticsName:'',
+                    logisticsNumber:''
+                },
+                rules: {
+                    logisticsName: [
+                        { required: true, message: '请输入快递公司', trigger: 'blur' }
+                    ],
+                    logisticsNumber: [
+                        { required: true, message: '请输入运单号', trigger: 'blur' }
+                    ]
                 },
                 form_refund:{
-                    desc:''
+                    orderNumber:'',
+                    surereason:''
+                },
+                refundRules: {
+                    surereason: [
+                        { required: true, message: '请输入拒绝发货原因', trigger: 'blur' }
+                    ]
                 },
                 idx: -1,
                 currentIndex:1,
@@ -366,54 +386,51 @@
             };
         },
         created() {
-            let pageSize = 1;
-            let uid = this.userInfo.uid;
-            let pageNum = 10;
-            console.log("用户UID:"+uid);
-            this.getData(pageNum,pageSize,uid);
+            this.getData(this.pageNum,this.pageSize,this.userInfo.uid);
+            this.getrefundData(this.pageNum,this.pageSize,this.userInfo.uid);
+        },
+        mounted(){
+
         },
         computed: {
             ...mapState([
                 'userInfo'
             ]),
-            // data() {
-            //     return this.tableData.filter(d => {
-            //         let is_del = false;
-            //         for (let i = 0; i < this.del_list.length; i++) {
-            //             if (d.name === this.del_list[i].name) {
-            //                 is_del = true;
-            //                 break;
-            //             }
-            //         }
-            //         if (!is_del) {
-            //             if (
-            //                 d.address.indexOf(this.select_cate) > -1 &&
-            //                 (d.name.indexOf(this.select_word) > -1 ||
-            //                     d.address.indexOf(this.select_word) > -1)
-            //             ) {
-            //                 return d;
-            //             }
-            //         }
-            //     });
-            // },
             containerStyle() {
                 return {
                     transform:`translate3d(${this.distance}px, 0, 0)`
                 }
-            }
+            },
         },
         methods: {
+            /**
+             *点击切换待处理订单与待退款订单
+             */
             handleClick(tab, e) {
-                this.activeName = tab.name;
-                console.log(tab.index, tab.name, tab.label, this.activeName);
+                this.$nextTick(function () {
+                    this.activeName = tab.name;
+                    console.log(tab.index, tab.name, tab.label, this.activeName);
+                })
+
             },
-            handleSizeChange(val) {
-                console.log(`每页 ${val} 条`);
-            },
-            // 分页导航
+            /**
+             * 待处理订单根据页码获取数据
+             * @param val
+             */
             handleCurrentChange(val) {
                 console.log("当前页："+val);
-                this.cur_page = val;
+                this.getData(val,this.pageSize,this.userInfo.uid);
+            },
+            sizeChange(val){
+              console.log("123123123123:"+val)
+            },
+            /**
+             * 待退款订单根据页码获取数据
+             * @param val
+            */
+            handleCurrentChangeRefund(val){
+                console.log("当前页："+val);
+                this.getrefundData(val,this.pageSize,this.userInfo.uid);
             },
             /**
              * 获取待发货订单数据
@@ -424,76 +441,98 @@
              */
             getData(pageNum,pageSize,uid,keyword) {
                 getUntreatedOrdersList(pageNum,pageSize,uid,keyword).then(res =>{
-                    console.log("JSON:"+JSON.stringify(res));
+                    console.log("JSON待发货:"+JSON.stringify(res));
                     this.getDatauntreatedOrders = res.data.dataList;
-                    // for (var i = 0; i < res.data.list.length; i++) {
-                    //     this.$set(this.tableData[i], "showEdit", false);
-                    // }
+                    this.untreatedordersCount = parseInt(res.data.total);
                 }).catch(err =>{
                     console.log(err)
                 })
-                // 开发环境使用 easy-mock 数据，正式环境使用 json 文件
-                // if (process.env.NODE_ENV === "development") {
-                //     this.url = "/ms/table/list";
-                // }
-                // this.$axios
-                //     .post(this.url, {
-                //         page: this.cur_page
-                //     })
-                //     .then(res => {
-                //         console.log("JSON:"+JSON.stringify(res))
-                //         this.tableData = res.data.list;
-                //         for (var i = 0; i < res.data.list.length; i++) {
-                //             this.$set(this.tableData[i], "showEdit", false);
-                //         }
-                //     });
             },
-            forTableIndex() {
-                // for (var i = 0; i < 100; i++) {
-                //   this.showEdit[i] = false;
-                //   this.$set(this.showEdit[i], false);
-                // }
+
+            /**
+             * 获取待退款订单数据
+             * @param pageNum//每页条数
+             * @param pageSize//页码
+             * @param uid//用户id
+             * @param keyword//关键字
+             */
+            getrefundData(pageNum,pageSize,uid) {
+                listRefund(pageNum,pageSize,uid).then(res =>{
+                    console.log("JSON待退款:"+JSON.stringify(res));
+                    this.getDatarefundOrders = res.data.dataList;
+                    this.refundordersCount = parseInt(res.data.total);
+                }).catch(err =>{
+                    console.log(err)
+                })
             },
-            search() {
-                this.is_search = true;
+            /**
+             * 根据关键字搜索待发货订单
+             * @param val
+             */
+            search(val) {
+                console.log(val);
+                this.getData(this.pageNum,this.pageSize,this.userInfo.uid,val);
             },
+            /**
+             * 待处理订单单条数据
+             */
             formatter(row, column) {
-                return row.address;
+                return row;
             },
-            filterTag(value, row) {
-                return row.tag === value;
+            /**
+             * 待退款订单单条数据
+             */
+            formatterrefund(row, column) {
+                return row;
             },
-            plusMath() {
-                console.log(234235);
+            /**
+             * 根据订单号获取订单详情
+             * @param index
+             * @param ordernumber
+             */
+            viewDetails(index, ordernumber) {
+                console.log(index,ordernumber);
+                    orderDetail(ordernumber).then(res =>{
+                        console.log(res)
+                        if(res.code === "0"){
+                            this.editVisible = true;
+                            this.order_detail = res.data
+                        }else {
+                            this.$message(res.msg)
+                        }
+                    }).catch(err =>{
+                        console.log(err)
+                    })
             },
-            subtractMath() {
-                console.log(28888);
-            },
-            viewDetails(index, row) {
-                this.editVisible = true;
-            },
-            handleEdit(index, row) {
-                this.idx = index;
-                const item = this.tableData[index];
-                item.showEdit = true;
-                // this.showEdit[index] = true;
-                // this.$set(this.showEdit, row, true);
-            },
-            handleSave(index, row) {
+            /**
+             * 确认发货弹出确认收货弹框
+             * @param index
+             * @param row
+             */
+            handleSave(index, ordernumber) {
                 this.ConfirmTheDelivery = true;
+                this.form.ordernumber = ordernumber;
             },
-            //拒绝退款
+            /**
+             * 拒绝发货弹出拒绝发货弹框
+             * @param index
+             * @param row
+             */
             handleDelete(index, row) {
                 console.log(index,row)
                 this.idx = index;
-                this.refund_name = row.name;
+                this.refund_name = row.shippingName;
+                this.form_refund.orderNumber = row.orderNumber
                 this.delVisible = true;
             },
-            //同意退款
+            /**
+             * 同意退款弹框
+             */
             agreeDetails(index,row){
-                console.log(index,row)
+                console.log(index,row);
                 this.idx = index;
-                this.refund_name = row.name;
+                this.refund_name = row.shippingName;
+                this.form_agree.uid = row.uid;
                 this.agreeVisible = true;
             },
             //拒绝退款
@@ -503,6 +542,9 @@
                 this.refund_name = row.name;
                 this.notagreeVisible = true;
             },
+            /**
+             *设置表格头颜色
+             */
             getRowClass({ row, column, rowIndex, columnIndex }) {
                 if (rowIndex == 0) {
                     return "background:#FCE4E4;height:60px;color:#606266;";
@@ -510,30 +552,73 @@
                     return "";
                 }
             },
-            // delAll() {
-            //     const length = this.multipleSelection.length;
-            //     let str = '';
-            //     this.del_list = this.del_list.concat(this.multipleSelection);
-            //     for (let i = 0; i < length; i++) {
-            //         str += this.multipleSelection[i].name + ' ';
-            //     }
-            //     this.$message.error('删除了' + str);
-            //     this.multipleSelection = [];
-            // },
-            handleSelectionChange(val) {
-                this.multipleSelection = val;
+            /**
+             * 确认发货
+             * @constructor
+             */
+            submitForm(formName){
+                this.$refs[formName].validate((valid) => {
+                    if (valid){
+                        this.ConfirmTheDelivery = false;
+                        console.log(this.form);
+                        ConfirmDelivery(this.form).then(res =>{
+                            console.log(res)
+                            if(res.code === "0"){
+                                this.$message('确认发货成功');
+                            }else {
+                                this.$message.error(res.msg);
+                            }
+                        }).catch(err =>{
+                            console.log(err)
+                        })
+                    }
+                });
             },
-            //确认发货
-            DeliveryRow(){
-                this.ConfirmTheDelivery = false;
+            /**
+             * 点击确认拒绝发货按钮
+             * @param formName
+             */
+            notdelVisible(formName){
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        this.delVisible = false;
+                        console.log(this.form_refund);
+                        RefuseDelivery(this.form_refund).then(res =>{
+                            console.log(res)
+                            if(res.code === "0"){
+                                this.$message('您已确认拒绝发货');
+                            }else {
+                                this.$message.error(res.msg);
+                            }
+                        }).catch(err =>{
+                            console.log(err)
+                        })
+                    }
+                });
+
             },
-            //拒绝发货
-            notdelVisible(){
-                this.delVisible = false;
-            },
-            //同意退款
-            agreedelVisible(){
-                this.agreeVisible = false;
+            /**
+             * 点击同意退款
+             * @param agreerulesform
+             */
+            agreedelVisible(formName){
+                this.$refs[formName].validate((valid) => {
+                    if (valid){
+                        this.agreeVisible = false;
+                        console.log(this.form_agree);
+                        confrimRefund(this.form_agree).then(res =>{
+                            console.log(res)
+                            if(res.code === "0"){
+                                this.$message('确认发货成功');
+                            }else {
+                                this.$message.error(res.msg);
+                            }
+                        }).catch(err =>{
+                            console.log(err)
+                        })
+                    }
+                });
+
             },
             //拒绝退款
             notagreedelVisible(){

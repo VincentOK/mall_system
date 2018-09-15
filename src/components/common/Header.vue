@@ -72,6 +72,7 @@
 </template>
 <script>
     import { removeStorage } from "./commonJS/localStorage";
+    import {  loginout } from "./request/request";
     import bus from "../common/bus";
 export default {
   data() {
@@ -146,10 +147,19 @@ export default {
     // 用户名下拉菜单选择事件
     handleCommand(command) {
       if (command == "loginout") {
-          removeStorage('token');
-          removeStorage('userInfo');
-          removeStorage('resourceList');
-        this.$router.push("/login");
+          loginout().then(res =>{
+              console.log(res)
+              if (res.code ==="0"){
+                  removeStorage('token');
+                  removeStorage('userInfo');
+                  removeStorage('resourceList');
+                  this.$router.push("/login");
+              } else {
+                  this.$message.error(res.msg)
+              }
+          }).catch(err =>{
+              console.log(err)
+          });
       }
     },
     maxSlice(v) {

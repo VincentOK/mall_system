@@ -22,18 +22,18 @@
                                     </el-form-item>
 
 
-                                    <el-form-item label="收款人" prop="moneyPerson">
-                                        <el-input v-model.number="form.moneyPerson" type="number" placeholder="请输入单位建议售价，即删除线价格" maxlength="20" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'></el-input>
+                                    <el-form-item label="持卡人姓名" prop="bankUseName">
+                                        <el-input v-model="form.bankUseName" placeholder="请输入收款人姓名" maxlength="20"></el-input>
                                     </el-form-item>
                                     <el-form-item label="银行卡号" prop="bankNo">
-                                        <el-input v-model="form.bankNo"></el-input>
-                                        <p class="bank_word">(用于商城结算收款，请谨慎填写)</p>
+                                        <el-input v-model="form.bankNo" type="number" placeholder="请输入银行卡号"></el-input>
+                                        <p class="bank_word">({{form.bankName}})</p>
                                     </el-form-item>
-                                    <el-form-item v-if="form.commercialType === 'corporate'" label="营业执照名称" prop="specification">
-                                        <el-input v-model="form.specification"></el-input>
+                                    <el-form-item v-if="form.commercialType === 'corporate'" label="营业执照名称" prop="licenseName">
+                                        <el-input v-model="form.licenseName" placeholder="请输入营业执照名称"></el-input>
                                     </el-form-item>
                                     <el-form-item v-if="form.commercialType === 'corporate'"  label="统一社会信用代码" prop="creditCode">
-                                        <el-input v-model="form.creditCode"></el-input>
+                                        <el-input v-model="form.creditCode"  placeholder="请输入统一社会信用代码"></el-input>
                                     </el-form-item>
 
                                     <el-form-item v-if="form.commercialType === 'corporate'"  label="营业执照（副本）" prop="licenseImgPath">
@@ -125,23 +125,23 @@
                                     </el-form-item>
 
                                     <p class="word_two">2.填写账号注册信息<label class="word_two_i">（请牢记账号信息，用于登陆商户后台）</label></p>
-                                    <el-form-item label="登陆名:" prop="linkPhone">
-                                        <el-input v-model="form.linkPhone"   type="number" auto-complete="off" placeholder="请输入手机号码" maxlength="20" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'></el-input>
+                                    <el-form-item label="登陆名:" prop="userPhone">
+                                        <el-input v-model="form.userPhone"   type="number" auto-complete="off" placeholder="请输入手机号码" maxlength="20" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'></el-input>
                                     </el-form-item>
-                                    <el-form-item label="验证码" class="getcode" prop="logincode">
-                                        <span  v-show="show" class="redcolor" @click="getMobileCode">发送验证码</span>
+                                    <el-form-item label="验证码" class="getcode" prop="captcha">
+                                        <span  v-show="show" class="redcolor" @click="getMobileCode(form.userPhone)">发送验证码</span>
                                         <span  v-show="!show" class="greycolor" :disabled="true">{{count}}s</span>
-                                        <el-input v-model="form.logincode"></el-input>
+                                        <el-input v-model="form.captcha"  placeholder="请输入短信验证码"></el-input>
                                     </el-form-item>
 
 
 
 
                                     <el-form-item label="密码" prop="password">
-                                        <el-input type="password" v-model="form.password" auto-complete="off"></el-input>
+                                        <el-input type="password" v-model="form.password" placeholder="请输入密码" auto-complete="off"></el-input>
                                     </el-form-item>
                                     <el-form-item label="确认密码" prop="checkPass">
-                                        <el-input type="password" v-model="form.checkPass" auto-complete="off"></el-input>
+                                        <el-input type="password" v-model="form.checkPass" placeholder="请再次输入密码"  auto-complete="off"></el-input>
                                     </el-form-item>
 
                                     <el-form-item label="" prop="againpassword">
@@ -354,7 +354,9 @@
 </template>
 
 <script>
-    import { uploadGoodsImg,userRegister,checkUser } from "../common/request/request";
+    import { uploadGoodsImg,userRegister,checkUser,sendPhoneCode } from "../common/request/request";
+    import { isvalidPhone } from "../common/commonJS/commonjs";
+    import { bankCardAttribution } from "../common/commonJS/checkBank";
     export default {
         name: "tenants",
         data(){
@@ -368,6 +370,9 @@
                     callback();
                 }
             };
+            /**
+             * 校验两次密码是否一致
+             */
             let validatePass2 = (rule, value, callback) => {
                 if (value === '') {
                     callback(new Error('请再次输入密码'));
@@ -377,6 +382,12 @@
                     callback();
                 }
             };
+            /**
+             * 校验商户名是否重复
+             * @param rule
+             * @param value
+             * @param callback
+             */
             let commercialNamePass = (rule, value, callback) => {
                 if (value) {
                     checkUser({'commercialName':value}).then(res =>{
@@ -394,10 +405,49 @@
                     callback(new Error('请输入商户名'));
                 }
             };
+            /**
+             * 校验银行卡所属银行
+             * @param rule
+             * @param value
+             * @param callback
+             */
+            let validBank=(rule, value,callback)=>{
+                if (!value){
+                    callback(new Error('请输入银行卡号'))
+                }else{
+                    let msg = bankCardAttribution(value);
+                    if(msg !== 'error'){
+                        console.log(bankCardAttribution(value));
+                        this.form.bankName = msg.bankName;
+                        callback()
+                    }else {
+                        callback(new Error('请输入正确的银行卡号'))
+                    }
+
+
+                }
+            };
+            /**
+             * 校验手机号码是否正确
+             * @param rule
+             * @param value
+             * @param callback
+             */
+            let validPhone=(rule, value,callback)=>{
+                if (!value){
+                    callback(new Error('请输入手机号码'))
+                }else  if (!isvalidPhone(value)){
+                    callback(new Error('请输入正确的11位手机号码'))
+                }else {
+                    callback()
+                }
+            };
             return {
                 show: true,
                 count: '',
                 timer: null,
+
+
 
                 uploadUrl:'',
                 editVisible:false,
@@ -413,25 +463,25 @@
                 searchGoodsName: 0,
                 val: 0,
                 form: {
+                    bankName:'用于商城结算收款，请谨慎填写',//银行卡卡号
                     commercialType:'individual',//商户类型(individual:个体,corporate:团体)
                     commercialName: "",//商户名称
                     linkName: "",//联系人姓名
-                    linkPhone: null,//联系人电话
-                    moneyPerson: null,
+                    userPhone: null,//联系人电话
+                    bankUseName: null,//银行名称
                     bankNo: "",//银行卡卡号
-                    specification:'',
+                    licenseName:'',//营业执照名称
                     creditCode:'',//企业统一信用代码
                     licenseImgPath:'',//营业执照图片
                     cardFrontImgPath:'',//身份证正面照
                     cardBackImgPath:'',//身份证反面照
-                    otherImgPath:'',
-                    loginname:'',
-                    logincode:'',
+                    otherImgPath:'',//其他图片路径
+                    captcha:'',//短信验证码
                     password:'',//登陆密码
                     checkPass: '',
                 },
                 rules:{
-                    logincode:[
+                    captcha:[
                         {required: true, message: "请输入验证码", trigger: "blur" }
                     ],
                     cardBackImgPath:[
@@ -446,27 +496,24 @@
                     linkName: [
                         {required: true, message: "请联系人联系人姓名", trigger: "blur" }
                     ],
-                    moneyPerson: [
-                        {required: true, message: "请输入收款人姓名", trigger: "blur" }
+                    bankUseName: [
+                        {required: true, message: "请输入持卡人姓名", trigger: "blur" }
                     ],
-                    bankNo: [
-                        {required: true, message: "请输入收款人银行卡号", trigger: "blur" }
-                    ],
-                    specification: [
+                    licenseName: [
                         {required: true, message: "请输入营业执照名称", trigger: "blur" }
                     ],
                     creditCode: [
                         {required: true, message: "请输入统一社会信用代码", trigger: "blur" }
                     ],
-                    loginname: [
-                        {required: true, message: "请输入用户名", trigger: "blur" }
-                    ],
 
+                    bankNo: [
+                        {required: true, validator:validBank, trigger: "blur" }
+                    ],
                     commercialName: [
                         {required: true,validator: commercialNamePass, trigger: 'blur' }
                     ],
-                    linkPhone: [
-                        {required: true, message: "请输入用户名", trigger: 'blur' }
+                    userPhone: [
+                        {required: true,  validator:validPhone, trigger: 'blur' }
                     ],
                     password: [
                         {required: true, validator: validatePass, trigger: 'blur' }
@@ -482,14 +529,29 @@
         },
         methods: {
             /**
-             * 输入框失去焦点触发
-             */
-
-            /**
              * 获取手机验证码
              */
-            getMobileCode(){
-                debugger;
+            getMobileCode(val){
+                if(val){
+                    sendPhoneCode(val).then(res =>{
+                        console.log(res);
+                        if(res.code === "0"){
+                            this.getTimeer();
+                        }else {
+                            this.$message.error(res.msg)
+                        }
+                    }).catch(err =>{
+                        console.log(err)
+                    })
+                }else {
+                    this.$message.error('请输入手机号码')
+                }
+
+            },
+            /**
+             * 获取验证码倒计时
+             */
+            getTimeer(){
                 const TIME_COUNT = 60;
                 if (!this.timer) {
                     this.count = TIME_COUNT;
@@ -533,13 +595,20 @@
                 this.$refs[formName].validate(valid => {
                     if (valid) {
                         console.log(JSON.stringify(this.form));
-                        this.$message.success("提交成功！");
+                        userRegister(this.form).then(res =>{
+                            console.log(res)
+                            if(res.code === "0"){
+                                this.$message.success("提交成功！");
+                            }else {
+                                this.$message.error(res.msg)
+                            }
+                        }).catch(err =>{
+                            console.log(err)
+                        })
                     } else {
-                        this.$message.error("提交失败!");
-                        return false;
+                        this.$message.error("请填写全部信息");
                     }
                 });
-                // this.$message.success("提交成功！");
             },
             handleRemove(file, fileList) {
                 console.log(file, fileList);
@@ -567,12 +636,12 @@
              * @param file
              */
             handleAvatarSuccessCard(res, file){
+                console.log(res)
                 if(res.code === "0"){
                     this.card = false
                     this.form.cardFrontImgPath  = res.data
                     this.cardimageUrl = URL.createObjectURL(file.raw);
                 }
-
             },
             /**
              * 成功上传身份证反面照
@@ -580,24 +649,23 @@
              * @param file
              */
             handleAvatarSuccessCardF(res,file){
+                console.log(res)
                 if(res.code === "0"){
-                    this.cardF = false
-                    this.form.cardBackImgPath  = res.data
+                    this.cardF = false;
+                    this.form.cardBackImgPath  = res.data;
                     this.cardfimageUrl = URL.createObjectURL(file.raw);
                 }
-
             },
             /**
              * 上传其他照片
              */
             handleAvatarSuccessOther(res,file){
                 console.log(res);
-                console.log(file);
                 if(res.code === "0"){
-                    if( this.form.otherImgPath){
-                        this.form.otherImgPath  = res.data
+                    if(this.form.otherImgPath){
+                        this.form.otherImgPath  = this.form.otherImgPath+res.data+'#';
                     }else {
-                        this.form.otherImgPath  = this.form.otherImgPath+'#'+res.data
+                        this.form.otherImgPath  = res.data+"#"
                     }
                 }
             },

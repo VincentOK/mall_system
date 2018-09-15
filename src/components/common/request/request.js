@@ -3,11 +3,31 @@
  */
 import { baseUrl } from './url'
 import fetch from './fetch'
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+import { getStorage } from "../commonJS/localStorage";
+import { Decrypt } from "../commonJS/secert";
+let token = null;
+if (getStorage('token')) {
+    try {
+        token = Decrypt(getStorage('token'));
+    } catch (e) {
+        alert('token值不存在')
+    }
+}
+=======
+>>>>>>> e07e4d39ee7c1353f1e33353975e161272c898f6
 /**
  * 上传files图片
  *
  */
+<<<<<<< HEAD
 export const uploadGoodsImg = () => { return baseUrl + '/timestoremanage/storeCommodity/uploadImages' };
+=======
+export const uploadGoodsImg = ()=>{return baseUrl+'/timestoremanage/storeCommodity/uploadImages'};
+>>>>>>> fb18fba0fd4218481623ea32aadeb5aec61de24d
+>>>>>>> e07e4d39ee7c1353f1e33353975e161272c898f6
 /**
  * 获取验证码
  */
@@ -15,11 +35,30 @@ export const getCode = () => { return baseUrl + '/timestoremanage/common/captcha
 /**
  * 用户登陆
  */
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> e07e4d39ee7c1353f1e33353975e161272c898f6
 export const userLogin = (username, password, captcha) => fetch('/timestoremanage/ajaxLogin', {
     userPhone: username,
     password: password,
     captcha: captcha
 }, 'POST', true);
+<<<<<<< HEAD
+=======
+
+export const userLoginaaa = (username, password, captcha) => fetch('/timestoremanage/storeCommodity/add', {
+    userName: username,
+    password: password,
+    captcha: captcha
+}, 'POST', token, 'multipart/form-data;');
+=======
+export const userLogin=(username,password,captcha) =>fetch('/timestoremanage/ajaxLogin',{
+    userPhone:username,
+    password:password,
+    captcha:captcha
+},'POST',true);
+>>>>>>> e07e4d39ee7c1353f1e33353975e161272c898f6
 /**
  * 测试接口
  * @param username
@@ -37,6 +76,7 @@ export const userLoginaaa = (username, password, captcha) => fetch('/timestorema
  * @param msgObj
  * @returns {Promise<*>}
  */
+<<<<<<< HEAD
 export const userRegister = (msgObj) => fetch('/timestoremanage/register', {
     userName: msgObj.userName,
     password: msgObj.password,
@@ -53,6 +93,25 @@ export const userRegister = (msgObj) => fetch('/timestoremanage/register', {
     licenseImgPath: msgObj.licenseImgPath,
     otherImgPath: msgObj.otherImgPath
 }, 'POST', true);
+=======
+export const userRegister = (msgObj) =>fetch('/timestoremanage/register',{
+    userName:msgObj.userName,
+    password:msgObj.password,
+    commercialType:msgObj.commercialType,
+    commercialName:msgObj.commercialName,
+    commercialIntroduction:msgObj.commercialIntroduction,
+    linkPhone:msgObj.linkPhone,
+    linkName:msgObj.linkName,
+    bankNo:msgObj.bankNo,
+    cardNo:msgObj.cardNo,
+    cardFrontImgPath:msgObj.cardFrontImgPath,
+    cardBackImgPath:msgObj.cardBackImgPath,
+    creditCode:msgObj.creditCode,
+    licenseImgPath:msgObj.licenseImgPath,
+    otherImgPath:msgObj.otherImgPath
+},'POST',true);
+>>>>>>> fb18fba0fd4218481623ea32aadeb5aec61de24d
+>>>>>>> e07e4d39ee7c1353f1e33353975e161272c898f6
 
 /**
  * 检验商户名是否可用

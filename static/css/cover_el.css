@@ -135,3 +135,6 @@
   font-weight: bold;
   color: #303133;
 }
+.cardFimg .el-form-item__error{
+    width: 200px; position: absolute; top: 115px;left: 200px;
+}

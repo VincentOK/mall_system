@@ -3,19 +3,19 @@
         <el-menu class="sidebar-el-menu" :default-active="onRoutes" :collapse="collapse" active-background-color="#545c64" background-color="#FFFEFE"
             text-color="black" active-text-color="#EC414D" unique-opened router>
             <template v-for="item in resourceList">
-                <template v-if="item.subs">
-                    <el-submenu :index="item.index" :key="item.index">
+                <template v-if="item.childResources">
+                    <el-submenu :index="(item.id).toString()" :key="item.id">
                         <template slot="title">
-                            <i :class="item.icon" style="padding: 10px"></i><span slot="title">{{ item.title }}</span>
+                            <i :class="item.icon" style="padding: 10px"></i><span slot="title">{{ item.name }}</span>
                         </template>
-                        <el-menu-item v-for="(subItem,i) in item.subs" :key="i" :index="subItem.index">
-                            {{ subItem.title }}
+                        <el-menu-item v-for="(subItem,i) in item.childResources" :key="i" :index="subItem.url">
+                            {{ subItem.name }}
                         </el-menu-item>
                     </el-submenu>
                 </template>
                 <template v-else >
-                    <el-menu-item :index="item.index" :key="item.index">
-                        <i :class="item.icon"  style="padding: 10px"></i><span slot="title">{{ item.title }}</span>
+                    <el-menu-item :index="item.url" :key="item.id">
+                        <i :class="item.icon"  style="padding: 10px"></i><span slot="title">{{ item.name }}</span>
                     </el-menu-item>
                 </template>
             </template>
@@ -126,7 +126,7 @@
             }
         },
         mounted(){
-            console.log(JSON.stringify(this.resourceList));
+            // console.log(JSON.stringify(this.resourceList));
         },
         methods:{
             getRousource(){

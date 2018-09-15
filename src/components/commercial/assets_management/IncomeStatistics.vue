@@ -5,19 +5,19 @@
             <h3>收益统计</h3>
             <div class="income_card">
                 <div class="total_income">
-                    <p>￥4890.00</p>
+                    <p>{{countEarnings.totalCoin}}</p>
                     <p>总收益</p>
                 </div>
                 <div class="total_income">
-                    <p>￥4890.00</p>
+                    <p>{{countEarnings.availableCoin}}</p>
                     <p>待结算余额</p>
                 </div>
                 <div class="total_income">
-                    <p>￥4890.00</p>
+                    <p>{{countEarnings.inCoin}}</p>
                     <p>已结算金额</p>
                 </div>
                 <div class="total_income">
-                    <p>￥4890.00</p>
+                    <p>{{countEarnings.countChannel}}</p>
                     <p>通道费(已缴)</p>
                 </div>
             </div>
@@ -30,11 +30,11 @@
                             <el-input v-model="ruleForm.backMoney" placeholder="请输入100以上的整数" type="number" class="income_money" onkeypress='return(/[\d\.]/.test(String.fromCharCode(event.keyCode)))'></el-input>
                         </el-form-item>
                         <el-form-item label="收款人:">
-                            <span>{{ruleForm.payee}}</span>
+                            <span>{{tenantInfo.bankUseName}}</span>
                         </el-form-item>
                         <el-form-item label="收款账户:">
-                            <span>{{formater(ruleForm.banknumber)}}</span>
-                            <span>（{{ruleForm.backname}}）</span>
+                            <span>{{tenantInfo.bankNo}}</span>
+                            <!-- <span>（{{tenantInfo.bankName}}）</span> -->
                         </el-form-item>
                     </el-form>
                 </div>
@@ -50,12 +50,12 @@
                 <div class="top_dialog">
                   <h4 style="color:black">确认结算至以下银行账户？</h4>
                   <p class="top_dialog_bank">
-                    <span>{{formater(ruleForm.banknumber)}}</span>
-                    <span>（{{ruleForm.backname}}）</span>
+                    <span>{{accountInfo.bankNo}}</span>
+                    <!-- <span>（{{ruleForm.backname}}）</span> -->
                   </p>
                   <p>
                     <label>收款人:</label>
-                    <span>{{ruleForm.payee}}</span>
+                    <span>{{accountInfo.bankUseName}}</span>
                   </p>
                 </div>
                 
@@ -63,12 +63,12 @@
                   <h4 style="color:black">本次结算明细</h4>
                   <div class="order_income">
                     <p class="dialog_money">
-                      <span>结算金额:￥{{ruleForm.backMoney | formatMoney}}</span>
-                      <span>通道费(5%):￥{{Number(ruleForm.backMoney)*0.05 | formatMoney}}</span>
+                      <span>结算金额:{{strPrice}}</span>
+                      <span>通道费(5%):{{channel}}</span>
                     </p>
                     <p>
-                      <span>分成比例:80.0%</span>
-                      <span>实际到账:￥{{drawLines | formatMoney}}</span>
+                      <span>分成比例:{{dividedInto}}</span>
+                      <span>实际到账:{{actualAccoun}}</span>
                     </p>
                   </div>
                 </div>
@@ -83,15 +83,40 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+import {
+  countEarnings,
+  settlementApplication
+} from "../../common/request/request";
 export default {
   name: "incomeDetail",
   data() {
     return {
+      tenantUid: "",
       ruleForm: {
         backMoney: "",
         payee: `阿曼达`,
         banknumber: "464546456454543",
         backname: "中国银行"
+      },
+      actualAccoun: String,
+      channel: String,
+      dividedInto: String,
+      strPrice: String,
+      accountInfo: {
+        bankNo: String,
+        bankUseName: String
+      },
+      tenantInfo: {
+        bankName: String,
+        bankNo: String,
+        bankUseName: String
+      },
+      countEarnings: {
+        availableCoin: String,
+        countChannel: String,
+        inCoin: String,
+        totalCoin: String
       },
       incomeDialog: false,
       rules: {
@@ -102,7 +127,12 @@ export default {
       }
     };
   },
+  created() {
+    this.tenantUid = this.userInfo.uid;
+    this.getCountEarnings();
+  },
   computed: {
+    ...mapState(["userInfo"]),
     drawLines() {
       let backMoneyNumber = Number(this.ruleForm.backMoney);
       return backMoneyNumber - backMoneyNumber * 0.05;
@@ -116,32 +146,60 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.incomeDialog = true;
-          // this.$message.success("提交成功！");
+          this.getSettlementApplication();
         } else {
           this.$message.error("提交失败!");
           return false;
         }
       });
     },
-    commitIncome() {}
-  },
-  filters: {
-    formatMoney(value) {
-      var html, _val;
-      let hasdot = value.toString().indexOf(".") > 0;
-      value = hasdot
-        ? value.toString().substr(0, value.toString().indexOf(".") + 3)
-        : Number(value).toFixed(2);
-      if (value == 0) {
-        value = 0;
-        return (html = "0.00");
-      } else if (value.split(".")[1].substring(1) == 0) {
-        value = Number(value).toFixed(2);
-      }
-      _val = value.split(".");
-      return (html = _val[0] + "." + _val[1]);
+    commitIncome() {
+      this.incomeDialog = false;
+    },
+    getCountEarnings() {
+      let self = this;
+      countEarnings(this.tenantUid).then(res => {
+        if (res.data) {
+          self.countEarnings = res.data.countEarnings;
+          self.tenantInfo = res.data.tenantInfo;
+        } else {
+          console.log("");
+        }
+      });
+    },
+    getSettlementApplication() {
+      let self = this;
+      let price = Number(this.ruleForm.backMoney);
+      settlementApplication(this.tenantUid, price).then(res => {
+        if (res.data) {
+          self.accountInfo = res.data.accountInfo;
+          self.actualAccoun = res.data.actualAccoun;
+          self.channel = res.data.channel;
+          self.dividedInto = res.data.dividedInto;
+          self.strPrice = res.data.strPrice;
+        } else {
+          console.log("");
+        }
+      });
     }
-  }
+  },
+  // filters: {
+  //   formatMoney(value) {
+  //     var html, _val;
+  //     let hasdot = value.toString().indexOf(".") > 0;
+  //     value = hasdot
+  //       ? value.toString().substr(0, value.toString().indexOf(".") + 3)
+  //       : Number(value).toFixed(2);
+  //     if (value == 0) {
+  //       value = 0;
+  //       return (html = "0.00");
+  //     } else if (value.split(".")[1].substring(1) == 0) {
+  //       value = Number(value).toFixed(2);
+  //     }
+  //     _val = value.split(".");
+  //     return (html = _val[0] + "." + _val[1]);
+  //   }
+  // }
 };
 </script>
 

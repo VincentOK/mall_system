@@ -137,12 +137,12 @@ export const listSell = (param) => fetch('/timestoremanage/storeCommodity/listSe
 //出售中/已下架商品详情
 export const storeCommodityDetail = (commodityId) => fetch('/timestoremanage/storeCommodity/detail', {
     commodityId: commodityId
-}, 'POST', false);
+}, 'POST', true);
 
 //下架
 export const soldOut = (commodityId) => fetch('/timestoremanage/storeCommodity/soldOut', {
     commodityId: commodityId
-}, 'POST', false);
+}, 'POST', true);
 
 //编辑
 export const edit = (param) => fetch('/timestoremanage/storeCommodity/edit', {
@@ -150,10 +150,12 @@ export const edit = (param) => fetch('/timestoremanage/storeCommodity/edit', {
     realityPrice: param.realityPrice,
     suggestPrice: param.suggestPrice,
     inventory: param.inventory
-}, 'POST', false);
+}, 'POST', true);
 
 //已下架商品列表
 export const listSoldOut = (param) => fetch('/timestoremanage/storeCommodity/listSoldOut', {
+    pageNumber: param.pageNumber,
+    pageSize: param.pageSize,
     tenantUid: param.tenantUid,
     startTime: param.startTime,
     endTime: param.endTime,
@@ -175,3 +177,19 @@ export const listCheck = (param) => fetch('/timestoremanage/storeCommodity/listC
 export const getCheckDetail = (commodityId) => fetch('/timestoremanage/storeCommodity/getCheckDetail', {
     commodityId: commodityId
 }, 'POST', false);
+
+
+/**
+ * 资产管理
+ */
+
+//收益统计与结算
+export const countEarnings = (tenantUid) => fetch('/timestoremanage/account/countEarnings', {
+    tenantUid: tenantUid
+}, 'POST', true);
+
+//结算申请预览
+export const settlementApplication = (tenantUid, price) => fetch('/timestoremanage/account/settlementApplication', {
+    tenantUid: tenantUid,
+    price: price
+}, 'POST', true);

@@ -1,7 +1,7 @@
 /**
  * 调用接口名文件
  */
-import {baseUrl} from './url'
+import { baseUrl } from './url'
 import fetch from './fetch'
 /**
  * 上传files图片
@@ -12,7 +12,7 @@ export const uploadGoodsImg = ()=>{return baseUrl+'/timestoremanage/storeCommodi
  * 获取图形验证码
  * @returns {string}
  */
-export const getCode = () =>{return baseUrl+'/timestoremanage/common/captcha'};
+export const getCode = () => { return baseUrl + '/timestoremanage/common/captcha' };
 /**
  * 用户登陆
  */
@@ -38,7 +38,22 @@ export const userLoginaaa=(username,password,captcha) =>fetch('/timestoremanage/
  * @param msgObj
  * @returns {Promise<*>}
  */
-export const userRegister = (msgObj) =>fetch('/timestoremanage/register',msgObj,'POST',true);
+export const userRegister = (msgObj) =>fetch('/timestoremanage/register',{
+    userName:msgObj.userName,
+    password:msgObj.password,
+    commercialType:msgObj.commercialType,
+    commercialName:msgObj.commercialName,
+    commercialIntroduction:msgObj.commercialIntroduction,
+    linkPhone:msgObj.linkPhone,
+    linkName:msgObj.linkName,
+    bankNo:msgObj.bankNo,
+    cardNo:msgObj.cardNo,
+    cardFrontImgPath:msgObj.cardFrontImgPath,
+    cardBackImgPath:msgObj.cardBackImgPath,
+    creditCode:msgObj.creditCode,
+    licenseImgPath:msgObj.licenseImgPath,
+    otherImgPath:msgObj.otherImgPath
+},'POST',true);
 
 /**
  * 检验商户名是否可用
@@ -197,3 +212,24 @@ export const forgotPasswordSubmit = (params) =>fetch('/timestoremanage/common/fo
  * @type {Promise<*>}
  */
 export const loginout = ()=>fetch('/timestoremanage/sysUser/logout',{},'POST');
+
+/**
+ * 新增商品
+ */
+
+export const addStoreCommodity = (param) => fetch('/timestoremanage/storeCommodity/add', {
+    // commodityName: param.commodityName,
+    // unit: param.unit,
+    // realityPrice: param.realityPrice,
+    // suggestPrice: param.suggestPrice,
+    // inventory: param.inventory,
+    // carriage: param.carriage,
+    // payType: param.payType,
+    // salesReturn: param.salesReturn,
+    // invoice: param.invoice,
+    // invoiceType: param.invoiceType,
+    // detail: param.detail,
+    // promotion: param.promotion,
+    // images: param.images
+    param: param
+}, 'POST');

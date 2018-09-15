@@ -20,12 +20,12 @@
         <div class="title_j">
           <p class="detail_tatle">
             <label class="detail_hot">热门</label>
-            <label class="word_hot">{{form_detail.goodsName?form_detail.goodsName:'秋衣毛裤毛衣裤袜'}}</label>
+            <label class="word_hot">{{form_detail.commodityName?form_detail.commodityName:'秋衣毛裤毛衣裤袜'}}</label>
           </p>
           <p class="detail_money">
-            <label class="money_real"><label class="fontM">￥</label>{{form_detail.actual_price?form_detail.actual_price:'60.00'}}</label>
-            <label class="money_over"><label class="fontM_i">￥</label>{{form_detail.suggest_price?form_detail.suggest_price:'76.00'}}</label>
-            <label class="money_over_count">剩余{{form_detail.goods_desc?form_detail.goods_desc:80}}件</label>
+            <label class="money_real"><label class="fontM">￥</label>{{form_detail.realityPrice?form_detail.realityPrice:'60.00'}}</label>
+            <label class="money_over"><label class="fontM_i">￥</label>{{form_detail.suggestPrice?form_detail.suggestPrice:'76.00'}}</label>
+            <label class="money_over_count">剩余{{form_detail.inventory?form_detail.inventory:80}}件</label>
           </p>
         </div>
         <div class="null_div"></div>
@@ -44,7 +44,7 @@
               <p class="word_moren">规格</p>
             </div>
             <div class="adress_right">
-              <p>{{form_detail.specifications?form_detail.specifications:'每份300克'}}</p>
+              <p>{{form_detail.unit?form_detail.unit:'每份300克'}}</p>
             </div>
           </div>
           <div class="adress_detail">
@@ -52,7 +52,7 @@
               <p class="word_moren">运费</p>
             </div>
             <div class="adress_right">
-              <p>{{form_detail.order_freight?'买家承担':'包邮'}}</p>
+              <p>{{form_detail.order_freight == '2'?'买家承担':'包邮'}}</p>
             </div>
           </div>
         </div>
@@ -97,7 +97,7 @@ export default {
   },
   computed:{
     goods_detail_html(){
-      return this.form_detail.desc?this.form_detail.desc:
+      return this.form_detail.detail?this.form_detail.detail:
       `<img src="/static/img/a1.jpg" style="width:50px;height:50px">
       <img src="/static/img/a1.jpg" style="width:50px;height:50px">
       <img src="/static/img/a1.jpg" style="width:50px;height:50px">

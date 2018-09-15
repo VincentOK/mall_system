@@ -5,12 +5,12 @@
             <h4>新增商品</h4>
             <div class="form-box">
                 <el-form ref="form" :model="form" :rules="rules" label-width="120px">
-                    <el-form-item label="图片轮播图" prop="uploadImg">
+                    <!-- <el-form-item label="图片轮播图" prop="uploadImg">
                       <div class="el-upload-collect">
                         <p>（最多5张）</p>
                         <div class="el-upload-right">
                             <el-upload
-                                action="https://jsonplaceholder.typicode.com/posts/"
+                                action="../../common/request/addStoreCommodity"
                                 list-type="picture-card"
                                 :limit="5"
                                 :on-preview="handlePictureCardPreview"
@@ -20,71 +20,76 @@
                             </el-upload>
                         </div>
                     </div>
+                    </el-form-item> -->
+                    <el-form-item label="商品名称:" prop="commodityName">
+                        <el-input v-model="form.commodityName" placeholder="请输入不超过20个字"></el-input>
                     </el-form-item>
-                    <el-form-item label="商品名称:" prop="goodsName">
-                        <el-input v-model="form.goodsName" placeholder="请输入不超过20个字"></el-input>
+                    <el-form-item label="出售规格:" prop="unit">
+                        <el-input v-model="form.unit" placeholder="请选择商品出售的单位规格，如“每份 300克”、“一双”" maxlength="20"></el-input>
                     </el-form-item>
-                    <el-form-item label="出售规格:" prop="specifications">
-                        <el-input v-model="form.specifications" placeholder="请选择商品出售的单位规格，如“每份 300克”、“一双”" maxlength="20"></el-input>
+                    <el-form-item label="实际售价:" prop="realityPrice">
+                        <el-input v-model="form.realityPrice" type="number" placeholder="请输入单位实际售价" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'></el-input>
                     </el-form-item>
-                    <el-form-item label="实际售价:" prop="actual_price">
-                        <el-input v-model="form.actual_price" type="number" placeholder="请输入单位实际售价" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'></el-input>
+                    <el-form-item label="建议售价:" prop="suggestPrice">
+                        <el-input v-model="form.suggestPrice" type="number" placeholder="请输入单位建议售价，即删除线价格" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'></el-input>
                     </el-form-item>
-                    <el-form-item label="建议售价:" prop="suggest_price">
-                        <el-input v-model="form.suggest_price" type="number" placeholder="请输入单位建议售价，即删除线价格" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'></el-input>
-                    </el-form-item>
-                    <el-form-item label="剩余库存:" prop="goods_desc">
-                        <el-input v-model="form.goods_desc" type="number" placeholder="请输入剩余库存" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'></el-input>
+                    <el-form-item label="剩余库存:" prop="inventory">
+                        <el-input v-model="form.inventory" type="number" placeholder="请输入剩余库存" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'></el-input>
                     </el-form-item>
                     <div class="el_radio_freight">
                       <el-form-item label="快递运费:" prop="order_freight">
-                          <el-radio-group v-model="form.order_freight" prop='order_freight'>
-                              <el-radio label="包邮"></el-radio>
-                              <el-radio label="买家承担"></el-radio>
+                          <el-radio-group v-model="form.order_freight">
+                              <el-radio label="1">包邮</el-radio>
+                              <el-radio label="2">买家承担</el-radio>
                           </el-radio-group>
                       </el-form-item>
-                      <el-form-item prop="input_freight" class="input_freight">
-                        <el-input v-model="form.input_freight" placeholder="请输入每笔订单买家需付的运费" type="number" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'></el-input>
+                      <el-form-item prop="carriage" class="input_freight" v-if="form.order_freight == '2'">
+                        <el-input v-model="form.carriage" placeholder="请输入每笔订单买家需付的运费" type="number" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'></el-input>
                       </el-form-item>
                     </div>
                     <div class="button_bottom">
-                      <el-form-item label="买家支付渠道" class="the-buyer" prop="buy_type">
+                      <el-form-item label="买家支付渠道" class="the-buyer" prop="payType">
                         <div class="the_buyer_type">
                           <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
-                          <el-checkbox-group v-model="form.buy_type" @change="handleCheckedCitiesChange">
-                            <el-checkbox v-for="buytype in checkedBuyTypes" :label="buytype" :key="buytype">{{buytype}}</el-checkbox>
+                          <el-checkbox-group v-model="form.payType" @change="handleCheckedCitiesChange">
+                            <el-checkbox v-for="buytype in checkedBuyTypes" :label="buytype" :key="buytype">{{buytypeString(buytype)}}</el-checkbox>
+                            <!-- <el-checkbox label="1">微信支付</el-checkbox>
+                            <el-checkbox label="2">支付宝支付</el-checkbox>
+                            <el-checkbox label="3">银行卡支付</el-checkbox> -->
                           </el-checkbox-group>
                         </div>
                       </el-form-item>
-                      <el-form-item label="支持退货" prop="returned_goods">
-                          <el-radio-group v-model="form.returned_goods">
-                              <el-radio label="是"></el-radio>
-                              <el-radio label="否"></el-radio>
+                      <el-form-item label="支持退货" prop="salesReturn">
+                          <el-radio-group v-model="form.salesReturn">
+                              <el-radio label="Y">是</el-radio>
+                              <el-radio label="N">否</el-radio>
                           </el-radio-group>
                       </el-form-item>
                       <el-form-item label="可提供发票" prop="invoice">
                           <el-radio-group v-model="form.invoice">
-                              <el-radio label="是"></el-radio>
-                              <el-radio label="否"></el-radio>
+                              <el-radio label="Y">是</el-radio>
+                              <el-radio label="N">否</el-radio>
                           </el-radio-group>
                       </el-form-item>
-                      <el-form-item label="可提供发票类型" class="the-buyer" prop="invoice_type">
+                      <el-form-item label="可提供发票类型" class="the-buyer" prop="invoiceType">
                         <div class="the_buyer_type">
                           <el-checkbox :indeterminate="invoiceIndeterminate" v-model="checkAllInvoice" @change="handleCheckAllInvoiceChange">全选</el-checkbox>
-                          <el-checkbox-group v-model="form.invoice_type" @change="handleCheckedInvoiceChange">
-                            <el-checkbox v-for="invoiceType in checkedInvoiceTypes" :label="invoiceType" :key="invoiceType">{{invoiceType}}</el-checkbox>
+                          <el-checkbox-group v-model="form.invoiceType" @change="handleCheckedInvoiceChange">
+                            <el-checkbox v-for="invoiceType in checkedInvoiceTypes" :label="invoiceType" :key="invoiceType">{{invoiceString(invoiceType)}}</el-checkbox>
+                            <!-- <el-checkbox label="1">普通发票</el-checkbox>
+                            <el-checkbox label="2">增值税专业发票</el-checkbox> -->
                           </el-checkbox-group>
                         </div>
                       </el-form-item>
                     </div>
-                    <el-form-item label="商品详情：" prop="desc" class="goods_desc">
+                    <el-form-item label="商品详情：" prop="detail" class="goods_desc">
                         <P class="">（请进一步描述商品，或注意事项）</P>
+                        <div class="edit_container">
+                      <quill-editor ref="myTextEditor" v-model="form.detail" :options="editorOption"></quill-editor>
+                    </div>
                     </el-form-item>
-                    <div class="edit_container">
-                          <quill-editor ref="myTextEditor" v-model="form.desc" :options="editorOption"></quill-editor>
-                        </div>
                     <el-form-item class="product-details">
-                      <el-checkbox v-model="form.product_details"></el-checkbox>&nbsp;&nbsp;参与商城促销计划<span style="color:red;">（推荐）</span>
+                      <el-checkbox v-model="form.promotion" true-label="Y" false-label="N"></el-checkbox>&nbsp;&nbsp;参与商城促销计划<span style="color:red;">（推荐）</span>
                       <el-tooltip class="tooltip_item" effect="dark" placement="right">
                         <div slot="content">该选项旨在为商品提供更利于出售的商品位。您若勾选此选项，<br>则表示同意时间商城有权随时将您的商品移至/撤出“限时抢购”<br>专区，商城将不再另行通知。该规则若有变更，时间商城将向<br>您发送通知，并同时默认您同意新的变更。</div>
                         <img src="static/img/hover_tooplip.png" class="tooplip_img">
@@ -123,6 +128,7 @@ import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
 import { quillEditor } from "vue-quill-editor";
 import previewDialog from "./preview_dialog/PreviewDialog.vue";
+import { addStoreCommodity } from "../../common/request/request";
 export default {
   name: "baseform",
   components: {
@@ -130,6 +136,7 @@ export default {
     previewDialog
   },
   data: function() {
+    let self = this;
     return {
       dialogImageUrl: "",
       dialogVisible: false,
@@ -137,8 +144,8 @@ export default {
       searchGoodsName: 0,
       checkAll: false,
       checkAllInvoice: false,
-      checkedBuyTypes: ["微信支付", "支付宝支付", "银行卡支付"],
-      checkedInvoiceTypes: ["普通发票", "增值税专业发票"],
+      checkedBuyTypes: [1, 2, 3],
+      checkedInvoiceTypes: [1, 2],
       isIndeterminate: false,
       invoiceIndeterminate: false,
       editorOption: {
@@ -154,56 +161,79 @@ export default {
         }
       },
       form: {
-        goodsName: "",
-        specifications: "",
-        actual_price: null,
-        suggest_price: null,
-        goods_desc: "",
-        order_freight: "",
-        input_freight: "",
-        buy_type: ["微信支付"],
-        returned_goods: "否",
-        invoice: "否",
-        invoice_type: ["普通发票"],
-        product_details: true,
-        desc: ""
+        commodityName: "",
+        unit: "",
+        realityPrice: "",
+        suggestPrice: null,
+        inventory: "",
+        order_freight: "1",
+        carriage: null,
+        payType: [1],
+        salesReturn: "N",
+        invoice: "N",
+        invoiceType: [1],
+        promotion: "Y",
+        detail: ""
       },
       rules: {
         uploadImg: [
-          {required: true, message: "至少一张图片", trigger: "blur" }
+          { required: true, message: "至少一张图片", trigger: "blur" }
         ],
-        goodsName: [
+        commodityName: [
           { required: true, message: "请输入商品名称", trigger: "blur" },
-          { min: 3, max: 20, message: "长度在 3 到 20 个字符", trigger: "blur" }
+          { min: 0, max: 20, message: "长度在 1 到 20 个字符", trigger: "blur" }
         ],
-        specifications: [
+        unit: [
           { required: true, message: "请输入商品规格", trigger: "blur" },
-          { min: 2, max: 10, message: "长度在 2 到 10 个字符", trigger: "blur" }
+          { min: 0, max: 17, message: "长度在 1 到 17 个字符", trigger: "blur" }
         ],
-        actual_price: [
-          { required: true, message: "请输入实际售价", trigger: "blur" },
-          { max: 10, message: "少于10位数", trigger: "blur" }
+        realityPrice: [
+          { required: false, message: "请输入实际售价", trigger: "blur" },
+          { max: 7, message: "少于7位数", trigger: "blur" },
+          {
+            validator: function(rule, value, callback) {
+              if (Boolean(self.form.suggestPrice)) {
+                if (Number(value) < Number(self.form.suggestPrice)) {
+                  callback();
+                } else {
+                  callback(new Error("实际售价价格需小于建议售价"));
+                }
+              } else {
+                callback();
+              }
+            },
+            trigger: "blur"
+          }
         ],
-        suggest_price: [
+        suggestPrice: [
           { required: true, message: "请输入建议售价", trigger: "blur" },
-          { max: 10, message: "少于10位数", trigger: "blur" }
+          {
+            validator: function(rule, value, callback) {
+              if (Number(value) > Number(self.form.realityPrice)) {
+                callback();
+              } else {
+                callback(new Error("建议售价价格需大于实际售价"));
+              }
+            },
+            trigger: "blur"
+          }
         ],
-        goods_desc: [
+        inventory: [
           { required: true, message: "请输入剩余库存", trigger: "blur" },
-          { max: 10, message: "少于10位数", trigger: "blur" }
+          { min: 0, max: 7, message: "少于10位数", trigger: "blur" }
         ],
         order_freight: [
           { required: true, message: "请选择运费方式", trigger: "change" }
         ],
-        input_freight: [
+        carriage: [
           {
             required: true,
             message: "请输入每笔订单买家需付的运费",
             trigger: "blur"
           },
-          { max: 10, message: "少于10位数", trigger: "blur" }
+          { max: 6, message: "请输入1~6位数", trigger: "blur" }
         ],
-        buy_type: [
+        payType: [
           {
             type: "array",
             required: true,
@@ -211,7 +241,7 @@ export default {
             trigger: "change"
           }
         ],
-        returned_goods: [
+        salesReturn: [
           {
             required: true,
             message: "请选择是否支持退货",
@@ -225,7 +255,7 @@ export default {
             trigger: "change"
           }
         ],
-        invoice_type: [
+        invoiceType: [
           {
             type: "array",
             required: true,
@@ -233,15 +263,40 @@ export default {
             trigger: "change"
           }
         ],
-        desc: [{ required: true, message: "必填", trigger: "blur" }]
+        detail: [{ required: true, message: "必填", trigger: "blur" }]
       }
     };
   },
+  // computed:{
+  //   validateSuggestPrice(rule, value, callback) {
+  //     if (!value) {
+  //       return callback();
+  //     }else{
+  //       if(Number(value) > Number(self.form.realityPrice)){
+  //         return callback();
+  //       }else{
+  //         callback(new Error("建议售价价格需大于实际售价"))
+  //       }
+  //     }
+  //   }
+  // },
   methods: {
     submitForm(formName) {
-      this.$refs[formName].validate(valid => {
+      let self = this;
+      self.$refs[formName].validate(valid => {
         if (valid) {
-          this.$message.success("提交成功！");
+          let param = JSON.parse(JSON.stringify(self.form));
+          param.realityPrice = Number(param.realityPrice);
+          param.suggestPrice = Number(param.suggestPrice);
+          param.inventory = Number(param.inventory);
+          param.carriage = Number(param.carriage);
+          addStoreCommodity(param)
+            .then(res => {
+              console.log(res);
+            })
+            .catch(err => {
+              console.log(err);
+            });
         } else {
           this.$message.error("提交失败!");
           return false;
@@ -271,11 +326,11 @@ export default {
       return isImage && isLt2M;
     },
     handleCheckAllChange(val) {
-      this.form.buy_type = val ? this.checkedBuyTypes : [];
+      this.form.payType = val ? this.checkedBuyTypes : [];
       this.isIndeterminate = false;
     },
     handleCheckAllInvoiceChange(val) {
-      this.form.invoice_type = val ? this.checkedInvoiceTypes : [];
+      this.form.invoiceType = val ? this.checkedInvoiceTypes : [];
       this.invoiceIndeterminate = false;
     },
     handleCheckedCitiesChange(value) {
@@ -285,6 +340,28 @@ export default {
     handleCheckedInvoiceChange(value) {
       let checkedCount = value.length;
       this.checkAllInvoice = checkedCount === this.checkedInvoiceTypes.length;
+    },
+    buytypeString(value) {
+      switch (value) {
+        case 1:
+          return "微信支付";
+        case 2:
+          return "支付宝支付";
+        case 3:
+          return "银行卡支付";
+        default:
+          return;
+      }
+    },
+    invoiceString(value) {
+      switch (value) {
+        case 1:
+          return "普通发票";
+        case 2:
+          return "增值税专用发票";
+        default:
+          return;
+      }
     }
   }
 };
@@ -345,7 +422,7 @@ export default {
   top: 7px;
 }
 .edit_container {
-  margin-left: 30px;
+  margin-left: -100px;
 }
 .preview_wrap {
   position: relative;

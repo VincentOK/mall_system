@@ -223,12 +223,12 @@
                         <div class="title_first">3.3.1 乙方需要停止店铺服务的，应至少提前七个工作日向甲方提出申请，经甲方审核同意后由甲方停止该店铺的服务功能；</div>
                         <div class="title_first">3.3.2 出现以下任一情形时，甲方有权随时停止乙方相关店铺的服务；</div>
                         <div class="title_first" style="text-indent: 60px">3.3.2.1 乙方不满足入驻条件的； </div>
-                        <div class="title_first"style="text-indent: 60px">3.3.2.2 乙方提供虚假资质文件的； </div>
-                        <div class="title_first"style="text-indent: 60px">3.3.2.3 乙方未完成承诺销售额的；</div>
-                        <div class="title_first"style="text-indent: 60px">3.3.2.4 乙方产品价格、规格等信息标示错误，导致行政处罚、争议和纠纷的；</div>
-                        <div class="title_first"style="text-indent: 60px">3.3.2.5 乙方产品质量、标识不合格的，或者产品涉嫌走私、假冒伪劣、旧货、返修品的；</div>
-                        <div class="title_first"style="text-indent: 60px">3.3.2.6 乙方连续30（三十）日或累计45（四十五）日未正常经营店铺的；</div>
-                        <div class="title_first"style="text-indent: 60px">3.3.2.7 其他违反本协议约定或“时间商城”规则的，或者其他甲方认为侵犯“时间商城”或消费者权益的。</div>
+                        <div class="title_first" style="text-indent: 60px">3.3.2.2 乙方提供虚假资质文件的； </div>
+                        <div class="title_first" style="text-indent: 60px">3.3.2.3 乙方未完成承诺销售额的；</div>
+                        <div class="title_first" style="text-indent: 60px">3.3.2.4 乙方产品价格、规格等信息标示错误，导致行政处罚、争议和纠纷的；</div>
+                        <div class="title_first" style="text-indent: 60px">3.3.2.5 乙方产品质量、标识不合格的，或者产品涉嫌走私、假冒伪劣、旧货、返修品的；</div>
+                        <div class="title_first" style="text-indent: 60px">3.3.2.6 乙方连续30（三十）日或累计45（四十五）日未正常经营店铺的；</div>
+                        <div class="title_first" style="text-indent: 60px">3.3.2.7 其他违反本协议约定或“时间商城”规则的，或者其他甲方认为侵犯“时间商城”或消费者权益的。</div>
 
 
                         <div class="title_first" style="text-indent: 0">3.4 乙方未经甲方同意，擅自停止店铺经营，或者乙方因为出现（3.3.2）情形被甲方停止店铺服务的，乙方管理后台账户中的未结算金额，将按违约造成的平台损害计算，扣除相应金额作为乙方向甲方支付的违约金，该金额不足以冲抵乙方应付违约金和赔偿金时，乙方应另行支付差额。</div>

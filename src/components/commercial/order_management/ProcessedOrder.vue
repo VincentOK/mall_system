@@ -5,7 +5,7 @@
         <div class="table">
             <div class="container">
                 <div class="handle-box">
-                    <span class="good-total">共10.231个商品</span>
+                    <span class="good-total">共{{listRefundOrderDataTotal}}个商品</span>
                     <!--<span class="ordering-rule" v-show="activeName == 'second'">排序规则：-->
                     <!--<el-select v-model="select_cate" placeholder="请选择排序规则" class="handle-select mr10">-->
                     <!--&lt;!&ndash; <el-option key="1" label="广东省" value="广东省"></el-option>-->
@@ -19,12 +19,12 @@
                     <!--</span>-->
 
                     <span class="ordering-rule" style="left: 50%">结算状态：
-                    <el-select v-model="select_cate" placeholder="全部订单" class="handle-select mr10">
-                    <el-option key="1" label="全部订单" value="全部订单"></el-option>
-                    <el-option key="2" label="已完成" value="已完成"></el-option>
-                    <el-option key="3" label="已退款" value="已退款"></el-option>
-                    <el-option key="4" label="待收货" value="待收货"></el-option>
-                    <el-option key="5" label="已拒绝发货" value="已拒绝发货" class="last-el-option"></el-option>
+                    <el-select v-model="select_cate" placeholder="请选择状态" @change="chooseStatus" class="handle-select mr10">
+                    <el-option key="1" label="全部订单" value="0"></el-option>
+                    <el-option key="2" label="已发货订单" value="3"></el-option>
+                    <el-option key="3" label="已退款订单" value="5"></el-option>
+                    <el-option key="4" label="已完成订单" value="6"></el-option>
+                    <el-option key="5" label="拒绝发货订单" value="7" class="last-el-option"></el-option>
                     </el-select>
                     </span>
 
@@ -40,22 +40,22 @@
                     <!--</span>-->
                     <span class="search-option">
                     <el-input v-model="select_word" placeholder="按商品名称搜索" class="handle-input mr10"></el-input>
-                    <el-button type="primary" icon="search" @click="search">搜索</el-button>
-                    <el-button class="clear-button" type="default" icon="search" @click="search">清空</el-button>
+                    <el-button type="primary" icon="search" @click="search()">搜索</el-button>
+                    <!--<el-button class="clear-button" type="default" icon="search" @click="search">清空</el-button>-->
                 </span>
                 </div>
-                    <el-table :data="data"  ref="multipleTable" :header-cell-style="getRowClass" @selection-change="handleSelectionChange">
-                        <el-table-column prop="name" label="商品" :formatter="formatter"></el-table-column>
-                        <el-table-column prop="name" label="出售规格" width="100"></el-table-column>
-                        <el-table-column prop="address" label="购买数量" :formatter="formatter">
+                    <el-table :data="listRefundOrderData"  ref="multipleTable" :header-cell-style="getRowClass">
+                        <el-table-column prop="commodityName" label="商品" :formatter="formatter.commodityName"></el-table-column>
+                        <el-table-column prop="unit" label="出售规格" :formatter="formatter.unit" width="100"></el-table-column>
+                        <el-table-column prop="count" label="购买数量" :formatter="formatter.count">
                         </el-table-column>
-                        <el-table-column prop="address" label="支付金额" :formatter="formatter">
+                        <el-table-column prop="totalPrice" label="支付金额" :formatter="formatter.totalPrice">
                         </el-table-column>
-                        <el-table-column prop="address" label="收货人" :formatter="formatter"></el-table-column>
-                        <el-table-column prop="address" label="收货地址" :formatter="formatter"></el-table-column>
-                        <el-table-column prop="address" label="手机号码" :formatter="formatter"></el-table-column>
-                        <el-table-column prop="date" label="下单时间" :formatter="formatter"></el-table-column>
-                        <el-table-column prop="address" label="订单状态" :formatter="formatter"></el-table-column>
+                        <el-table-column prop="shippingName" label="收货人" :formatter="formatter.shippingName"></el-table-column>
+                        <el-table-column prop="address" label="收货地址" :formatter="formatter.address"></el-table-column>
+                        <el-table-column prop="shippingPhone" label="手机号码" :formatter="formatter.shippingPhone"></el-table-column>
+                        <el-table-column prop="orderTime" label="下单时间" :formatter="formatter.orderTime"></el-table-column>
+                        <el-table-column prop="orderStatus" label="订单状态" :formatter="formatter.orderStatus"></el-table-column>
                         <el-table-column label="操作" align="center">
                             <template slot-scope="{row,$index}">
                                 <el-button size="small" type="text" style="color:#66b1ff;"
@@ -66,147 +66,276 @@
                     <div class="pagination">
                         <el-pagination
                             background
-                            @size-change="handleSizeChange"
                             @current-change="handleCurrentChange"
-                            :page-size="100"
-                            :pager-count="11"
+                            :page-size="pageSize"
+                            :pager-count="cur_page"
                             layout="prev, pager, next, jumper"
-                            :total="1000">
+                            :total="listRefundOrderDataTotal">
                         </el-pagination>
                     </div>
             </div>
 
             <!-- 详情弹出框 -->
-            <el-dialog id="viewDetail" v-bind:title="'订单详情-'+editVisibleTitle" :visible.sync="editVisible" width="40%" :lock-scroll='true' top="200px">
+            <el-dialog id="viewDetail" v-if="goodsDetail" v-bind:title="'订单详情-'+editVisibleTitle" :visible.sync="editVisible" width="40%" :lock-scroll='true' top="200px">
                 <div class="goods_detail">
                     <el-scrollbar style="height:300px;">
-                        <div v-show="returnMoney">
-                            <h4>退款信息</h4>
+                        <!--已退款-->
+                        <div  v-if="returnMoney">
+                            <div>
+                                <h4>退款信息</h4>
+                                <div class="one_detail">
+                                    <div class="goods_detail_left">
+                                        <div>
+                                            联系人：<label>{{goodsDetail.refundInfo.realName}}</label>
+                                        </div>
+                                        <div>
+                                            申请原因：<label>{{goodsDetail.refundInfo.reason}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="goods_detail_right">
+                                        <div>
+                                            联系电话：<label>{{goodsDetail.refundInfo.linkPhone}}</label>
+                                        </div>
+                                        <div>
+                                            问题描述：<label>{{goodsDetail.refundInfo.describes}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slider_img">
+                                    <template>
+                                        <el-carousel :interval="5000" arrow="always" height="180px">
+                                            <el-carousel-item v-for="(item,index) in goodsDetail.imgList" :key="index">
+                                                <img :src="item.imgUrl" width="100%" height="100%" alt="">
+                                            </el-carousel-item>
+                                        </el-carousel>
+                                        <p style="text-align: center">问题轮播图(共{{goodsDetail.imgList.length}}张)</p>
+                                    </template>
+                                </div>
+                                <h4>商品退还路径</h4>
+                                <div class="one_detail">
+                                    <div class="goods_detail_left">
+                                        <div>
+                                            收件人：<label>{{goodsDetail.refundPath.shipping_name}}</label>
+                                        </div>
+                                        <div>
+                                            联系电话：<label>{{goodsDetail.refundPath.shipping_phone}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="goods_detail_right">
+                                        <div>
+                                            收货地址：<label>{{goodsDetail.refundPath.address}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h4>订单信息</h4>
                             <div class="one_detail">
                                 <div class="goods_detail_left">
                                     <div>
-                                        联系人：<label>阿曼达</label>
+                                        商品名称：<label>{{goodsDetail.orderInfo.commodityName}}</label>
                                     </div>
                                     <div>
-                                        申请原因：<label>发错货</label>
+                                        出售规格：<label>{{goodsDetail.orderInfo.unit}}</label>
+                                    </div>
+                                    <div>
+                                        购买数量：<label>{{goodsDetail.orderInfo.count}}</label>
+                                    </div>
+                                    <div v-show="returnGoods">
+                                        下单时间：<label>{{goodsDetail.orderInfo.orderTime}}</label>
+                                    </div>
+                                    <div v-show="goodsOk">
+                                        快递公司：<label>快递公司{{goodsDetail.orderInfo.unit}}</label>
+                                    </div>
+                                    <div v-show="goodsOk">
+                                        快递单号：<label>快递单号{{goodsDetail.orderInfo.unit}}</label>
+                                    </div>
+
+                                </div>
+                                <div class="goods_detail_right">
+                                    <div>
+                                        订单号：<label>{{goodsDetail.orderInfo.orderNumber}}</label>
+                                    </div>
+                                    <div>
+                                        支付流水号：<label>{{goodsDetail.orderInfo.payNumber}}</label>
+                                    </div>
+                                    <div>
+                                        支付金额：<label>{{goodsDetail.orderInfo.totalPrice}}</label>
+                                    </div>
+                                    <div v-show="goodsOk">
+                                        下单时间：<label>{{goodsDetail.orderInfo.orderTime}}</label>
+                                    </div>
+                                    <div v-show="returnGoods">
+                                        拒绝发货原因：<label>拒绝发货原因{{goodsDetail.orderInfo.orderNumber}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <h4>买家信息</h4>
+                            <div class="one_detail">
+                                <div class="goods_detail_left">
+                                    <div>
+                                        买家昵称：<label>{{goodsDetail.buyersInfo.nickName}}</label>
+                                    </div>
+                                    <div>
+                                        手机号：<label>{{goodsDetail.buyersInfo.shippingPhone}}</label>
                                     </div>
                                 </div>
                                 <div class="goods_detail_right">
                                     <div>
-                                        联系电话：<label>183****4866</label>
+                                        收货人：<label>{{goodsDetail.buyersInfo.shippingName}}</label>
                                     </div>
                                     <div>
-                                        问题描述：<label>物品本身有问题，描述不准确。</label>
+                                        收货地址：<label>{{goodsDetail.buyersInfo.address}}</label>
                                     </div>
                                 </div>
                             </div>
-                            <div class="slider_img">
-                                <template>
-                                    <el-carousel :interval="5000" arrow="always" height="180px">
-                                        <el-carousel-item v-for="(item,index) in sliders" :key="index">
-                                            <img :src="item.img" width="100%" height="100%" alt="">
-                                        </el-carousel-item>
-                                    </el-carousel>
-                                    <p style="text-align: center">问题轮播图(共{{sliders.length}}张)</p>
-                                </template>
-                            </div>
-                            <h4>商品退还路径</h4>
-                            <div class="one_detail">
-                                <div class="goods_detail_left">
-                                    <div>
-                                        收件人：<label>阿曼达</label>
+                            <div>
+                                <h4>发票相关信息<label class="buy_notive">*买家想你索要了发票，请将发票与商品一同寄出</label></h4>
+                                <div class="one_detail">
+                                    <div class="goods_detail_left">
+                                        <div>
+                                            买家索要发票：<label>{{goodsDetail.invoiceInfo.blag}}</label>
+                                        </div>
+                                        <div>
+                                            发票单位名称：<label>{{goodsDetail.invoiceInfo.nameEntity}}</label>
+                                        </div>
                                     </div>
-                                    <div>
-                                        联系电话：<label>183****4866</label>
-                                    </div>
-                                </div>
-                                <div class="goods_detail_right">
-                                    <div>
-                                        收货地址：<label>广东省深圳市南山区天刹金牛广场</label>
+                                    <div class="goods_detail_right">
+                                        <div>
+                                            发票类型：<label>{{goodsDetail.invoiceInfo.typeName}}</label>
+                                        </div>
+                                        <div>
+                                            纳税人识别号：<label>{{goodsDetail.invoiceInfo.identifyNumber}}</label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-
-                        <h4>订单信息</h4>
-                        <div class="one_detail">
-                            <div class="goods_detail_left">
-                                <div>
-                                    商品名称：<label>山东烟台苹果</label>
-                                </div>
-                                <div>
-                                    出售规格：<label>每份300克</label>
-                                </div>
-                                <div>
-                                    购买数量：<label>3</label>
-                                </div>
-                                <div v-show="returnGoods">
-                                    下单时间：<label>2018-08-20</label>
-                                </div>
-                                <div v-show="goodsOk">
-                                    快递公司：<label>顺丰快递</label>
-                                </div>
-                                <div v-show="goodsOk">
-                                    快递单号：<label>XXXXXX</label>
-                                </div>
-
-                            </div>
-                            <div class="goods_detail_right">
-                                <div>
-                                    订单号：<label>JFU008899665</label>
-                                </div>
-                                <div>
-                                    支付流水号：<label>JFU008899665</label>
-                                </div>
-                                <div>
-                                    支付金额：<label>￥188.00</label>
-                                </div>
-                                <div v-show="goodsOk">
-                                    下单时间：<label>2018-08-20</label>
-                                </div>
-                                <div v-show="returnGoods">
-                                    拒绝发货原因：<label>暂时缺货，无法及时供货</label>
-                                </div>
-                            </div>
-                        </div>
-                        <h4>买家信息</h4>
-                        <div class="one_detail">
-                            <div class="goods_detail_left">
-                                <div>
-                                    买家昵称：<label>阿曼达</label>
-                                </div>
-                                <div>
-                                    手机号：<label>18376614866</label>
-                                </div>
-                            </div>
-                            <div class="goods_detail_right">
-                                <div>
-                                    收货人：<label>大头老师</label>
-                                </div>
-                                <div>
-                                    收货地址：<label>广东省深圳市男生区田厦金牛广场</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div v-show="returnMoney">
-                            <h4>发票相关信息<label class="buy_notive">*买家想你索要了发票，请将发票与商品一同寄出</label></h4>
+                        <!--已发货和已完成-->
+                        <div v-if="goodsOk">
+                            <h4>订单信息</h4>
                             <div class="one_detail">
                                 <div class="goods_detail_left">
                                     <div>
-                                        买家索要发票：<label>是</label>
+                                        商品名称：<label>{{goodsDetail.commodityName}}</label>
                                     </div>
                                     <div>
-                                        发票单位名称：<label>您好时间科技有限公司</label>
+                                        出售规格：<label>{{goodsDetail.unit}}</label>
+                                    </div>
+                                    <div>
+                                        购买数量：<label>{{goodsDetail.count}}</label>
+                                    </div>
+                                    <div v-show="returnGoods">
+                                        下单时间：<label>{{goodsDetail.orderTime}}</label>
+                                    </div>
+                                    <div>
+                                        快递公司：<label>{{goodsDetail.logisticsName}}</label>
+                                    </div>
+                                    <div>
+                                        快递单号：<label>{{goodsDetail.logisticsNumber}}</label>
+                                    </div>
+
+                                </div>
+                                <div class="goods_detail_right">
+                                    <div>
+                                        订单号：<label>{{goodsDetail.orderNumber}}</label>
+                                    </div>
+                                    <div>
+                                        支付流水号：<label>{{goodsDetail.payNumber}}</label>
+                                    </div>
+                                    <div>
+                                        支付金额：<label>{{goodsDetail.totalPrice}}</label>
+                                    </div>
+                                    <div v-show="goodsOk">
+                                        下单时间：<label>{{goodsDetail.orderTime}}</label>
+                                    </div>
+                                    <div v-show="returnGoods">
+                                        拒绝发货原因：<label>拒绝发货原因{{goodsDetail.orderNumber}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <h4>买家信息</h4>
+                            <div class="one_detail">
+                                <div class="goods_detail_left">
+                                    <div>
+                                        买家昵称：<label>{{goodsDetail.nickName}}</label>
+                                    </div>
+                                    <div>
+                                        手机号：<label>{{goodsDetail.shippingPhone}}</label>
                                     </div>
                                 </div>
                                 <div class="goods_detail_right">
                                     <div>
-                                        发票类型：<label>增值税专用发票</label>
+                                        收货人：<label>{{goodsDetail.shippingName}}</label>
                                     </div>
                                     <div>
-                                        纳税人识别号：<label>Xs556a33552</label>
+                                        收货地址：<label>{{goodsDetail.address}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <h4>发票相关信息<label class="buy_notive">*买家想你索要了发票，请将发票与商品一同寄出</label></h4>
+                                <!--<div class="one_detail">-->
+                                    <!--<div class="goods_detail_left">-->
+                                        <!--<div>-->
+                                            <!--买家索要发票：<label>{{goodsDetail.blag}}</label>-->
+                                        <!--</div>-->
+                                        <!--<div>-->
+                                            <!--发票单位名称：<label>{{goodsDetail.nameEntity}}</label>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                    <!--<div class="goods_detail_right">-->
+                                        <!--<div>-->
+                                            <!--发票类型：<label>{{goodsDetail.typeName}}</label>-->
+                                        <!--</div>-->
+                                        <!--<div>-->
+                                            <!--纳税人识别号：<label>{{goodsDetail.identifyNumber}}</label>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            </div>
+                        </div>
+
+                        <!--已拒绝发货-->
+                        <div v-if="returnGoods">
+                            <h4>订单信息</h4>
+                            <div class="one_detail">
+                                <div class="goods_detail_left">
+                                    <div>
+                                        商品名称：<label>{{goodsDetail.commodityName}}</label>
+                                    </div>
+                                    <div>
+                                        出售规格：<label>{{goodsDetail.unit}}</label>
+                                    </div>
+                                    <div>
+                                        购买数量：<label>{{goodsDetail.count}}</label>
+                                    </div>
+                                    <div>
+                                        下单时间：<label>{{goodsDetail.orderTime}}</label>
+                                    </div>
+                                </div>
+                                <div class="goods_detail_right">
+                                    <div>
+                                        拒绝发货原因：<label>拒绝发货原因{{goodsDetail.reason}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <h4>买家信息</h4>
+                            <div class="one_detail">
+                                <div class="goods_detail_left">
+                                    <div>
+                                        买家昵称：<label>{{goodsDetail.nickName}}</label>
+                                    </div>
+                                    <div>
+                                        手机号：<label>{{goodsDetail.shippingPhone}}</label>
+                                    </div>
+                                </div>
+                                <div class="goods_detail_right">
+                                    <div>
+                                        收货人：<label>{{goodsDetail.shippingName}}</label>
+                                    </div>
+                                    <div>
+                                        收货地址：<label>{{goodsDetail.address}}</label>
                                     </div>
                                 </div>
                             </div>
@@ -223,6 +352,14 @@
 </template>
 
 <script>
+    import {
+        listRefundOrder,
+        orderDetailrefund,
+        getShippedSend,
+        orderDetail,
+        getNoSendDetail
+    } from "../../common/request/request";
+    import {mapState, mapMutations,mapActions} from 'vuex'
     export default {
         name: "basetable",
         props: {
@@ -233,20 +370,20 @@
         },
         data() {
             return {
-                editVisibleTitle:'',
-                url: "/static/vuetable.json",
-                dateValue: "",
-                tableData: [],
-                cur_page: 1,
-                multipleSelection: [],
-                select_cate: "",
-                select_word: "",
-                del_list: [],
-                is_search: false,
-                editVisible:false,
+                listRefundOrderData:null,//列表数据
+                listRefundOrderDataTotal:null,//列表总数
+                cur_page: 1,//页码
+                pageSize:15,//每页行数
+
+                select_cate: "",//下拉框
+                select_word: "",//搜索框输入值
+                editVisibleTitle:'',//弹框标题
+                editVisible:false,//弹出框
                 returnGoods:false,//已拒绝发货
-                goodsOk:false,//已发货
+                goodsOk:false,//已发货,已完成
                 returnMoney:false,//已退款状态
+
+                goodsDetail:null,//商品详情
                 idx: -1,
                 sliders:[
                     {
@@ -272,29 +409,12 @@
             };
         },
         created() {
-            this.getData();
+            this.getData(this.cur_page,this.pageSize,this.userInfo.uid,this.select_word,this.select_cate);
         },
         computed: {
-            data() {
-                return this.tableData.filter(d => {
-                    let is_del = false;
-                    for (let i = 0; i < this.del_list.length; i++) {
-                        if (d.name === this.del_list[i].name) {
-                            is_del = true;
-                            break;
-                        }
-                    }
-                    if (!is_del) {
-                        if (
-                            d.address.indexOf(this.select_cate) > -1 &&
-                            (d.name.indexOf(this.select_word) > -1 ||
-                                d.address.indexOf(this.select_word) > -1)
-                        ) {
-                            return d;
-                        }
-                    }
-                });
-            },
+            ...mapState([
+                'userInfo'
+            ]),
             containerStyle() {
                 return {
                     transform:`translate3d(${this.distance}px, 0, 0)`
@@ -302,77 +422,109 @@
             }
         },
         methods: {
-            handleSizeChange(val) {
-                console.log(`每页 ${val} 条`);
-            },
-            handleCurrentChange(val) {
-                console.log(`当前页: ${val}`);
-            },
-            // 分页导航
+            /**
+             * 分页
+             */
             handleCurrentChange(val) {
                 this.cur_page = val;
-                this.getData();
+                this.getData(val,this.pageSize,this.userInfo.uid,this.select_word,this.select_cate);
             },
-            // 获取 easy-mock 的模拟数据
-            getData() {
-                // 开发环境使用 easy-mock 数据，正式环境使用 json 文件
-                if (process.env.NODE_ENV === "development") {
-                    this.url = "/ms/table/list";
-                }
-                this.$axios
-                    .post(this.url, {
-                        page: this.cur_page
-                    })
-                    .then(res => {
-                        console.log("JSON:"+JSON.stringify(res))
-                        this.tableData = res.data.list;
-                        for (var i = 0; i < res.data.list.length; i++) {
-                            this.$set(this.tableData[i], "showEdit", false);
-                        }
-                    });
+            /**
+             * 获取已处理订单列表数据
+             */
+            getData(pageNumber,pageSize,tenantUid,keyword,orderStatus) {
+                listRefundOrder(pageNumber,pageSize,tenantUid,keyword,orderStatus).then(res =>{
+                    console.log(res);
+                    if (res.code === "0"){
+                        this.listRefundOrderData = res.data.dataList
+                        this.listRefundOrderDataTotal= res.data.total
+                    }
+                }).catch(err =>{
+                    console.log(err)
+                })
             },
-            forTableIndex() {
-                // for (var i = 0; i < 100; i++) {
-                //   this.showEdit[i] = false;
-                //   this.$set(this.showEdit[i], false);
-                // }
-            },
+            /**
+             * 搜索
+             * @param val
+             */
             search() {
-                this.is_search = true;
+                this.getData(this.cur_page,this.pageSize,this.userInfo.uid,this.select_word,this.select_cate);
             },
+            /**
+             *
+             */
+            chooseStatus(){
+                this.getData(this.cur_page,this.pageSize,this.userInfo.uid,this.select_word,this.select_cate);
+            },
+            /**
+             * 列表数据
+             * @param row
+             * @param column
+             * @returns {*}
+             */
             formatter(row, column) {
-                return row.address;
+                return row;
             },
-            filterTag(value, row) {
-                return row.tag === value;
-            },
-            plusMath() {
-                console.log(234235);
-            },
-            subtractMath() {
-                console.log(28888);
-            },
+            /**
+             * 点击查看详情弹出详情框
+             * @param index
+             * @param row
+             */
             viewDetails(index, row) {
-                console.log(index,row)
-                console.log(row.name)
-                this.editVisibleTitle = '已拒绝发货'
+                console.log(index,row);
 
-                this.returnGoods = false;//拒绝发货
-                this.returnMoney = true;//已退款
-                this.goodsOk = false;//已发货
+                if(row.orderStatus === '已发货' || row.orderStatus === '已完成'){
+                    getShippedSend(row.orderNumber).then(res =>{
+                        console.log(res)
+                        if(res.code === "0"){
+                            this.editVisibleTitle = row.orderStatus;
+                            this.editVisible=true;//弹出框
+                            this.returnGoods=false;//已拒绝发货
+                            this.goodsOk=true;//已发货,已完成
+                            this.returnMoney=false;//已退款状态
+                            this.goodsDetail = res.data
+                        }else {
+                            this.$message.error(res.msg)
+                        }
+                    }).catch(err =>{
+                        this.$message.error(err)
+                    });
+                }else if(row.orderStatus === '已退款'){
+                    orderDetailrefund(row.orderNumber).then(res =>{
+                        console.log(res);
+                        if(res.code === "0"){
+                            this.editVisibleTitle = row.orderStatus;
+                            this.editVisible=true;//弹出框
+                            this.returnGoods=false;//已拒绝发货
+                            this.goodsOk=false;//已发货,已完成
+                            this.returnMoney=true;//已退款状态
+                            this.goodsDetail = res.data
+                        }else {
+                            this.$message.error(res.msg)
+                        }
+                    }).catch(err =>{
+                        this.$message.error(err)
+                    });
 
-                this.editVisible = true;
+                }else if(row.orderStatus === '拒绝发货'){
+                    getNoSendDetail(row.orderNumber).then(res =>{
+                        console.log(res)
+                        if(res.code === "0"){
+                            this.editVisibleTitle = row.orderStatus;
+                            this.editVisible=true;//弹出框
+                            this.returnGoods=true;//已拒绝发货
+                            this.goodsOk=false;//已发货,已完成
+                            this.returnMoney=false;//已退款状态
+                            this.goodsDetail = res.data
+                        }else {
+                            this.$message.error(res.msg)
+                        }
+                    }).catch(err =>{
+                        this.$message.error(err)
+                    });
+                }
             },
-            handleEdit(index, row) {
-                this.idx = index;
-                const item = this.tableData[index];
-                item.showEdit = true;
-                // this.showEdit[index] = true;
-                // this.$set(this.showEdit, row, true);
-            },
-            handleSave(index, row) {
-                this.ConfirmTheDelivery = true;
-            },
+
             //拒绝退款
             handleDelete(index, row) {
                 console.log(index,row)
@@ -394,41 +546,20 @@
                 this.refund_name = row.name;
                 this.notagreeVisible = true;
             },
+            /**
+             * 表格头背景色
+             * @param row
+             * @param column
+             * @param rowIndex
+             * @param columnIndex
+             * @returns {string}
+             */
             getRowClass({ row, column, rowIndex, columnIndex }) {
                 if (rowIndex == 0) {
                     return "background:#FCE4E4;height:60px;color:#606266;";
                 } else {
                     return "";
                 }
-            },
-            // delAll() {
-            //     const length = this.multipleSelection.length;
-            //     let str = '';
-            //     this.del_list = this.del_list.concat(this.multipleSelection);
-            //     for (let i = 0; i < length; i++) {
-            //         str += this.multipleSelection[i].name + ' ';
-            //     }
-            //     this.$message.error('删除了' + str);
-            //     this.multipleSelection = [];
-            // },
-            handleSelectionChange(val) {
-                this.multipleSelection = val;
-            },
-            //确认发货
-            DeliveryRow(){
-                this.ConfirmTheDelivery = false;
-            },
-            //拒绝发货
-            notdelVisible(){
-                this.delVisible = false;
-            },
-            //同意退款
-            agreedelVisible(){
-                this.agreeVisible = false;
-            },
-            //拒绝退款
-            notagreedelVisible(){
-                this.notagreeVisible = false;
             },
 
 

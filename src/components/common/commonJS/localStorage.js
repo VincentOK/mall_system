@@ -1,11 +1,11 @@
 export const setStorage = (key,val) =>{
-    window.localStorage.setItem(key,val);
+    window.sessionStorage.setItem(key,val);
 };
 export const getStorage = (name) =>{
     if (!name) return;
-    return window.localStorage.getItem(name);
+    return window.sessionStorage.getItem(name);
 };
 export const removeStorage = (name) =>{
     if (!name) return;
-    return window.localStorage.removeItem(name);
+    return window.sessionStorage.removeItem(name);
 };

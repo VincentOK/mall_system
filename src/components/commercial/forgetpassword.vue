@@ -10,24 +10,33 @@
             <div class="container" style="border: none">
                 <div class="form-box" style="margin: auto;width: 400px;margin-top: 200px;margin-bottom: 350px">
                     <el-form ref="form" :rules="rules" :model="form" label-width="150px">
-                        <el-form-item label="用户名：" prop="username">
-                            <el-input v-model="form.username" placeholder="" maxlength="20"></el-input>
-                        </el-form-item>
-                        <el-form-item label="手机号码:" prop="phone">
-                            <el-input v-model.number="form.phone" type="number" placeholder="" maxlength="20" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'></el-input>
+                        <el-form-item label="手机号码:"  prop="userPhone">
+                            <el-input v-model.number="form.userPhone"  type="number" placeholder="请输入手机号码" maxlength="11" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'></el-input>
                         </el-form-item>
 
-                        <el-form-item label="验证码" class="getcode" prop="loginname">
-                            <button  v-show="show" class="redcolor" @click="getCode">发送验证码</button>
-                            <button  v-show="!show" class="greycolor" :disabled="true">{{count}}s</button>
-                            <el-input v-model="form.loginname"></el-input>
+                        <el-form-item label="验证码" class="getcode" prop="captcha">
+                            <span  v-show="show" class="redcolor" @click="getCode(form.userPhone)">发送验证码</span>
+                            <span  v-show="!show" class="greycolor" :disabled="true">{{count}}s</span>
+                            <el-input v-model="form.captcha" placeholder="请输入短信验证码"></el-input>
                         </el-form-item>
-                        <el-form-item label="新密码" prop="loginpassword">
-                            <el-input v-model="form.loginpassword"></el-input>
+
+
+
+                        <el-form-item label="密码" prop="password">
+                            <el-input type="password" v-model="form.password" placeholder="请输入新密码" auto-complete="off"></el-input>
                         </el-form-item>
-                        <el-form-item label="确认密码" prop="againpassword">
-                            <el-input v-model="form.againpassword"></el-input>
+                        <el-form-item label="确认密码" prop="checkPass">
+                            <el-input type="password" v-model="form.checkPass" placeholder="请再次输入新密码" auto-complete="off"></el-input>
                         </el-form-item>
+
+
+                        <!--<el-form-item label="新密码" prop="newPassWord" >-->
+                            <!--<el-input v-model="form.newPassWord"  auto-complete="off"></el-input>-->
+                        <!--</el-form-item>-->
+                        <!--<el-form-item label="确认密码" prop="againpassword">-->
+                            <!--<el-input v-model="form.againpassword"  auto-complete="off"></el-input>-->
+                        <!--</el-form-item>-->
+
                         <el-form-item class="submit-button" style="margin: 0;float: right">
                             <router-link :to="'/login'" class="goback_login">< 返回登陆页&nbsp;</router-link>
                             <el-button type="primary" @click="onSubmit('form')">确认提交</el-button>
@@ -40,10 +49,39 @@
 </template>
 
 <script>
-    import { sendPhoneCode } from "../common/request/request";
+    import { forgotPasswordSubmit,forgetPhoneCode } from "../common/request/request";
+    import { isvalidPhone } from "../common/commonJS/commonjs";
     export default {
         name: "forgrtpassword",
         data(){
+            let validatePass = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('请输入密码'));
+                } else {
+                    if (this.form.checkPass !== '') {
+                        this.$refs.form.validateField('checkPass');
+                    }
+                    callback();
+                }
+            };
+            let validatePass2 = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('请再次输入密码'));
+                } else if (value !== this.form.password) {
+                    callback(new Error('两次输入密码不一致!'));
+                } else {
+                    callback();
+                }
+            };
+            let validPhone=(rule, value,callback)=>{
+                if (!value){
+                    callback(new Error('请输入手机号码'))
+                }else  if (!isvalidPhone(value)){
+                    callback(new Error('请输入正确的11位手机号码'))
+                }else {
+                    callback()
+                }
+            };
             return {
                 show: true,
                 count: '',
@@ -51,33 +89,52 @@
 
 
                 form: {
-                    username: "",
-                    phone: null,
-                    loginname:'',
-                    loginpassword:'',
-                    againpassword:'',
+                    userPhone: null,
+                    captcha:'',
+                    password:'',
+                    checkPass:'',
                 },
                 rules:{
-                    username: [
-                        {required: true, message: "请联系人姓名", trigger: "blur" }
+                    userPhone: [
+                        { required: true, trigger: 'blur', validator: validPhone }//这里需要用到全局变量
                     ],
-                    phone: [
-                        {required: true, message: "请输入手机号码", trigger: "blur"}
+                    captcha: [
+                        {required: true, message: "请输入验证码", trigger: "blur" }
                     ],
-                    loginname: [
-                        {required: true, message: "请输入用户名", trigger: "blur" }
+                    password: [
+                        {required: true, validator: validatePass, trigger: 'blur' }
                     ],
-                    loginpassword: [
-                        {required: true, message: "请输入登陆密码", trigger: "blur" }
-                    ],
-                    againpassword: [
-                        {required: true, message: "请再次输入密码", trigger: "blur" }
+                    checkPass: [
+                        {required: true, validator: validatePass2, trigger: 'blur' }
                     ],
                 }
             };
         },
         methods: {
-            getCode(){
+            /**
+             * 获取短信验证码
+             */
+            getCode(val){
+                forgetPhoneCode(val).then(res =>{
+                    console.log(res);
+                    if(res.code === "0"){
+                        this.$message('发送验证码成功');
+                        this.getTimeer();
+                    }else {
+                        this.$message.error(res.msg)
+                    }
+                }).catch(err =>{
+                    console.log(err)
+                })
+            },
+            /**
+             * 倒计时
+             * @param formName
+             */
+            /**
+             * 获取验证码倒计时
+             */
+            getTimeer(){
                 const TIME_COUNT = 60;
                 if (!this.timer) {
                     this.count = TIME_COUNT;
@@ -97,7 +154,16 @@
                 this.$refs[formName].validate(valid => {
                     if (valid) {
                         console.log(JSON.stringify(this.form));
-                        this.$message.success("提交成功！");
+                        forgotPasswordSubmit(this.form).then(res =>{
+                            console.log(res);
+                            if(res.code ==="0"){
+                                this.$message.success("提交成功！");
+                            }else {
+                                this.$message.error(res.msg);
+                            }
+                        }).catch(err =>{
+                            console.log(err)
+                        })
                     } else {
                         this.$message.error("提交失败!");
                         return false;

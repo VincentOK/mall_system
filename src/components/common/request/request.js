@@ -9,7 +9,8 @@ import fetch from './fetch'
  */
 export const uploadGoodsImg = ()=>{return baseUrl+'/timestoremanage/storeCommodity/uploadImages'};
 /**
- * 获取验证码
+ * 获取图形验证码
+ * @returns {string}
  */
 export const getCode = () =>{return baseUrl+'/timestoremanage/common/captcha'};
 /**
@@ -37,22 +38,7 @@ export const userLoginaaa=(username,password,captcha) =>fetch('/timestoremanage/
  * @param msgObj
  * @returns {Promise<*>}
  */
-export const userRegister = (msgObj) =>fetch('/timestoremanage/register',{
-    userName:msgObj.userName,
-    password:msgObj.password,
-    commercialType:msgObj.commercialType,
-    commercialName:msgObj.commercialName,
-    commercialIntroduction:msgObj.commercialIntroduction,
-    linkPhone:msgObj.linkPhone,
-    linkName:msgObj.linkName,
-    bankNo:msgObj.bankNo,
-    cardNo:msgObj.cardNo,
-    cardFrontImgPath:msgObj.cardFrontImgPath,
-    cardBackImgPath:msgObj.cardBackImgPath,
-    creditCode:msgObj.creditCode,
-    licenseImgPath:msgObj.licenseImgPath,
-    otherImgPath:msgObj.otherImgPath
-},'POST',true);
+export const userRegister = (msgObj) =>fetch('/timestoremanage/register',msgObj,'POST',true);
 
 /**
  * 检验商户名是否可用
@@ -62,27 +48,152 @@ export const userRegister = (msgObj) =>fetch('/timestoremanage/register',{
 export const checkUser = (val) =>fetch('/timestoremanage/common/queryUserNameOrCommercialName',val,'POST');
 
 /**
- * 发送短信验证码
+ * 商户注册发送短信验证码
  * @param phone
  * @returns {Promise<*>}
  */
-export const sendPhoneCode = (phone) =>fetch('/timestoremanage/common/forgotPasswordSendVcode',{
-    phoneNum:phone
+export const sendPhoneCode = (phone) =>fetch('/timestoremanage/common/regSendVcode',{
+    userPhone:phone
+},'POST');
+
+/**
+ * 忘记密码发送短信验证码
+ * @param phone
+ * @returns {Promise<*>}
+ */
+export const forgetPhoneCode = (phone) =>fetch('/timestoremanage/common/forgotPasswordSendVcode',{
+    userPhone:phone
 },'POST');
 
 
+/**
+ * 获取待发货列表
+ * @param pageNumber
+ * @param pageSize
+ * @param tenantUid
+ * @param keyword
+ * @returns {Promise<*>}
+ */
 export const getUntreatedOrdersList = (pageNumber,pageSize,tenantUid,keyword) =>fetch('/timestoremanage/order/listStaySend',{
     pageNumber:pageNumber,
     pageSize:pageSize,
     tenantUid:tenantUid,
     keyword:keyword
-},'POST');
+},'POST',true);
 /**
- * 获取首页默认地址
+ * 根据订单号获取订单详情(待发货订单)
+ * @param orderNumber
+ * @returns {Promise<*>}
  */
+export const orderDetail = (orderNumber) =>fetch('/timestoremanage/order/getStaySendOrderDetail',{
+    orderNumber:orderNumber
+},'POST',true);
 
-export const testa = (pageNumber) => fetch('storeTimecoin/listTop', {
-    pageNumber,
-},'POST');
+/**
+ * 确认发货
+ * @param orderNumber 订单号
+ * @param logisticsName 快递公司
+ * @param logisticsNumber 快递单号
+ * @returns {Promise<*>}
+ * @constructor
+ */
+export const ConfirmDelivery = (form) =>fetch('/timestoremanage/order/confrimSend',{
+    orderNumber:form.ordernumber,
+    logisticsName:form.logisticsName,
+    logisticsNumber:form.logisticsNumber
+},'POST',true);
 
-export const getList = () => fetch('', {user_id:getStorage('user_name')});
+/**
+ * 拒绝发货
+ * @param form
+ * @returns {Promise<*>}
+ * @constructor
+ */
+export const RefuseDelivery = (form) =>fetch('/timestoremanage/order/noSend',{
+    orderNumber:form.orderNumber,
+    reason:form.surereason
+},'POST',true);
+/**
+ * 获取待退款列表
+ * @param pageNumber  页码
+ * @param pageSize  每页行数
+ * @param tenantUid 商户id
+ * @returns {Promise<*>}
+ */
+export const listRefund = (pageNumber,pageSize,tenantUid) =>fetch('/timestoremanage/order/listRefund',{
+    pageNumber:pageNumber,
+    pageSize:pageSize,
+    tenantUid:tenantUid
+},'POST',true);
+
+/**
+ * 同意退款
+ * @param form
+ * @returns {Promise<*>}
+ */
+export const confrimRefund = (form) =>fetch('/timestoremanage/order/confrimRefund',{
+    uid:form.uid,
+    shippingName:form.shippingName,
+    shippingPhone:form.shippingPhone,
+    shippingAddress:form.shippingAddress,
+    detailAddress:form.detailAddress,
+},'POST',true);
+
+/**
+ * 获取已处理订单列表
+ * @param pageNumber
+ * @param pageSize
+ * @param tenantUid
+ * @param keyword
+ * @param orderStatus
+ * @returns {Promise<*>}
+ */
+export const listRefundOrder =(pageNumber,pageSize,tenantUid,keyword,orderStatus) =>fetch('/timestoremanage/order/listRefundOrder',{
+    pageNumber:pageNumber,
+    pageSize:pageSize,
+    tenantUid:tenantUid,
+    keyword:keyword,
+    orderStatus:orderStatus
+},'POST',true);
+
+/**
+ * 获取待退款订单详情
+ * @param orderNumber
+ * @returns {Promise<*>}
+ */
+export const orderDetailrefund = (orderNumber) =>fetch('/timestoremanage/order/getRefundDetail',{
+    orderNumber:orderNumber
+},'POST',true);
+/**
+ * 已发货订单详情
+ * @param orderNumber
+ * @returns {Promise<*>}
+ */
+export const getShippedSend = (orderNumber) =>fetch('/timestoremanage/order/getShippedSend',{
+    orderNumber:orderNumber
+},'POST',true);
+
+/**
+ * 已拒绝发货订单详情
+ * @param orderNumber
+ * @returns {Promise<*>}
+ */
+export const getNoSendDetail = (orderNumber) =>fetch('/timestoremanage/order/getNoSendDetail',{
+    orderNumber:orderNumber
+},'POST',true);
+
+/**
+ * 忘记密码提交修改
+ * @param params
+ * @returns {Promise<*>}
+ */
+export const forgotPasswordSubmit = (params) =>fetch('/timestoremanage/common/forgotPasswordSubmit',{
+        userPhone:params.userPhone,
+        captcha:params.captcha,
+        newPassWord:params.password
+},'POST',true);
+/**
+ * 退出登录
+ * @type {Promise<*>}
+ */
+export const loginout = ()=>fetch('/timestoremanage/sysUser/logout',{},'POST');

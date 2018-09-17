@@ -86,7 +86,8 @@
 import { mapState } from "vuex";
 import {
   countEarnings,
-  settlementApplication
+  settlementApplication,
+  addBillingDetails
 } from "../../common/request/request";
 export default {
   name: "incomeDetail",
@@ -94,7 +95,7 @@ export default {
     return {
       tenantUid: "",
       ruleForm: {
-        backMoney: "",
+        backMoney: null,
         payee: `阿曼达`,
         banknumber: "464546456454543",
         backname: "中国银行"
@@ -154,11 +155,12 @@ export default {
       });
     },
     commitIncome() {
+      let self = this;
       this.incomeDialog = false;
-      getCountEarnings(this.tenantUid).then(res => {
+      addBillingDetails(this.tenantUid,this.ruleForm.backMoney).then(res => {
         if (res.data) {
-          // self.countEarnings = res.data.countEarnings;
-          // self.tenantInfo = res.data.tenantInfo;
+          self.$message.success("提交成功");
+          self.ruleForm.backMoney=null;
         } else {
           console.log("");
         }

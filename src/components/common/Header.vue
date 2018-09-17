@@ -73,6 +73,7 @@
 <script>
     import { removeStorage } from "./commonJS/localStorage";
     import {  loginout } from "./request/request";
+    import {mapState} from 'vuex'
     import bus from "../common/bus";
 export default {
   data() {
@@ -130,6 +131,9 @@ export default {
     };
   },
   computed: {
+      ...mapState([
+          'userInfo'
+      ]),
     username() {
       let username = localStorage.getItem("ms_username");
       return username ? username : this.name;

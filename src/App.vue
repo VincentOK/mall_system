@@ -53,4 +53,7 @@ input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{
 input[type="number"]{
   -moz-appearance:textfield;
 }
+.imgWidth img{
+  width: 100%;
+}
 </style>

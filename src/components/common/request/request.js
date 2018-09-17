@@ -177,6 +177,7 @@ export const loginout = () => fetch('/timestoremanage/sysUser/logout', {}, 'POST
 
 //新增商品
 export const addStoreCommodity = (param) => fetch('/timestoremanage/storeCommodity/add', {
+    tenantUid: param.tenantUid,
     commodityName: param.commodityName,
     unit: param.unit,
     realityPrice: param.realityPrice,
@@ -278,7 +279,17 @@ export const settlementApplication = (tenantUid, price) => fetch('/timestoremana
 }, 'POST', true);
 
 //确认结算账户
-export const getCountEarnings = (tenantUid, count) => fetch('timestoremanage/account/addBillingDetails', {
+export const addBillingDetails = (tenantUid, count) => fetch('/timestoremanage/account/addBillingDetails', {
     tenantUid: tenantUid,
     count: count
+}, 'POST', true);
+
+//结算明细列表
+export const listBillingDetails = (param) => fetch('/timestoremanage/account/listBillingDetails', {
+    tenantUid: param.tenantUid,
+    startTime: param.startTime,
+    endTime: param.endTime,
+    status: param.status,
+    pageNumber: param.pageNumber,
+    pageSize: param.pageSize,
 }, 'POST', true);

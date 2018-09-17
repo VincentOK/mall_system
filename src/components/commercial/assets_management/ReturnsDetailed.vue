@@ -11,10 +11,10 @@
                     <span class="good-total">共{{total_page?total_page:0}}条记录</span>
                     <span class="ordering-rule" style="left: 50%">结算状态：
                             <el-select v-model="select_cate" placeholder="全部" class="handle-select mr10" @change="getListData">
-                            <el-option key="1" label="全部" value="1"></el-option>
-                            <el-option key="2" label="待结算" value="2"></el-option>
-                            <el-option key="3" label="结算中" value="3"></el-option>
-                            <el-option key="4" label="已结算" value="4" class="last-el-option"></el-option>
+                            <el-option key="" label="全部" value=""></el-option>
+                            <el-option key="1" label="待结算" value="1"></el-option>
+                            <el-option key="2" label="结算中" value="2"></el-option>
+                            <el-option key="3" label="已结算" value="3" class="last-el-option"></el-option>
                             </el-select>
                         </span>
                     <span class="search-option">
@@ -23,14 +23,14 @@
                     </el-date-picker>
                     </span>
                 </div>
-                <el-table :data="data" ref="multipleTable" :header-cell-style="getRowClass" @selection-change="handleSelectionChange">
-                    <el-table-column prop="date" label="结算金额"></el-table-column>
-                    <el-table-column prop="date" label="通道费（5%）"></el-table-column>
-                    <el-table-column prop="date" label="分成比例"></el-table-column>
-                    <el-table-column prop="date" label="实际到账"></el-table-column>
-                    <el-table-column prop="date" label="待结算余额"></el-table-column>
-                    <el-table-column prop="date" label="结算申请时间"></el-table-column>
-                    <el-table-column prop="address" label="结算状态"></el-table-column>
+                <el-table :data="tableData" ref="multipleTable" :header-cell-style="getRowClass" @selection-change="handleSelectionChange">
+                    <el-table-column prop="count" label="结算金额"></el-table-column>
+                    <el-table-column prop="channel" label="通道费（5%）"></el-table-column>
+                    <el-table-column prop="dividedInto" label="分成比例"></el-table-column>
+                    <el-table-column prop="actualAccount" label="实际到账"></el-table-column>
+                    <el-table-column prop="countAfter" label="待结算余额"></el-table-column>
+                    <el-table-column prop="createTime" label="结算申请时间"></el-table-column>
+                    <el-table-column prop="status" label="结算状态"></el-table-column>
                 </el-table>
                 <div class="pagination">
                     <el-pagination 
@@ -38,7 +38,6 @@
                     background 
                     @current-change="handleCurrentChange" 
                     :current-page="cur_page" 
-                    :pager-count="pages_count" 
                     layout="prev, pager, next, jumper" 
                     :total="total_page">
                     </el-pagination>
@@ -49,12 +48,17 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+import { listBillingDetails } from "../../common/request/request";
 export default {
   name: "basetable",
   data() {
     return {
+      tenantUid: "",
       url: "/static/vuetable.json",
-      dateValue: "",
+      dateValue: [],
+      startTime: "",
+      endTime: "",
       tableData: [],
       cur_page: 1,
       total_page: null,
@@ -67,28 +71,13 @@ export default {
       del_list: []
     };
   },
-  created() {},
+  mounted() {
+    let self = this;
+    self.tenantUid = self.userInfo.uid;
+    self.getlistBillingDetails();
+  },
   computed: {
-    data() {
-      return this.tableData.filter(d => {
-        let is_del = false;
-        for (let i = 0; i < this.del_list.length; i++) {
-          if (d.name === this.del_list[i].name) {
-            is_del = true;
-            break;
-          }
-        }
-        if (!is_del) {
-          if (
-            d.address.indexOf(this.select_cate) > -1 &&
-            (d.name.indexOf(this.select_word) > -1 ||
-              d.address.indexOf(this.select_word) > -1)
-          ) {
-            return d;
-          }
-        }
-      });
-    }
+    ...mapState(["userInfo"])
   },
   methods: {
     getListData() {
@@ -96,9 +85,11 @@ export default {
       this.$nextTick(function() {
         this.paginationShow = true;
       });
+      this.getlistBillingDetails();
     },
     handleCurrentChange(val) {
       this.cur_page = val;
+      this.getlistBillingDetails();
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {
       if (rowIndex == 0) {
@@ -109,6 +100,33 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
+    },
+    getlistBillingDetails() {
+      let self = this;
+      if (Boolean(self.dateValue) && self.dateValue.length > 0) {
+        self.startTime = self.dateValue[0];
+        self.endTime = self.dateValue[1];
+      } else {
+        self.startTime = "";
+        self.endTime = "";
+      }
+      let param = {
+        tenantUid: self.tenantUid,
+        startTime: self.startTime,
+        endTime: self.endTime,
+        status:self.select_cate,
+        pageNumber: self.cur_page,
+        pageSize: 10,
+      };
+      listBillingDetails(param).then(res => {
+        if (res.data) {
+          self.tableData = res.data.dataList;
+          self.total_page = res.data.total;
+          self.pageSize = res.data.pageSize;
+        } else {
+          console.log("");
+        }
+      });
     }
   }
 };

@@ -68,7 +68,7 @@ export default async(url, data = {}, type = 'GET', loading = false, configType =
                     }
                 })
                 .catch(function(error) {
-                    tryHideFullScreenLoading()
+                    tryHideFullScreenLoading();
                     reject(error)
                 })
         }

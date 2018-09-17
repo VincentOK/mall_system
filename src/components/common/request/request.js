@@ -3,16 +3,6 @@
  */
 import { baseUrl } from './url'
 import fetch from './fetch'
-import { getStorage } from "../commonJS/localStorage";
-import { Decrypt } from "../commonJS/secert";
-let token = null;
-if (getStorage('token')) {
-    try {
-        token = Decrypt(getStorage('token'));
-    } catch (e) {
-        alert('token值不存在')
-    }
-}
 /**
  * 上传files图片
  *
@@ -32,38 +22,11 @@ export const userLogin = (username, password, captcha) => fetch('/timestoremanag
     captcha: captcha
 }, 'POST', true);
 /**
- * 测试接口
- * @param username
- * @param password
- * @param captcha
- * @returns {Promise<*>}
- */
-export const userLoginaaa = (username, password, captcha) => fetch('/timestoremanage/storeCommodity/add', {
-    userName: username,
-    password: password,
-    captcha: captcha
-}, 'POST');
-/**
  * 商户入驻申请
  * @param msgObj
  * @returns {Promise<*>}
  */
-export const userRegister = (msgObj) => fetch('/timestoremanage/register', {
-    userName: msgObj.userName,
-    password: msgObj.password,
-    commercialType: msgObj.commercialType,
-    commercialName: msgObj.commercialName,
-    commercialIntroduction: msgObj.commercialIntroduction,
-    linkPhone: msgObj.linkPhone,
-    linkName: msgObj.linkName,
-    bankNo: msgObj.bankNo,
-    cardNo: msgObj.cardNo,
-    cardFrontImgPath: msgObj.cardFrontImgPath,
-    cardBackImgPath: msgObj.cardBackImgPath,
-    creditCode: msgObj.creditCode,
-    licenseImgPath: msgObj.licenseImgPath,
-    otherImgPath: msgObj.otherImgPath
-}, 'POST', true);
+export const userRegister = (msgObj) => fetch('/timestoremanage/register', msgObj, 'POST', true);
 
 /**
  * 检验商户名是否可用
@@ -88,16 +51,6 @@ export const getUntreatedOrdersList = (pageNumber, pageSize, tenantUid, keyword)
     tenantUid: tenantUid,
     keyword: keyword
 }, 'POST');
-/**
- * 获取首页默认地址
- */
-
-export const testa = (pageNumber) => fetch('storeTimecoin/listTop', {
-    pageNumber,
-}, 'POST');
-
-export const getList = () => fetch('', { user_id: getStorage('user_name') });
-
 /**
  * 忘记密码发送短信验证码
  * @param phone

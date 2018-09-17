@@ -33,10 +33,10 @@
                         <el-input v-model="form.unit" placeholder="请选择商品出售的单位规格，如“每份 300克”、“一双”" maxlength="20"></el-input>
                     </el-form-item>
                     <el-form-item label="实际售价:" prop="realityPrice">
-                        <el-input v-model="form.realityPrice" type="number" placeholder="请输入单位实际售价" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'></el-input>
+                        <el-input v-model="form.realityPrice" type="number" placeholder="请输入单位实际售价" onkeypress='return(/[\d\.]/.test(String.fromCharCode(event.keyCode)))'></el-input>
                     </el-form-item>
                     <el-form-item label="建议售价:" prop="suggestPrice">
-                        <el-input v-model="form.suggestPrice" type="number" placeholder="请输入单位建议售价，即删除线价格" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'></el-input>
+                        <el-input v-model="form.suggestPrice" type="number" placeholder="请输入单位建议售价，即删除线价格" onkeypress='return(/[\d\.]/.test(String.fromCharCode(event.keyCode)))'></el-input>
                     </el-form-item>
                     <el-form-item label="剩余库存:" prop="inventory">
                         <el-input v-model="form.inventory" type="number" placeholder="请输入剩余库存" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'></el-input>
@@ -49,7 +49,7 @@
                           </el-radio-group>
                       </el-form-item>
                       <el-form-item prop="carriage" class="input_freight" v-if="form.order_freight == '2'">
-                        <el-input v-model="form.carriage" placeholder="请输入每笔订单买家需付的运费" type="number" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'></el-input>
+                        <el-input v-model="form.carriage" placeholder="请输入每笔订单买家需付的运费" type="number" onkeypress='return(/[\d\.]/.test(String.fromCharCode(event.keyCode)))'></el-input>
                       </el-form-item>
                     </div>
                     <div class="button_bottom">
@@ -159,6 +159,7 @@ export default {
   data: function() {
     let self = this;
     return {
+      uid: "",
       uploadUrl: "",
       dialogImageUrl: "",
       dialogVisible: false,
@@ -187,6 +188,7 @@ export default {
         }
       },
       form: {
+        tenantUid: "",
         imageList: [],
         commodityName: "",
         unit: "",
@@ -309,6 +311,7 @@ export default {
   // },
   mounted() {
     let self = this;
+    self.uid = self.userInfo.uid;
     this.uploadUrl = uploadGoodsImg();
     payTypeList()
       .then(res => {
@@ -325,16 +328,19 @@ export default {
         console.log(err);
       });
   },
+  computed: {
+    ...mapState(["userInfo"])
+  },
   methods: {
     setImage(file) {
       const isImage = /\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(file.name);
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      const isLt2M = file.size / 1024 / 1024 < 1;
 
       if (!isImage) {
         this.$message.error("上传图片只能是Image格式!");
       }
       if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
+        this.$message.error("上传头像图片大小不能超过 1MB!");
       }
       return isImage && isLt2M;
     },
@@ -349,13 +355,17 @@ export default {
       self.$refs[formName].validate(valid => {
         if (valid) {
           let param = JSON.parse(JSON.stringify(self.form));
+          param.tenantUid = self.uid;
           param.realityPrice = Number(param.realityPrice);
           param.suggestPrice = Number(param.suggestPrice);
           param.inventory = Number(param.inventory);
           param.carriage = Number(param.carriage);
           addStoreCommodity(param)
             .then(res => {
-              self.$router.push({path: "./onlineManagement",query:{ activeName:'third'}});
+              self.$router.push({
+                path: "./onlineManagement",
+                query: { activeName: "third" }
+              });
             })
             .catch(err => {
               console.log(err);

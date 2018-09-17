@@ -38,7 +38,7 @@
                         <!--</el-form-item>-->
 
                         <el-form-item class="submit-button" style="margin: 0;float: right">
-                            <router-link :to="'/login'" class="goback_login">< 返回登陆页&nbsp;</router-link>
+                            <router-link :to="'/login'" class="goback_login">&lt; 返回登陆页&nbsp;</router-link>
                             <el-button type="primary" @click="onSubmit('form')">确认提交</el-button>
                         </el-form-item>
                     </el-form>

@@ -2,10 +2,10 @@
     <div class="conent_all_h5">
     <div class="title_i">
         <el-carousel indicator-position="none">
-            <el-carousel-item>
-              <img class="detail_img" src="/static/img/a1.jpg">
+            <el-carousel-item v-for="(item,index) in form_detail.imageList" :key="index">
+              <img class="detail_img" :src="item.imgUrl">
             </el-carousel-item>
-            <el-carousel-item>
+            <!-- <el-carousel-item>
             <img class="detail_img" src="/static/img/a1.jpg">
             </el-carousel-item>
             <el-carousel-item>
@@ -13,14 +13,14 @@
             </el-carousel-item>
             <el-carousel-item>
             <img class="detail_img" src="/static/img/a1.jpg">
-            </el-carousel-item>
+            </el-carousel-item> -->
         </el-carousel>
     </div>
     <div>
         <div class="title_j">
           <p class="detail_tatle">
             <label class="detail_hot">热门</label>
-            <label class="word_hot">{{form_detail.commodityName?form_detail.commodityName:'秋衣毛裤毛衣裤袜'}}</label>
+            <label class="word_hot">{{form_detail.commodityName?form_detail.commodityName:'果园直供烟台红富士苹果脆甜多汁80果孕妇苹果水果一件'}}</label>
           </p>
           <p class="detail_money">
             <label class="money_real"><label class="fontM">￥</label>{{form_detail.realityPrice?form_detail.realityPrice:'60.00'}}</label>
@@ -78,7 +78,7 @@
         <div class="null_div"></div>
         <div class="detail_detail">
           <p>商品详情</p>
-          <p v-html="goods_detail_html">
+          <p class="imgWidth" v-html="goods_detail_html">
           </p>
         </div>
         <div class="buy_it">
@@ -98,12 +98,7 @@ export default {
   computed:{
     goods_detail_html(){
       return this.form_detail.detail?this.form_detail.detail:
-      `<img src="/static/img/a1.jpg" style="width:50px;height:50px">
-      <img src="/static/img/a1.jpg" style="width:50px;height:50px">
-      <img src="/static/img/a1.jpg" style="width:50px;height:50px">
-      <img src="/static/img/a1.jpg" style="width:50px;height:50px">
-      <img src="/static/img/a1.jpg" style="width:50px;height:50px">
-      在商品描述中，商品的图片看起来更直观，特别是对于表现商品局部的细节图片，
+      `在商品描述中，商品的图片看起来更直观，特别是对于表现商品局部的细节图片，
       但是顾客无法只通过图片了解商品的所有特征。
       却忽视了需要加些文字对商品进行更细致的描述。其实这是一个非常大的误区，
       因为实体店铺卖家与顾客之间的沟通方式很直接顾客也可以直接接触商品，

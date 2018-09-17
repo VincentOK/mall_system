@@ -12,19 +12,17 @@
                 <span class="on-offer" v-show="activeName == 'first'">出售中</span>
                 <span class="on-offer" v-show="activeName == 'second'">已下架</span>
                 <span class="on-offer" v-show="activeName == 'third'">审核中</span>
-                <span class="good-total">共10.231个商品</span>
+                <span class="good-total">共{{total_page?total_page:0}}个商品</span>
                 <span class="ordering-rule" v-show="activeName == 'second'">排序规则：
-                <el-select v-model="select_cate" placeholder="请选择排序规则" class="handle-select mr10">
-                    <!-- <el-option key="1" label="广东省" value="广东省"></el-option>
-                    <el-option key="2" label="湖南省" value="湖南省"></el-option> -->
-                    <el-option key="1" label="默认" value="默认（按上架时间从近至远）"></el-option>
-                    <el-option key="2" label="按总浏览量从高至低" value="按总浏览量从高至"></el-option>
-                    <el-option key="3" label="按总浏览量从低至高" value="按总浏览量从低至"></el-option>
-                    <el-option key="4" label="按销量从高至低" value="按销量从高至低"></el-option>
-                    <el-option key="5" label="" value="按销量从低至高" class="last-el-option"></el-option>
+                <el-select v-model="select_cate" placeholder="请选择排序规则" class="handle-select mr10"  @change="getListData">
+                    <el-option key="1" label="默认（按上架时间从近至远）" value="1"></el-option>
+                    <el-option key="2" label="按总浏览量从高至低" value="2"></el-option>
+                    <el-option key="3" label="按总浏览量从低至高" value="3"></el-option>
+                    <el-option key="4" label="按销量从高至低" value="4"></el-option>
+                    <el-option key="5" label="按销量从低至高" value="5" class="last-el-option"></el-option>
                 </el-select>
                 </span>
-                <span class="ordering-rule" v-show="activeName != 'second'">结算状态：
+                <!-- <span class="ordering-rule" v-show="activeName != 'second'">结算状态：
                 <el-select v-model="select_cate" placeholder="全部" class="handle-select mr10">
                     <el-option key="1" label="默认" value="默认（按上架时间从近至远）"></el-option>
                     <el-option key="2" label="按总浏览量从高至低" value="按总浏览量从高至"></el-option>
@@ -32,55 +30,57 @@
                     <el-option key="4" label="按销量从高至低" value="按销量从高至低"></el-option>
                     <el-option key="5" label="" value="按销量从低至高" class="last-el-option"></el-option>
                 </el-select>
-                </span>
+                </span> -->
                 <span class="date-options">
                     <span class="select-date">选择日期：</span>
                     <el-date-picker
                         v-model="dateValue"
+                        @change="getListData"
                         type="daterange"
                         range-separator="~"
                         start-placeholder="开始日期"
-                        end-placeholder="结束日期">
+                        end-placeholder="结束日期"
+                        value-format=" yyyy-MM-dd" format="yyyy-MM-dd">
                         </el-date-picker>
                 </span>
                 <span class="search-option">
                     <el-input v-model="select_word" placeholder="按商品名称搜索" class="handle-input mr10"></el-input>
-                    <el-button type="primary" icon="search" @click="search">搜索</el-button>
-                    <el-button class="clear-button" type="default" icon="search" @click="search">清空</el-button>
+                    <el-button type="primary" icon="search" @click="searchQuery">搜索</el-button>
+                    <el-button class="clear-button" type="default" icon="search" @click="clearSearch">清空</el-button>
                 </span>
             </div>
-            <el-table :data="data"  ref="multipleTable" :header-cell-style="getRowClass" @selection-change="handleSelectionChange">
-                <el-table-column prop="address" label="商品" :formatter="formatter"></el-table-column>
-                <el-table-column prop="name" label="出售规格" width="100"></el-table-column>
-                <el-table-column prop="address" label="实际售价" :formatter="formatter">
+            <el-table :data="tableData"  ref="multipleTable" :header-cell-style="getRowClass" @selection-change="handleSelectionChange">
+                <el-table-column prop="commodityName" label="商品"></el-table-column>
+                <el-table-column prop="unit" label="出售规格" width="100"></el-table-column>
+                <el-table-column prop="realityPrice" label="实际售价">
                   <template slot-scope="{row,$index}">
-                    <el-input v-if="row.showEdit" v-model="row.address" size="small" style="width:120px"></el-input>
-                    <span v-if="!row.showEdit">{{row.address}}</span>
+                    <el-input v-if="row.showEdit" v-model="row.realityPrice" size="small" style="width:120px"></el-input>
+                    <span v-if="!row.showEdit">{{row.realityPrice}}</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="address" label="建议售价" :formatter="formatter">
+                <el-table-column prop="suggestPrice" label="建议售价">
                   <template slot-scope="{row,$index}">
-                    <el-input v-if="row.showEdit" v-model="row.address"  size="small" style="width:120px"></el-input>
-                    <span v-if="!row.showEdit">{{row.address}}</span>
+                    <el-input v-if="row.showEdit" v-model="row.suggestPrice"  size="small" style="width:120px"></el-input>
+                    <span v-if="!row.showEdit">{{row.suggestPrice}}</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="address" label="总浏览量" :formatter="formatter"></el-table-column>
-                <el-table-column prop="address" label="独立浏览量" :formatter="formatter"></el-table-column>
-                <el-table-column prop="address" label="已售" :formatter="formatter"></el-table-column>
-                <el-table-column prop="address" label="剩余库存" :formatter="formatter">
+                <el-table-column prop="totalBrowseNumber" label="总浏览量"></el-table-column>
+                <el-table-column prop="userBrowseNumber" label="独立浏览量"></el-table-column>
+                <el-table-column prop="sales" label="已售"></el-table-column>
+                <el-table-column prop="inventory" label="剩余库存">
                   
                   <template slot-scope="{row,$index}">
                     <div class="surplus_stock">
-                    <el-input v-if="row.showEdit" v-model="row.address"  size="small" style="width:120px">
-                      <template slot="prepend"><span @click="plusMath">+</span></template>
-                      <template slot="append"><span @click="subtractMath">-</span></template>
+                    <el-input v-if="row.showEdit" v-model="row.inventory"  size="small" style="width:120px">
+                      <template slot="prepend"><span @click="plusMath(row)">+</span></template>
+                      <template slot="append"><span @click="subtractMath(row)">-</span></template>
                     </el-input>
-                    <span v-if="!row.showEdit">{{row.address}}</span>
+                    <span v-if="!row.showEdit">{{row.inventory}}</span>
                     </div>
                   </template>
                   
                 </el-table-column>
-                <el-table-column prop="address" label="上架时间" :formatter="formatter"></el-table-column>
+                <el-table-column prop="updateTime" label="上架时间"></el-table-column>
                 <el-table-column label="操作" align="center" width="280">
                     <template slot-scope="{row,$index}">
                       <el-button size="small" type="text" style="color:#66b1ff;" 
@@ -96,13 +96,13 @@
             </el-table>
             <div class="pagination">
                  <el-pagination
+                  v-if="paginationShow"
                   background
-                  @size-change="handleSizeChange"
+                  :current-page="cur_page"
                   @current-change="handleCurrentChange"
-                  :page-size="100"
-                  :pager-count="11"
+                  :pager-count="pages_count"
                   layout="prev, pager, next, jumper"
-                  :total="1000">
+                  :total="total_page">  
                 </el-pagination>
             </div>
         </div>
@@ -111,12 +111,12 @@
         <el-dialog id="viewDetail" title="查看详情" :visible.sync="editVisible" width="40%" :lock-scroll='true' top="5vh">
             <div class="goods_detail">
               <el-scrollbar style="height:100%;">
-                <view-detail-dialog></view-detail-dialog>
+                <view-detail-dialog :commodityId="xcommodityId" :activeName="activeName"></view-detail-dialog>
               </el-scrollbar>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="editVisible = false" type="primary">批准上架</el-button>
-                <el-button  @click="saveEdit" type="info">拒绝上架</el-button>
+                <el-button @click="editVisible = false" type="primary">下架</el-button>
+                <!-- <el-button  @click="saveEdit" type="info">拒绝上架</el-button> -->
             </span>
         </el-dialog>
 
@@ -136,41 +136,70 @@
 
 <script>
 import viewDetailDialog from "./preview_dialog/viewDetailsDialog.vue";
+import { mapState } from "vuex";
+import {
+  listSell,
+  storeCommodityDetail,
+  soldOut,
+  edit,
+  listSoldOut,
+  listCheck
+} from "../../common/request/request";
+import store from "../../../store/store";
 export default {
   name: "basetable",
-  components:{
+  components: {
     viewDetailDialog
   },
-  
+
   data() {
     return {
+      uid: "",
+      xcommodityId: "",
       activeName: "first",
       url: "./static/vuetable.json",
-      dateValue: "",
+      dateValue: [],
       tableData: [],
       cur_page: 1,
+      total_page: null,
+      pages_count: null,
+      pageSize: null,
       multipleSelection: [],
       select_cate: "",
       select_word: "",
       del_list: [],
       del_value: "",
-      is_search: false,
       editVisible: false,
       delVisible: false,
+      paginationShow: true,
       form: {
         name: "",
         date: "",
         address: ""
       },
-      idx: -1,
-      
-      
+      idx: -1
     };
   },
+  // watch:{
+  //   activeName(curVal,oldVal){
+  //     if(curVal != oldVal){
+  //       this.dateValue = [];
+  //     }
+  //   }
+  // },
   created() {
-    this.getData();
+    let self = this;
+    if (self.$route.query.activeName) {
+      self.activeName = self.$route.query.activeName;
+    }
+    self.uid = self.userInfo.uid;
+    this.getlistSell();
+    // this.getlistSoldOut();
+    // this.getlistCheck();
   },
+  mounted() {},
   computed: {
+    ...mapState(["userInfo"]),
     data() {
       return this.tableData.filter(d => {
         let is_del = false;
@@ -180,53 +209,117 @@ export default {
             break;
           }
         }
-        if (!is_del) {
-          if (
-            d.address.indexOf(this.select_cate) > -1 &&
-            (d.name.indexOf(this.select_word) > -1 ||
-              d.address.indexOf(this.select_word) > -1)
-          ) {
-            return d;
-          }
-        }
       });
-    },
+    }
   },
   methods: {
     handleClick(tab, e) {
       this.activeName = tab.name;
-      console.log(tab.index, tab.name, tab.label, this.activeName);
+      if (this.dateValue.length > 0) {
+        this.dateValue = [];
+      }
+      this.paginationShow = false;
+      this.cur_page = 1;
+      this.handleCurrentChange(this.cur_page);
+      this.$nextTick(function() {
+        this.paginationShow = true;
+      });
     },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+    getListData() {
+      if (this.activeName == "first") {
+        this.getlistSell();
+      } else if (this.activeName == "second") {
+        this.getlistSoldOut();
+      } else if (this.activeName == "third") {
+        this.getlistCheck();
+      }
     },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
-    },
-    // 分页导航
     handleCurrentChange(val) {
       this.cur_page = val;
-      this.getData();
+      this.getListData();
     },
-    // 获取 easy-mock 的模拟数据
-    getData() {
-      // 开发环境使用 easy-mock 数据，正式环境使用 json 文件
-      if (process.env.NODE_ENV === "development") {
-        this.url = "/ms/table/list";
-      }
-      this.$axios
-        .post(this.url, {
-          page: this.cur_page
-        })
+    prevClick(val) {
+      let a = 0;
+    },
+    getlistSell() {
+      let self = this;
+      let param = {
+        pageNumber: this.cur_page,
+        pageSize: 10,
+        tenantUid: self.uid,
+        startTime: self.dateValue[0],
+        endTime: self.dateValue[1],
+        keyword: self.select_word
+      };
+      listSell(param)
         .then(res => {
-          this.tableData = res.data.list;
-          for (var i = 0; i < res.data.list.length; i++) {
-            this.$set(this.tableData[i], "showEdit", false);
+          console.log(res);
+          self.tableData = res.data.dataList;
+          self.total_page = res.data.total;
+          self.pages_count = res.data.pages;
+          self.pageSize = res.data.pageSize;
+          for (var i = 0; i < res.data.dataList.length; i++) {
+            self.$set(self.tableData[i], "showEdit", false);
           }
+        })
+        .catch(err => {
+          console.log(err);
         });
     },
-    search() {
-      this.is_search = true;
+    getlistSoldOut() {
+      let self = this;
+      let param = {
+        pageNumber: this.cur_page,
+        pageSize: 10,
+        tenantUid: self.uid,
+        startTime: self.dateValue[0],
+        endTime: self.dateValue[1],
+        keyword: self.select_word,
+        sort: Number(self.select_cate)
+      };
+      listSoldOut(param)
+        .then(res => {
+          self.tableData = res.data.dataList;
+          self.total_page = res.data.total;
+          self.pageSize = res.data.pageSize;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    getlistCheck() {
+      let self = this;
+      let param = {
+        pageNumber: this.cur_page,
+        pageSize: 10,
+        tenantUid: self.uid,
+        startTime: self.dateValue[0],
+        endTime: self.dateValue[1],
+        keyword: self.select_word
+      };
+      listCheck(param)
+        .then(res => {
+          self.tableData = res.data.dataList;
+          self.total_page = res.data.total;
+          self.pageSize = res.data.pageSize;
+          for (var i = 0; i < res.data.dataList.length; i++) {
+            this.$set(this.tableData[i], "showEdit", false);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    searchQuery() {
+      if (this.select_cate || this.dateValue.length || this.select_word) {
+        this.getListData();
+      }
+    },
+    clearSearch() {
+      this.select_cate = "";
+      this.dateValue = [];
+      this.select_word = "";
+      this.getListData();
     },
     formatter(row, column) {
       return row.address;
@@ -234,20 +327,22 @@ export default {
     filterTag(value, row) {
       return row.tag === value;
     },
-    plusMath() {
-      console.log(234235);
+    plusMath(row) {
+      row.inventory++;
     },
-    subtractMath() {
-      console.log(28888);
+    subtractMath(row) {
+      row.inventory--;
     },
     viewDetails(index, row) {
       const item = this.tableData[index];
-      this.form = {
-        name: item.name,
-        date: item.date,
-        address: item.address,
-        showEdit: true
-      };
+      this.xcommodityId = row.commodityId;
+
+      // this.form = {
+      //   name: item.name,
+      //   date: item.date,
+      //   address: item.address,
+      //   showEdit: true
+      // };
       this.editVisible = true;
     },
     handleEdit(index, row) {
@@ -261,17 +356,26 @@ export default {
       this.idx = index;
       const itemSave = this.tableData[index];
       itemSave.showEdit = false;
-      this.form = {
-        name: itemSave.name,
-        date: itemSave.date,
-        address: itemSave.address,
-        showEdit: false
+      // this.$set(this.tableData, this.idx, this.form);
+      let self = this;
+      let param = {
+        commodityId: row.commodityId,
+        realityPrice: row.realityPrice,
+        suggestPrice: row.suggestPrice,
+        inventory: row.inventory
       };
-      this.$set(this.tableData, this.idx, this.form);
+      edit(param).then(res => {
+        if (res.data) {
+          self.$message.success("编辑成功");
+        } else {
+          self.$message.info("接受小数点后两位");
+        }
+      });
     },
     handleDelete(index, row) {
       this.idx = index;
       this.del_value = row.name;
+      this.xcommodityId = row.commodityId;
       this.delVisible = true;
     },
     getRowClass({ row, column, rowIndex, columnIndex }) {
@@ -303,10 +407,16 @@ export default {
     // 确定删除
     deleteRow() {
       this.tableData.splice(this.idx, 1);
-      this.$message.success("下架成功");
-      this.delVisible = false;
-    },
-   
+      let self = this;
+      soldOut(this.xcommodityId)
+        .then(res => {
+          self.$message.success("下架成功");
+        })
+        .catch(err => {
+          self.$message.info("下架失败");
+        });
+      self.delVisible = false;
+    }
   }
 };
 </script>
@@ -383,6 +493,5 @@ export default {
 .goods_detail {
   height: 700px;
 }
-
 </style>
 

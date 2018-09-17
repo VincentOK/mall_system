@@ -89,7 +89,7 @@
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        console.log(JSON.stringify(this.ruleForm));
+                        // console.log(JSON.stringify(this.ruleForm));
                         // let msg = {"token":"3d8a6855-e661-458a-906f-1e602a27a910",
                         //     "sysResources":[
                         //         {icon:'shopping-icon-home-fill',index:'dashboard',title:'概览'},
@@ -151,7 +151,7 @@
                         //     this.$router.push('/admin');
                         // }
                         userLogin(this.ruleForm.username,this.ruleForm.password,this.ruleForm.checkword).then(res =>{
-                            console.log(JSON.stringify(res));
+                            // console.log(JSON.stringify(res));
                             if(res.code === '0'){
                                 this.GET_USERTOKEN(res.data.token);
                                 this.GET_USERINFO(res.data.user);

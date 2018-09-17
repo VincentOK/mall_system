@@ -5,22 +5,27 @@
             <h4>新增商品</h4>
             <div class="form-box">
                 <el-form ref="form" :model="form" :rules="rules" label-width="120px">
-                    <!-- <el-form-item label="图片轮播图" prop="uploadImg">
+                    <el-form-item label="图片轮播图" prop="imageList">
                       <div class="el-upload-collect">
+                        <!-- http://192.168.0.154:8989/timestoremanage/storeCommodity/uploadImages -->
                         <p>（最多5张）</p>
                         <div class="el-upload-right">
                             <el-upload
-                                action="../../common/request/addStoreCommodity"
+                            class="demo"
+                                v-bind:action= "uploadUrl"
+                                name="files"
                                 list-type="picture-card"
                                 :limit="5"
                                 :on-preview="handlePictureCardPreview"
+                                :on-success="handleAvatarSuccess"
                                 :on-remove="handleRemove"
-                                :before-upload="beforeAvatarUpload">
+                                :before-upload="setImage">
+                                <!-- <img v-if="cropImg" :src="cropImg" width="100px" height="100px"> -->
                                 <i class="el-icon-plus"></i>
                             </el-upload>
                         </div>
                     </div>
-                    </el-form-item> -->
+                    </el-form-item>
                     <el-form-item label="商品名称:" prop="commodityName">
                         <el-input v-model="form.commodityName" placeholder="请输入不超过20个字"></el-input>
                     </el-form-item>
@@ -52,7 +57,7 @@
                         <div class="the_buyer_type">
                           <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
                           <el-checkbox-group v-model="form.payType" @change="handleCheckedCitiesChange">
-                            <el-checkbox v-for="buytype in checkedBuyTypes" :label="buytype" :key="buytype">{{buytypeString(buytype)}}</el-checkbox>
+                            <el-checkbox v-for="buytype in checkedBuyTypes" :label="buytype" :key="buytype.typeId">{{buytype.typeName}}</el-checkbox>
                             <!-- <el-checkbox label="1">微信支付</el-checkbox>
                             <el-checkbox label="2">支付宝支付</el-checkbox>
                             <el-checkbox label="3">银行卡支付</el-checkbox> -->
@@ -75,7 +80,7 @@
                         <div class="the_buyer_type">
                           <el-checkbox :indeterminate="invoiceIndeterminate" v-model="checkAllInvoice" @change="handleCheckAllInvoiceChange">全选</el-checkbox>
                           <el-checkbox-group v-model="form.invoiceType" @change="handleCheckedInvoiceChange">
-                            <el-checkbox v-for="invoiceType in checkedInvoiceTypes" :label="invoiceType" :key="invoiceType">{{invoiceString(invoiceType)}}</el-checkbox>
+                            <el-checkbox v-for="invoiceType in checkedInvoiceTypes" :label="invoiceType" :key="invoiceType.typeId">{{invoiceType.typeName}}</el-checkbox>
                             <!-- <el-checkbox label="1">普通发票</el-checkbox>
                             <el-checkbox label="2">增值税专业发票</el-checkbox> -->
                           </el-checkbox-group>
@@ -104,7 +109,7 @@
         </div>
 
         <el-dialog :visible.sync="dialogVisible" top="5vh">
-           <img width="100%" :src="dialogImageUrl" alt="">
+           <img width="100%" :src="dialogImageUrl" alt="">  
         </el-dialog>
 
         <el-dialog :visible.sync="previewPhoneDialog" top="5vh" width="0" :show-close="false">
@@ -119,6 +124,14 @@
             <el-button type="success" class="close_buttom" @click="previewPhoneDialog = false">关闭</el-button>
           </div>
         </el-dialog>
+
+          <!-- <el-dialog title="裁剪图片" :visible.sync="dialogimgVisible" width="30%">
+                <vue-cropper ref='cropper' :src="imgSrc" :ready="cropImage" :zoom="cropImage" :cropmove="cropImage" style="width:100%;height:300px;"></vue-cropper>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="cancelCrop">取 消</el-button>
+                    <el-button type="primary" @click="dialogimgVisible = false">确 定</el-button>
+                </span>
+            </el-dialog> -->
     </div>
 </template>
 
@@ -126,26 +139,39 @@
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
+import VueCropper from "vue-cropperjs";
 import { quillEditor } from "vue-quill-editor";
 import previewDialog from "./preview_dialog/PreviewDialog.vue";
-import { addStoreCommodity } from "../../common/request/request";
+import { mapState, mapMutations, mapActions } from "vuex";
+import {
+  addStoreCommodity,
+  uploadGoodsImg,
+  payTypeList,
+  invoiceList
+} from "../../common/request/request";
 export default {
   name: "baseform",
   components: {
     quillEditor,
-    previewDialog
+    previewDialog,
+    VueCropper
   },
   data: function() {
     let self = this;
     return {
+      uploadUrl: "",
       dialogImageUrl: "",
       dialogVisible: false,
+      dialogimgVisible: false,
+      fileList: [],
+      imgSrc: "",
+      cropImg: "",
       previewPhoneDialog: false,
       searchGoodsName: 0,
       checkAll: false,
       checkAllInvoice: false,
-      checkedBuyTypes: [1, 2, 3],
-      checkedInvoiceTypes: [1, 2],
+      checkedBuyTypes: [],
+      checkedInvoiceTypes: [],
       isIndeterminate: false,
       invoiceIndeterminate: false,
       editorOption: {
@@ -161,6 +187,7 @@ export default {
         }
       },
       form: {
+        imageList: [],
         commodityName: "",
         unit: "",
         realityPrice: "",
@@ -168,15 +195,15 @@ export default {
         inventory: "",
         order_freight: "1",
         carriage: null,
-        payType: [1],
+        payType: [],
         salesReturn: "N",
         invoice: "N",
-        invoiceType: [1],
+        invoiceType: [],
         promotion: "Y",
         detail: ""
       },
       rules: {
-        uploadImg: [
+        imageList: [
           { required: true, message: "至少一张图片", trigger: "blur" }
         ],
         commodityName: [
@@ -280,7 +307,43 @@ export default {
   //     }
   //   }
   // },
+  mounted() {
+    let self = this;
+    this.uploadUrl = uploadGoodsImg();
+    payTypeList()
+      .then(res => {
+        self.checkedBuyTypes = res.data;
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    invoiceList()
+      .then(res => {
+        self.checkedInvoiceTypes = res.data;
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  },
   methods: {
+    setImage(file) {
+      const isImage = /\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(file.name);
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isImage) {
+        this.$message.error("上传图片只能是Image格式!");
+      }
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 2MB!");
+      }
+      return isImage && isLt2M;
+    },
+    cropImage() {
+      this.cropImg = this.$refs.cropper.getCroppedCanvas().toDataURL();
+    },
+    cancelCrop() {
+      this.dialogimgVisible = false;
+    },
     submitForm(formName) {
       let self = this;
       self.$refs[formName].validate(valid => {
@@ -292,7 +355,7 @@ export default {
           param.carriage = Number(param.carriage);
           addStoreCommodity(param)
             .then(res => {
-              console.log(res);
+              self.$router.push({path: "./onlineManagement",query:{ activeName:'third'}});
             })
             .catch(err => {
               console.log(err);
@@ -309,33 +372,25 @@ export default {
     handleRemove(file, fileList) {
       console.log(file, fileList);
     },
+    handleAvatarSuccess(res) {
+      let imgObject = { imgUrl: res.data };
+      this.form.imageList.push(imgObject);
+    },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
-    },
-    beforeAvatarUpload(file) {
-      const isImage = /\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(file.name);
-      const isLt2M = file.size / 1024 / 1024 < 2;
-
-      if (!isImage) {
-        this.$message.error("上传图片只能是Image格式!");
-      }
-      if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
-      }
-      return isImage && isLt2M;
     },
     handleCheckAllChange(val) {
       this.form.payType = val ? this.checkedBuyTypes : [];
       this.isIndeterminate = false;
     },
-    handleCheckAllInvoiceChange(val) {
-      this.form.invoiceType = val ? this.checkedInvoiceTypes : [];
-      this.invoiceIndeterminate = false;
-    },
     handleCheckedCitiesChange(value) {
       let checkedCount = value.length;
       this.checkAll = checkedCount === this.checkedBuyTypes.length;
+    },
+    handleCheckAllInvoiceChange(val) {
+      this.form.invoiceType = val ? this.checkedInvoiceTypes : [];
+      this.invoiceIndeterminate = false;
     },
     handleCheckedInvoiceChange(value) {
       let checkedCount = value.length;

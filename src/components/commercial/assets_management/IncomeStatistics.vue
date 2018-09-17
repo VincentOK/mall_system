@@ -155,6 +155,14 @@ export default {
     },
     commitIncome() {
       this.incomeDialog = false;
+      getCountEarnings(this.tenantUid).then(res => {
+        if (res.data) {
+          // self.countEarnings = res.data.countEarnings;
+          // self.tenantInfo = res.data.tenantInfo;
+        } else {
+          console.log("");
+        }
+      })
     },
     getCountEarnings() {
       let self = this;
@@ -183,23 +191,6 @@ export default {
       });
     }
   },
-  // filters: {
-  //   formatMoney(value) {
-  //     var html, _val;
-  //     let hasdot = value.toString().indexOf(".") > 0;
-  //     value = hasdot
-  //       ? value.toString().substr(0, value.toString().indexOf(".") + 3)
-  //       : Number(value).toFixed(2);
-  //     if (value == 0) {
-  //       value = 0;
-  //       return (html = "0.00");
-  //     } else if (value.split(".")[1].substring(1) == 0) {
-  //       value = Number(value).toFixed(2);
-  //     }
-  //     _val = value.split(".");
-  //     return (html = _val[0] + "." + _val[1]);
-  //   }
-  // }
 };
 </script>
 

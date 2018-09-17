@@ -323,3 +323,9 @@ export const settlementApplication = (tenantUid, price) => fetch('/timestoremana
     tenantUid: tenantUid,
     price: price
 }, 'POST', true);
+
+//确认结算账户
+export const getCountEarnings = (tenantUid, count) => fetch('timestoremanage/account/addBillingDetails', {
+    tenantUid: tenantUid,
+    count: count
+}, 'POST', true);

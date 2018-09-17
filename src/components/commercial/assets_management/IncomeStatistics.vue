@@ -5,19 +5,19 @@
             <h3>收益统计</h3>
             <div class="income_card">
                 <div class="total_income">
-                    <p>{{countEarnings.totalCoin}}</p>
+                    <p>{{countEarnings.totalCoin | formatMonney}}</p>
                     <p>总收益</p>
                 </div>
                 <div class="total_income">
-                    <p>{{countEarnings.availableCoin}}</p>
+                    <p>{{countEarnings.availableCoin | formatMonney}}</p>
                     <p>待结算余额</p>
                 </div>
                 <div class="total_income">
-                    <p>{{countEarnings.inCoin}}</p>
+                    <p>{{countEarnings.inCoin | formatMonney}}</p>
                     <p>已结算金额</p>
                 </div>
                 <div class="total_income">
-                    <p>{{countEarnings.countChannel}}</p>
+                    <p>{{countEarnings.countChannel | formatMonney}}</p>
                     <p>通道费(已缴)</p>
                 </div>
             </div>
@@ -30,10 +30,10 @@
                             <el-input v-model="ruleForm.backMoney" placeholder="请输入100以上的整数" type="number" class="income_money" onkeypress='return(/[\d\.]/.test(String.fromCharCode(event.keyCode)))'></el-input>
                         </el-form-item>
                         <el-form-item label="收款人:">
-                            <span>{{tenantInfo.bankUseName}}</span>
+                            <span>{{tenantInfo.bankUseName?tenantInfo.bankUseName:"张三"}}</span>
                         </el-form-item>
                         <el-form-item label="收款账户:">
-                            <span>{{tenantInfo.bankNo}}</span>
+                            <span>{{tenantInfo.bankNo?tenantInfo.bankNo:"6227 **** **** **** 187(北京银行)"}}</span>
                             <!-- <span>（{{tenantInfo.bankName}}）</span> -->
                         </el-form-item>
                     </el-form>
@@ -50,12 +50,12 @@
                 <div class="top_dialog">
                   <h4 style="color:black">确认结算至以下银行账户？</h4>
                   <p class="top_dialog_bank">
-                    <span>{{accountInfo.bankNo}}</span>
+                    <span>{{accountInfo.bankNo?accountInfo.bankNo:"6227 **** **** **** 187(北京银行)"}}</span>
                     <!-- <span>（{{ruleForm.backname}}）</span> -->
                   </p>
                   <p>
                     <label>收款人:</label>
-                    <span>{{accountInfo.bankUseName}}</span>
+                    <span>{{accountInfo.bankUseName?accountInfo.bankUseName:"张三"}}</span>
                   </p>
                 </div>
                 
@@ -63,19 +63,19 @@
                   <h4 style="color:black">本次结算明细</h4>
                   <div class="order_income">
                     <p class="dialog_money">
-                      <span>结算金额:{{strPrice}}</span>
-                      <span>通道费(5%):{{channel}}</span>
+                      <span>结算金额:{{strPrice | formatMonney}}</span>
+                      <span>通道费(5%):{{channel | formatMonney}}</span>
                     </p>
                     <p>
-                      <span>分成比例:{{dividedInto}}</span>
-                      <span>实际到账:{{actualAccoun}}</span>
+                      <span>分成比例:{{dividedInto | formatMonney}}</span>
+                      <span>实际到账:{{actualAccoun | formatMonney}}</span>
                     </p>
                   </div>
                 </div>
               </div>
               <span slot="footer" class="dialog-footer">
                   <el-button type="primary" @click="commitIncome">确 定</el-button>
-                  <el-button @click="incomeDialog = false">取 消</el-button>
+                  <el-button @click="cancelInvome">取 消</el-button>
               </span>
           </el-dialog>
         </div>
@@ -139,6 +139,15 @@ export default {
       return backMoneyNumber - backMoneyNumber * 0.05;
     }
   },
+  filters: {
+    formatMonney: function(value) {
+      if (typeof value == "function") {
+        return "￥0";
+      } else {
+        return value;
+      }
+    }
+  },
   methods: {
     formater(value) {
       return value.replace(/\s/g, "").replace(/(\d{4})(?=\d)/g, "$1 ");
@@ -164,7 +173,11 @@ export default {
         } else {
           console.log("");
         }
-      })
+      });
+    },
+    cancelInvome() {
+      this.incomeDialog = false;
+      this.ruleForm.backMoney = null;
     },
     getCountEarnings() {
       let self = this;
@@ -192,7 +205,7 @@ export default {
         }
       });
     }
-  },
+  }
 };
 </script>
 
@@ -262,7 +275,7 @@ export default {
   padding-bottom: 15px;
 }
 .income_dialog {
-  width: 70%;
+  width: 80%;
   text-align: left;
   margin: auto;
 }

@@ -15,7 +15,7 @@
 
         },
         mounted(){
-            console.log("APP.VUE");
+            console.log("APP.VUE+测试");
             try {
                 this.GET_LOCALUSERINFO();
             }catch (e) {

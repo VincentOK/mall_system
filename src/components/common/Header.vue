@@ -33,7 +33,7 @@
                 <!-- 用户名下拉菜单 -->
                 <el-dropdown class="user-name" trigger="click" @command="handleCommand">
                     <span class="el-dropdown-link">
-                        {{username}} <i class="el-icon-caret-bottom"></i>
+                        {{userInfo.linkName}} <i class="el-icon-caret-bottom"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
 
@@ -123,6 +123,12 @@ export default {
       return username ? username : this.name;
     }
   },
+    mounted(){
+        if (document.body.clientWidth < 1500) {
+            this.collapseChage();
+        }
+      console.log("aa:"+JSON.stringify(this.userInfo))
+    },
   methods: {
       /**
        * 修改密码
@@ -195,11 +201,6 @@ export default {
       this.fullscreen = !this.fullscreen;
     }
   },
-  mounted() {
-    if (document.body.clientWidth < 1500) {
-      this.collapseChage();
-    }
-  }
 };
 </script>
 <style scoped>

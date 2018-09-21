@@ -290,592 +290,608 @@
 </template>
 
 <script>
-    import {
-        getUntreatedOrdersList,
-        orderDetail,
-        ConfirmDelivery,
-        RefuseDelivery,
-        listRefund,
-        confrimRefund
-    } from "../../common/request/request";
-    import {mapState, mapMutations,mapActions} from 'vuex'
-    export default {
-        name: "basetable",
-        props: {
-            initialSpeed: {
-                type: Number,
-                default: 30
-            }
-        },
-        data() {
-            return {
-                getDatauntreatedOrders:[],//待处理订单数据
-                untreatedordersCount:null,//待处理订单总数
-                getDatarefundOrders:[],//待退款订单数据
-                refundordersCount:null,//待退款订单总数
+import {
+  getUntreatedOrdersList,
+  orderDetail,
+  ConfirmDelivery,
+  RefuseDelivery,
+  listRefund,
+  confrimRefund
+} from "../../common/request/request";
+import { mapState, mapMutations, mapActions } from "vuex";
+export default {
+  name: "basetable",
+  props: {
+    initialSpeed: {
+      type: Number,
+      default: 30
+    }
+  },
+  data() {
+    return {
+      getDatauntreatedOrders: [], //待处理订单数据
+      untreatedordersCount: null, //待处理订单总数
+      getDatarefundOrders: [], //待退款订单数据
+      refundordersCount: null, //待退款订单总数
 
+      pageNum: 1, //页码
+      pageSize: 5, //每页条数
+      pageNumrefund: 1,
+      pageSizerefund: 5,
 
-                pageNum: 1,//页码
-                pageSize:5,//每页条数
-                pageNumrefund:1,
-                pageSizerefund:5,
-
-                order_detail:null,
-                activeName: "first",
-                dateValue: "",
-                tableData: [],
-                multipleSelection: [],
-                select_cate: "",
-                select_word: "",//待发货搜索关键字
-                del_list: [],
-                editVisible: false,//商品详情提示框
-                delVisible: false,//拒绝发货提示框
-                ConfirmTheDelivery:false,//确认发货提示框
-                agreeVisible:false,//同意退款提示框
-                notagreeVisible:false,//拒绝退款提示框
-                sureagree:false,//同意执行退款
-                refund_name:'',//弹框详情的用户名
-                form_notrefund:{
-                    des:''
-                },
-                form_agree:{
-                    uid:'',
-                    shippingName:'',
-                    detailAddress:'',
-                    shippingPhone:'',
-                    shippingAddress:''
-                },
-                form_agreerules: {
-                    shippingName: [
-                        { required: true, message: '请输入收货名', trigger: 'blur' }
-                    ],
-                    detailAddress: [
-                        { required: true, message: '请输入收货地址', trigger: 'blur' }
-                    ],
-                    shippingPhone: [
-                        { required: true, message: '请输入手机号码', trigger: 'blur' }
-                    ]
-                },
-                form:{
-                    ordernumber:'',
-                    logisticsName:'',
-                    logisticsNumber:''
-                },
-                rules: {
-                    logisticsName: [
-                        { required: true, message: '请输入快递公司', trigger: 'blur' }
-                    ],
-                    logisticsNumber: [
-                        { required: true, message: '请输入运单号', trigger: 'blur' }
-                    ]
-                },
-                form_refund:{
-                    orderNumber:'',
-                    surereason:''
-                },
-                refundRules: {
-                    surereason: [
-                        { required: true, message: '请输入拒绝发货原因', trigger: 'blur' }
-                    ]
-                },
-                idx: -1,
-                currentIndex:1,
-                distance:-600,
-                transitionEnd: true,
-                speed: this.initialSpeed
-            };
-        },
-        created() {
-            this.getData(this.pageNum,this.pageSize,this.userInfo.uid);
-            this.getrefundData(this.pageNum,this.pageSize,this.userInfo.uid);
-        },
-        mounted(){
-
-        },
-        computed: {
-            ...mapState([
-                'userInfo'
-            ]),
-            containerStyle() {
-                return {
-                    transform:`translate3d(${this.distance}px, 0, 0)`
-                }
-            },
-        },
-        methods: {
-            /**
-             *点击切换待处理订单与待退款订单
-             */
-            handleClick(tab, e) {
-                this.$nextTick(function () {
-                    this.activeName = tab.name;
-                    console.log(tab.index, tab.name, tab.label, this.activeName);
-                })
-
-            },
-            /**
-             * 待处理订单根据页码获取数据
-             * @param val
-             */
-            handleCurrentChange(val) {
-                console.log("当前页："+val);
-                this.getData(val,this.pageSize,this.userInfo.uid);
-            },
-            sizeChange(val){
-              console.log("123123123123:"+val)
-            },
-            /**
-             * 待退款订单根据页码获取数据
-             * @param val
-            */
-            handleCurrentChangeRefund(val){
-                console.log("当前页："+val);
-                this.getrefundData(val,this.pageSize,this.userInfo.uid);
-            },
-            /**
-             * 获取待发货订单数据
-             * @param pageNum//每页条数
-             * @param pageSize//页码
-             * @param uid//用户id
-             * @param keyword//关键字
-             */
-            getData(pageNum,pageSize,uid,keyword) {
-                getUntreatedOrdersList(pageNum,pageSize,uid,keyword).then(res =>{
-                    console.log("JSON待发货:"+JSON.stringify(res));
-                    this.getDatauntreatedOrders = res.data.dataList;
-                    this.untreatedordersCount = parseInt(res.data.total);
-                }).catch(err =>{
-                    console.log(err)
-                })
-            },
-
-            /**
-             * 获取待退款订单数据
-             * @param pageNum//每页条数
-             * @param pageSize//页码
-             * @param uid//用户id
-             * @param keyword//关键字
-             */
-            getrefundData(pageNum,pageSize,uid) {
-                listRefund(pageNum,pageSize,uid).then(res =>{
-                    console.log("JSON待退款:"+JSON.stringify(res));
-                    this.getDatarefundOrders = res.data.dataList;
-                    this.refundordersCount = parseInt(res.data.total);
-                }).catch(err =>{
-                    console.log(err)
-                })
-            },
-            /**
-             * 根据关键字搜索待发货订单
-             * @param val
-             */
-            search(val) {
-                console.log(val);
-                this.getData(this.pageNum,this.pageSize,this.userInfo.uid,val);
-            },
-            /**
-             * 待处理订单单条数据
-             */
-            formatter(row, column) {
-                return row;
-            },
-            /**
-             * 待退款订单单条数据
-             */
-            formatterrefund(row, column) {
-                return row;
-            },
-            /**
-             * 根据订单号获取订单详情
-             * @param index
-             * @param ordernumber
-             */
-            viewDetails(index, ordernumber) {
-                console.log(index,ordernumber);
-                    orderDetail(ordernumber).then(res =>{
-                        console.log(res)
-                        if(res.code === "0"){
-                            this.editVisible = true;
-                            this.order_detail = res.data
-                        }else {
-                            this.$message(res.msg)
-                        }
-                    }).catch(err =>{
-                        console.log(err)
-                    })
-            },
-            /**
-             * 确认发货弹出确认收货弹框
-             * @param index
-             * @param row
-             */
-            handleSave(index, ordernumber) {
-                this.ConfirmTheDelivery = true;
-                this.form.ordernumber = ordernumber;
-            },
-            /**
-             * 拒绝发货弹出拒绝发货弹框
-             * @param index
-             * @param row
-             */
-            handleDelete(index, row) {
-                console.log(index,row)
-                this.idx = index;
-                this.refund_name = row.shippingName;
-                this.form_refund.orderNumber = row.orderNumber
-                this.delVisible = true;
-            },
-            /**
-             * 同意退款弹框
-             */
-            agreeDetails(index,row){
-                console.log(index,row);
-                this.idx = index;
-                this.refund_name = row.shippingName;
-                this.form_agree.uid = row.uid;
-                this.agreeVisible = true;
-            },
-            //拒绝退款
-            notagreePay(index,row){
-                console.log(index,row)
-                this.idx = index;
-                this.refund_name = row.name;
-                this.notagreeVisible = true;
-            },
-            /**
-             *设置表格头颜色
-             */
-            getRowClass({ row, column, rowIndex, columnIndex }) {
-                if (rowIndex == 0) {
-                    return "background:#FCE4E4;height:60px;color:#606266;";
-                } else {
-                    return "";
-                }
-            },
-            /**
-             * 确认发货
-             * @constructor
-             */
-            submitForm(formName){
-                this.$refs[formName].validate((valid) => {
-                    if (valid){
-                        this.ConfirmTheDelivery = false;
-                        console.log(this.form);
-                        ConfirmDelivery(this.form).then(res =>{
-                            console.log(res)
-                            if(res.code === "0"){
-                                this.$message('确认发货成功');
-                            }else {
-                                this.$message.error(res.msg);
-                            }
-                        }).catch(err =>{
-                            console.log(err)
-                        })
-                    }
-                });
-            },
-            /**
-             * 点击确认拒绝发货按钮
-             * @param formName
-             */
-            notdelVisible(formName){
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        this.delVisible = false;
-                        console.log(this.form_refund);
-                        RefuseDelivery(this.form_refund).then(res =>{
-                            console.log(res)
-                            if(res.code === "0"){
-                                this.$message('您已确认拒绝发货');
-                            }else {
-                                this.$message.error(res.msg);
-                            }
-                        }).catch(err =>{
-                            console.log(err)
-                        })
-                    }
-                });
-
-            },
-            /**
-             * 点击同意退款
-             * @param agreerulesform
-             */
-            agreedelVisible(formName){
-                this.$refs[formName].validate((valid) => {
-                    if (valid){
-                        this.agreeVisible = false;
-                        console.log(this.form_agree);
-                        confrimRefund(this.form_agree).then(res =>{
-                            console.log(res)
-                            if(res.code === "0"){
-                                this.$message('确认发货成功');
-                            }else {
-                                this.$message.error(res.msg);
-                            }
-                        }).catch(err =>{
-                            console.log(err)
-                        })
-                    }
-                });
-
-            },
-            //拒绝退款
-            notagreedelVisible(){
-                this.notagreeVisible = false;
-            },
-
-
-            move(offset, direction, speed) {
-                if (!this.transitionEnd) return
-                this.transitionEnd = false
-                direction === -1 ? this.currentIndex += offset/600 : this.currentIndex -= offset/600
-                if (this.currentIndex > 5) this.currentIndex = 1
-                if (this.currentIndex < 1) this.currentIndex = 5
-
-                const destination = this.distance + offset * direction
-                this.animate(destination, direction, speed)
-            },
-            animate(des, direc, speed) {
-                if (this.temp) {
-                    window.clearInterval(this.temp)
-                    this.temp = null
-                }
-                this.temp = window.setInterval(() => {
-                    if ((direc === -1 && des < this.distance) || (direc === 1 && des > this.distance)) {
-                        this.distance += speed * direc
-                    } else {
-                        this.transitionEnd = true
-                        window.clearInterval(this.temp)
-                        this.distance = des
-                        if (des < -3000) this.distance = -600
-                        if (des > -600) this.distance = -3000
-                    }
-                }, 20)
-            },
-        }
+      order_detail: null,
+      activeName: "first",
+      dateValue: "",
+      tableData: [],
+      multipleSelection: [],
+      select_cate: "",
+      select_word: "", //待发货搜索关键字
+      del_list: [],
+      editVisible: false, //商品详情提示框
+      delVisible: false, //拒绝发货提示框
+      ConfirmTheDelivery: false, //确认发货提示框
+      agreeVisible: false, //同意退款提示框
+      notagreeVisible: false, //拒绝退款提示框
+      sureagree: false, //同意执行退款
+      refund_name: "", //弹框详情的用户名
+      form_notrefund: {
+        des: ""
+      },
+      form_agree: {
+        uid: "",
+        shippingName: "",
+        detailAddress: "",
+        shippingPhone: "",
+        shippingAddress: ""
+      },
+      form_agreerules: {
+        shippingName: [
+          { required: true, message: "请输入收货名", trigger: "blur" }
+        ],
+        detailAddress: [
+          { required: true, message: "请输入收货地址", trigger: "blur" }
+        ],
+        shippingPhone: [
+          { required: true, message: "请输入手机号码", trigger: "blur" }
+        ]
+      },
+      form: {
+        ordernumber: "",
+        logisticsName: "",
+        logisticsNumber: ""
+      },
+      rules: {
+        logisticsName: [
+          { required: true, message: "请输入快递公司", trigger: "blur" }
+        ],
+        logisticsNumber: [
+          { required: true, message: "请输入运单号", trigger: "blur" }
+        ]
+      },
+      form_refund: {
+        orderNumber: "",
+        surereason: ""
+      },
+      refundRules: {
+        surereason: [
+          { required: true, message: "请输入拒绝发货原因", trigger: "blur" }
+        ]
+      },
+      idx: -1,
+      currentIndex: 1,
+      distance: -600,
+      transitionEnd: true,
+      speed: this.initialSpeed
     };
+  },
+  created() {
+    let self = this;
+    if (self.$route.query.activeName) {
+      self.activeName = self.$route.query.activeName;
+    }
+    this.getData(this.pageNum, this.pageSize, this.userInfo.uid);
+    this.getrefundData(this.pageNum, this.pageSize, this.userInfo.uid);
+  },
+  mounted() {},
+  computed: {
+    ...mapState(["userInfo"]),
+    containerStyle() {
+      return {
+        transform: `translate3d(${this.distance}px, 0, 0)`
+      };
+    }
+  },
+  methods: {
+    /**
+     *点击切换待处理订单与待退款订单
+     */
+    handleClick(tab, e) {
+      this.$nextTick(function() {
+        this.activeName = tab.name;
+        console.log(tab.index, tab.name, tab.label, this.activeName);
+      });
+    },
+    /**
+     * 待处理订单根据页码获取数据
+     * @param val
+     */
+    handleCurrentChange(val) {
+      console.log("当前页：" + val);
+      this.getData(val, this.pageSize, this.userInfo.uid);
+    },
+    sizeChange(val) {
+      console.log("123123123123:" + val);
+    },
+    /**
+     * 待退款订单根据页码获取数据
+     * @param val
+     */
+    handleCurrentChangeRefund(val) {
+      console.log("当前页：" + val);
+      this.getrefundData(val, this.pageSize, this.userInfo.uid);
+    },
+    /**
+     * 获取待发货订单数据
+     * @param pageNum//每页条数
+     * @param pageSize//页码
+     * @param uid//用户id
+     * @param keyword//关键字
+     */
+    getData(pageNum, pageSize, uid, keyword) {
+      getUntreatedOrdersList(pageNum, pageSize, uid, keyword)
+        .then(res => {
+          console.log("JSON待发货:" + JSON.stringify(res));
+          this.getDatauntreatedOrders = res.data.dataList;
+          this.untreatedordersCount = parseInt(res.data.total);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+
+    /**
+     * 获取待退款订单数据
+     * @param pageNum//每页条数
+     * @param pageSize//页码
+     * @param uid//用户id
+     * @param keyword//关键字
+     */
+    getrefundData(pageNum, pageSize, uid) {
+      listRefund(pageNum, pageSize, uid)
+        .then(res => {
+          console.log("JSON待退款:" + JSON.stringify(res));
+          this.getDatarefundOrders = res.data.dataList;
+          this.refundordersCount = parseInt(res.data.total);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    /**
+     * 根据关键字搜索待发货订单
+     * @param val
+     */
+    search(val) {
+      console.log(val);
+      this.getData(this.pageNum, this.pageSize, this.userInfo.uid, val);
+    },
+    /**
+     * 待处理订单单条数据
+     */
+    formatter(row, column) {
+      return row;
+    },
+    /**
+     * 待退款订单单条数据
+     */
+    formatterrefund(row, column) {
+      return row;
+    },
+    /**
+     * 根据订单号获取订单详情
+     * @param index
+     * @param ordernumber
+     */
+    viewDetails(index, ordernumber) {
+      console.log(index, ordernumber);
+      orderDetail(ordernumber)
+        .then(res => {
+          console.log(res);
+          if (res.code === "0") {
+            this.editVisible = true;
+            this.order_detail = res.data;
+          } else {
+            this.$message(res.msg);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    /**
+     * 确认发货弹出确认收货弹框
+     * @param index
+     * @param row
+     */
+    handleSave(index, ordernumber) {
+      this.ConfirmTheDelivery = true;
+      this.form.ordernumber = ordernumber;
+    },
+    /**
+     * 拒绝发货弹出拒绝发货弹框
+     * @param index
+     * @param row
+     */
+    handleDelete(index, row) {
+      console.log(index, row);
+      this.idx = index;
+      this.refund_name = row.shippingName;
+      this.form_refund.orderNumber = row.orderNumber;
+      this.delVisible = true;
+    },
+    /**
+     * 同意退款弹框
+     */
+    agreeDetails(index, row) {
+      console.log(index, row);
+      this.idx = index;
+      this.refund_name = row.shippingName;
+      this.form_agree.uid = row.uid;
+      this.agreeVisible = true;
+    },
+    //拒绝退款
+    notagreePay(index, row) {
+      console.log(index, row);
+      this.idx = index;
+      this.refund_name = row.name;
+      this.notagreeVisible = true;
+    },
+    /**
+     *设置表格头颜色
+     */
+    getRowClass({ row, column, rowIndex, columnIndex }) {
+      if (rowIndex == 0) {
+        return "background:#FCE4E4;height:60px;color:#606266;";
+      } else {
+        return "";
+      }
+    },
+    /**
+     * 确认发货
+     * @constructor
+     */
+    submitForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.ConfirmTheDelivery = false;
+          console.log(this.form);
+          ConfirmDelivery(this.form)
+            .then(res => {
+              console.log(res);
+              if (res.code === "0") {
+                this.$message("确认发货成功");
+              } else {
+                this.$message.error(res.msg);
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        }
+      });
+    },
+    /**
+     * 点击确认拒绝发货按钮
+     * @param formName
+     */
+    notdelVisible(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.delVisible = false;
+          console.log(this.form_refund);
+          RefuseDelivery(this.form_refund)
+            .then(res => {
+              console.log(res);
+              if (res.code === "0") {
+                this.$message("您已确认拒绝发货");
+              } else {
+                this.$message.error(res.msg);
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        }
+      });
+    },
+    /**
+     * 点击同意退款
+     * @param agreerulesform
+     */
+    agreedelVisible(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.agreeVisible = false;
+          console.log(this.form_agree);
+          confrimRefund(this.form_agree)
+            .then(res => {
+              console.log(res);
+              if (res.code === "0") {
+                this.$message("确认发货成功");
+              } else {
+                this.$message.error(res.msg);
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        }
+      });
+    },
+    //拒绝退款
+    notagreedelVisible() {
+      this.notagreeVisible = false;
+    },
+
+    move(offset, direction, speed) {
+      if (!this.transitionEnd) return;
+      this.transitionEnd = false;
+      direction === -1
+        ? (this.currentIndex += offset / 600)
+        : (this.currentIndex -= offset / 600);
+      if (this.currentIndex > 5) this.currentIndex = 1;
+      if (this.currentIndex < 1) this.currentIndex = 5;
+
+      const destination = this.distance + offset * direction;
+      this.animate(destination, direction, speed);
+    },
+    animate(des, direc, speed) {
+      if (this.temp) {
+        window.clearInterval(this.temp);
+        this.temp = null;
+      }
+      this.temp = window.setInterval(() => {
+        if (
+          (direc === -1 && des < this.distance) ||
+          (direc === 1 && des > this.distance)
+        ) {
+          this.distance += speed * direc;
+        } else {
+          this.transitionEnd = true;
+          window.clearInterval(this.temp);
+          this.distance = des;
+          if (des < -3000) this.distance = -600;
+          if (des > -600) this.distance = -3000;
+        }
+      }, 20);
+    }
+  }
+};
 </script>
 
 <style scoped>
-    .word_more p{
-        margin-bottom: 10px;
-    }
-    .word_more p:first-child{
-        color: #0e0908;
-    }
-    .word_more p:nth-child(2),.word_more p:last-child{
-        color: #9d9d9d9d;
-    }
-    .word_one{
-        font-size: 12px;
-        height: 40px;
-    }
-    .word_one span:first-child{
-        width: 50px;
-        float: left;
-    }
-    .word_one span:last-child{
-        width: 50px;
-        float: right;
-    }
-    .dialog_two{
-        font-size: 16px;
-        background-color: darkgray;
-        color: white;
-        display: block;
-        height: 35px;
-        line-height: 35px;
-        width: 35px;
-        text-align: center;
-        border-radius: 50%;
-        position: absolute;
-        right: 0;
-        z-index: 10;
-    }
-    .dialog_one{
-        font-size: 16px;
-        background-color: #ec414d;
-        color: white;
-        display: block;
-        height: 35px;
-        line-height: 35px;
-        width: 35px;
-        text-align: center;
-        border-radius: 50%;
-        position: absolute;
-        left: 0;
-        z-index: 10;
-    }
-    .dialog_rela p{
-        height: 5px;
-        background-color: #ec414d;
-        width: 100%;
-        position: absolute;
-        top: 15px;
-    }
-    .dialog_rela{
-        position: relative;
-        height: 35px;
-        width: 100%;
-        margin: auto;
-    }
-    .sure_agree{
-        width: 65%;
-        margin: auto;
-        text-align: center;
-    }
-    .refund_title_word{
-        width: 90%;
-        margin: auto;
-        text-align: left;
-        padding: 0px 0 10px 0;
-    }
-    .buy_notive{
-        font-size: 12px;
-        color: #ec414d;
-    }
-    .one_detail{
-        display: flex;
-        width: 80%;
-        margin: auto;
-    }
-    .handle-box {
-        height: 51px;
-        position: relative;
-    }
-    .good-total {
-        font-weight: 400;
-        font-size: 14px;
-        color: #606266;
-        cursor: text;
-        margin-left: 30px;
-    }
-    .handle-select {
-        width: 140px;
-    }
-    .last-el-option {
-        margin-bottom: 15px;
-    }
-    .handle-input {
-        width: 300px;
-        display: inline-block;
-    }
-    .del-dialog-cnt {
-        font-size: 16px;
-        text-align: center;
-        font-weight: bold;
-    }
-    .del-dialog-goods {
-        margin-top: 10px;
-        color: #ec414d;
-        font-size: 18px;
-        text-align: center;
-    }
-    .el-breadcrumb {
-        margin-left: 30px;
-    }
-    .crumbs {
-        background: white;
-        width: 100%;
-        padding: 20px 0;
-    }
-    .ordering-rule {
-        font-weight: 400;
-        font-size: 14px;
-        color: #606266;
-        cursor: text;
-        position: absolute;
-        left: 25%;
-    }
-    .search-option {
-        position: absolute;
-        right: 0;
-    }
-    .clear-button {
-        margin-left: 2px;
-    }
-    .select-date {
-        font-weight: 400;
-        font-size: 14px;
-        color: #606266;
-        cursor: text;
-    }
-    .date-options {
-        position: absolute;
-        right: 30%;
-    }
-    .pagination {
-        text-align: center;
-    }
-    /*.goods_detail {*/
-        /*height: 700px;*/
-    /*}*/
-    .goods_detail_left {
-      flex: 1;
-    }
-    .goods_detail_left div,.goods_detail_right div{
-        padding: 10px;
-    }
-    .goods_detail_left div label,.goods_detail_right div label{
-        color: black;
-        /*font-weight: 600;*/
-    }
-    .goods_detail_right {
-        flex: 1;
-    }
+.word_more p {
+  margin-bottom: 10px;
+}
+.word_more p:first-child {
+  color: #0e0908;
+}
+.word_more p:nth-child(2),
+.word_more p:last-child {
+  color: #9d9d9d9d;
+}
+.word_one {
+  font-size: 12px;
+  height: 40px;
+}
+.word_one span:first-child {
+  width: 50px;
+  float: left;
+}
+.word_one span:last-child {
+  width: 50px;
+  float: right;
+}
+.dialog_two {
+  font-size: 16px;
+  background-color: darkgray;
+  color: white;
+  display: block;
+  height: 35px;
+  line-height: 35px;
+  width: 35px;
+  text-align: center;
+  border-radius: 50%;
+  position: absolute;
+  right: 0;
+  z-index: 10;
+}
+.dialog_one {
+  font-size: 16px;
+  background-color: #ec414d;
+  color: white;
+  display: block;
+  height: 35px;
+  line-height: 35px;
+  width: 35px;
+  text-align: center;
+  border-radius: 50%;
+  position: absolute;
+  left: 0;
+  z-index: 10;
+}
+.dialog_rela p {
+  height: 5px;
+  background-color: #ec414d;
+  width: 100%;
+  position: absolute;
+  top: 15px;
+}
+.dialog_rela {
+  position: relative;
+  height: 35px;
+  width: 100%;
+  margin: auto;
+}
+.sure_agree {
+  width: 65%;
+  margin: auto;
+  text-align: center;
+}
+.refund_title_word {
+  width: 90%;
+  margin: auto;
+  text-align: left;
+  padding: 0px 0 10px 0;
+}
+.buy_notive {
+  font-size: 12px;
+  color: #ec414d;
+}
+.one_detail {
+  display: flex;
+  width: 80%;
+  margin: auto;
+}
+.handle-box {
+  height: 51px;
+  position: relative;
+}
+.good-total {
+  font-weight: 400;
+  font-size: 14px;
+  color: #606266;
+  cursor: text;
+  margin-left: 30px;
+}
+.handle-select {
+  width: 140px;
+}
+.last-el-option {
+  margin-bottom: 15px;
+}
+.handle-input {
+  width: 300px;
+  display: inline-block;
+}
+.del-dialog-cnt {
+  font-size: 16px;
+  text-align: center;
+  font-weight: bold;
+}
+.del-dialog-goods {
+  margin-top: 10px;
+  color: #ec414d;
+  font-size: 18px;
+  text-align: center;
+}
+.el-breadcrumb {
+  margin-left: 30px;
+}
+.crumbs {
+  background: white;
+  width: 100%;
+  padding: 20px 0;
+}
+.ordering-rule {
+  font-weight: 400;
+  font-size: 14px;
+  color: #606266;
+  cursor: text;
+  position: absolute;
+  left: 25%;
+}
+.search-option {
+  position: absolute;
+  right: 0;
+}
+.clear-button {
+  margin-left: 2px;
+}
+.select-date {
+  font-weight: 400;
+  font-size: 14px;
+  color: #606266;
+  cursor: text;
+}
+.date-options {
+  position: absolute;
+  right: 30%;
+}
+.pagination {
+  text-align: center;
+}
+/*.goods_detail {*/
+/*height: 700px;*/
+/*}*/
+.goods_detail_left {
+  flex: 1;
+}
+.goods_detail_left div,
+.goods_detail_right div {
+  padding: 10px;
+}
+.goods_detail_left div label,
+.goods_detail_right div label {
+  color: black;
+  /*font-weight: 600;*/
+}
+.goods_detail_right {
+  flex: 1;
+}
 
-    .product_detail {
-        padding: 20px 20px 0 80px;
-    }
-    .product_detail label {
-        float: left;
-    }
-    .product_detail p {
-        margin-left: 70px;
-    }
-    #img_slider{
-        text-align: center;
-    }
-    .img_window{
-        position:relative;
-        width:600px;
-        height:400px;
-        margin:0 auto;
-        overflow:hidden;
-    }
-    .img_container{
-        display:flex;
-        position:absolute;
-    }
-    .img_container li{
-        width: 600px;
-        height: 400px;
-    }
-    .left, .right{
-        position:absolute;
-        top:50%;
-        transform:translateY(-50%);
-        width:50px;
-        height:50px;
-        background-color:rgba(0,0,0,.3);
-        border-radius:50%;
-        cursor:pointer;
-    }
-    .left{
-        left:3%;
-        padding-left:12px;
-        padding-top:10px;
-    }
-    .right{
-        right:3%;
-        padding-right:12px;
-        padding-top:10px;
-    }
-    #img_slider img{
-        user-select: none;
-        width: 100%;
-        height: 100%;
-    }
+.product_detail {
+  padding: 20px 20px 0 80px;
+}
+.product_detail label {
+  float: left;
+}
+.product_detail p {
+  margin-left: 70px;
+}
+#img_slider {
+  text-align: center;
+}
+.img_window {
+  position: relative;
+  width: 600px;
+  height: 400px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+.img_container {
+  display: flex;
+  position: absolute;
+}
+.img_container li {
+  width: 600px;
+  height: 400px;
+}
+.left,
+.right {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  cursor: pointer;
+}
+.left {
+  left: 3%;
+  padding-left: 12px;
+  padding-top: 10px;
+}
+.right {
+  right: 3%;
+  padding-right: 12px;
+  padding-top: 10px;
+}
+#img_slider img {
+  user-select: none;
+  width: 100%;
+  height: 100%;
+}
 </style>
 

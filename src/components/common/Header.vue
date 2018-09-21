@@ -7,26 +7,10 @@
         <div class="logo">后台管理系统</div>
         <div class="header-right">
             <div class="header-user-con">
-                <!-- 全屏显示 -->
-                <!-- <div class="btn-fullscreen" @click="handleFullScreen">
-                    <el-tooltip effect="dark" :content="fullscreen?`取消全屏`:`全屏`" placement="bottom">
-                        <i class="el-icon-rank"></i>
-                    </el-tooltip>
-                </div> -->
-                <!-- 消息中心 -->
                 <div class="btn-bell">
                     <el-tooltip effect="light" :content="message?`有${message}条未读消息`:`消息中心`" placement="bottom">
-                        <!-- <router-link to="/tabs">
-                            <i class="el-icon-bell"><span>消息</span></i>
-                        </router-link> -->
                         <i class="el-icon-bell">
                             <el-popover placement="right-start" width="200" trigger="click">
-                                <!-- <el-table :data="gridData"> -->
-                                <!-- <el-table-column width="400" property="date" label="日期"></el-table-column> -->
-                                <!-- <el-table-column width="100" property="name" label="姓名"></el-table-column> -->
-                                <!-- <el-table-column width="200" property="address" label="地址" class="el-scrollbar"></el-table-column> -->
-
-                                <!-- </el-table> -->
                                 <span slot="reference">消息</span>
                                 <div class="scrollbarParent">
                                 <el-scrollbar style="height:100%;">
@@ -322,8 +306,8 @@ export default {
 }
 .btn-bell-inner {
   position: absolute;
-  top: 6px;
-  left: -2px;
+  top: 0;
+  left: -4px;
   width: 6px;
   height: 6px;
   border-radius: 4px;

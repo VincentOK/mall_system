@@ -27,7 +27,7 @@
                 <div class="income_formbx">
                     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px">
                         <el-form-item label="结算金额:" prop="backMoney">
-                            <el-input v-model="ruleForm.backMoney" placeholder="请输入100以上的整数" type="number" class="income_money" onkeypress='return(/[\d\.]/.test(String.fromCharCode(event.keyCode)))'></el-input>
+                            <el-input v-model="ruleForm.backMoney" placeholder="请输入100以上的整数" type="number" class="income_money" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'></el-input>
                         </el-form-item>
                         <el-form-item label="收款人:">
                             <span>{{tenantInfo.bankUseName?tenantInfo.bankUseName:"张三"}}</span>
@@ -123,7 +123,8 @@ export default {
       rules: {
         backMoney: [
           { required: true, message: "请输入结算金额", trigger: "blur" },
-          { max: 10, message: "少于10位数", trigger: "blur" }
+          { max: 10, message: "少于10位数", trigger: "blur" },
+          { min:3, message: "请输入100以上的整数", trigger: "blur" }
         ]
       }
     };

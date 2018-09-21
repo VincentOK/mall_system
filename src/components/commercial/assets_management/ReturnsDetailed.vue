@@ -34,10 +34,11 @@
                 </el-table>
                 <div class="pagination">
                     <el-pagination 
-                    v-if="paginationShow" 
                     background 
-                    @current-change="handleCurrentChange" 
                     :current-page="cur_page" 
+                    :page-size="pageSize" 
+                    @current-change="handleCurrentChange" 
+                    :pager-count="pages_count" 
                     layout="prev, pager, next, jumper" 
                     :total="total_page">
                     </el-pagination>
@@ -114,15 +115,16 @@ export default {
         tenantUid: self.tenantUid,
         startTime: self.startTime,
         endTime: self.endTime,
-        status:self.select_cate,
+        status: self.select_cate,
         pageNumber: self.cur_page,
-        pageSize: 10,
+        pageSize: 10
       };
       listBillingDetails(param).then(res => {
         if (res.data) {
           self.tableData = res.data.dataList;
           self.total_page = res.data.total;
           self.pageSize = res.data.pageSize;
+          self.pages_count = res.data.pages;
         } else {
           console.log("");
         }

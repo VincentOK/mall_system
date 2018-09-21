@@ -97,7 +97,8 @@
             <div class="pagination">
                  <el-pagination
                   v-if="paginationShow"
-                  background
+                  background 
+                  :page-size="pageSize" 
                   :current-page="cur_page"
                   @current-change="handleCurrentChange"
                   :pager-count="pages_count"
@@ -172,30 +173,16 @@ export default {
       editVisible: false,
       delVisible: false,
       paginationShow: true,
-      form: {
-        name: "",
-        date: "",
-        address: ""
-      },
       idx: -1
     };
   },
-  // watch:{
-  //   activeName(curVal,oldVal){
-  //     if(curVal != oldVal){
-  //       this.dateValue = [];
-  //     }
-  //   }
-  // },
   created() {
     let self = this;
     if (self.$route.query.activeName) {
       self.activeName = self.$route.query.activeName;
     }
     self.uid = self.userInfo.uid;
-    this.getlistSell();
-    // this.getlistSoldOut();
-    // this.getlistCheck();
+    this.getListData();
   },
   mounted() {},
   computed: {
@@ -282,6 +269,7 @@ export default {
           self.tableData = res.data.dataList;
           self.total_page = res.data.total;
           self.pageSize = res.data.pageSize;
+          self.pages_count = res.data.pages;
         })
         .catch(err => {
           console.log(err);
@@ -302,6 +290,7 @@ export default {
           self.tableData = res.data.dataList;
           self.total_page = res.data.total;
           self.pageSize = res.data.pageSize;
+          self.pages_count = res.data.pages;
           for (var i = 0; i < res.data.dataList.length; i++) {
             this.$set(this.tableData[i], "showEdit", false);
           }
@@ -336,27 +325,17 @@ export default {
     viewDetails(index, row) {
       const item = this.tableData[index];
       this.xcommodityId = row.commodityId;
-
-      // this.form = {
-      //   name: item.name,
-      //   date: item.date,
-      //   address: item.address,
-      //   showEdit: true
-      // };
       this.editVisible = true;
     },
     handleEdit(index, row) {
       this.idx = index;
       const item = this.tableData[index];
       item.showEdit = true;
-      // this.showEdit[index] = true;
-      // this.$set(this.showEdit, row, true);
     },
     handleSave(index, row) {
       this.idx = index;
       const itemSave = this.tableData[index];
       itemSave.showEdit = false;
-      // this.$set(this.tableData, this.idx, this.form);
       let self = this;
       let param = {
         commodityId: row.commodityId,
@@ -385,16 +364,6 @@ export default {
         return "";
       }
     },
-    // delAll() {
-    //     const length = this.multipleSelection.length;
-    //     let str = '';
-    //     this.del_list = this.del_list.concat(this.multipleSelection);
-    //     for (let i = 0; i < length; i++) {
-    //         str += this.multipleSelection[i].name + ' ';
-    //     }
-    //     this.$message.error('删除了' + str);
-    //     this.multipleSelection = [];
-    // },
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },

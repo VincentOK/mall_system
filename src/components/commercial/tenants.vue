@@ -599,6 +599,7 @@
                             console.log(res)
                             if(res.code === "0"){
                                 this.$message.success("提交成功！");
+                                this.$router.push('/login')
                             }else {
                                 this.$message.error(res.msg)
                             }
@@ -636,9 +637,9 @@
              * @param file
              */
             handleAvatarSuccessCard(res, file){
-                console.log(res)
+                console.log(res);
                 if(res.code === "0"){
-                    this.card = false
+                    this.card = false;
                     this.form.cardFrontImgPath  = res.data
                     this.cardimageUrl = URL.createObjectURL(file.raw);
                 }

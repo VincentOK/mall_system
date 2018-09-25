@@ -158,6 +158,7 @@
                             console.log(res);
                             if(res.code ==="0"){
                                 this.$message.success("提交成功！");
+                                this.$router.push('/login')
                             }else {
                                 this.$message.error(res.msg);
                             }

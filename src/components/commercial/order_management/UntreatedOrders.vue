@@ -22,15 +22,15 @@
                 </div>
                 <div v-if="activeName == 'first'">
                     <el-table :data="getDatauntreatedOrders"  ref="multipleTable" :header-cell-style="getRowClass">
-                        <el-table-column prop="commodityName" label="商品" :formatter="formatter.commodityName"></el-table-column>
+                        <el-table-column prop="commodityPrizeName" label="商品" :formatter="formatter.commodityPrizeName"></el-table-column>
                         <el-table-column prop="unit" label="出售规格" :formatter="formatter.unit" width="100"></el-table-column>
                         <el-table-column prop="count" label="购买数量" :formatter="formatter.count">
                         </el-table-column>
                         <el-table-column prop="totalPrice" label="支付金额" :formatter="formatter.totalPrice">
                         </el-table-column>
-                        <el-table-column prop="shippingName" label="收货人" :formatter="formatter.shippingName"></el-table-column>
-                        <el-table-column prop="address" label="收货地址" :formatter="formatter.address"></el-table-column>
-                        <el-table-column prop="shippingPhone" label="手机号码" :formatter="formatter.shippingPhone"></el-table-column>
+                        <el-table-column prop="receivingName" label="收货人" :formatter="formatter.receivingName"></el-table-column>
+                        <el-table-column prop="receivingAddress" label="收货地址" :formatter="formatter.receivingAddress"></el-table-column>
+                        <el-table-column prop="receivingPhone" label="手机号码" :formatter="formatter.receivingPhone"></el-table-column>
                         <el-table-column prop="orderTime" label="下单时间" :formatter="formatter.orderTime">
                         </el-table-column>
                         <!--<el-table-column prop="address" label="订单状态" :formatter="formatter"></el-table-column>-->

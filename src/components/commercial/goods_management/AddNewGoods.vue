@@ -218,7 +218,7 @@ export default {
           { min: 0, max: 17, message: "长度在 1 到 17 个字符", trigger: "blur" }
         ],
         realityPrice: [
-          { required: false, message: "请输入实际售价", trigger: "blur" },
+          { required: true, message: "请输入实际售价", trigger: "blur" },
           { max: 7, message: "少于7位数", trigger: "blur" },
           {
             validator: function(rule, value, callback) {

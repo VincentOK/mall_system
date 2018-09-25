@@ -51,8 +51,8 @@
             </div>
             <el-table :data="tableData"  ref="multipleTable" :header-cell-style="getRowClass" @selection-change="handleSelectionChange">
                 <el-table-column prop="commodityName" label="商品"></el-table-column>
-                <el-table-column prop="dividePrice(unit)" label="出售规格" width="100"></el-table-column>
-                <el-table-column prop="dividePrice(realityPrice)" label="实际售价">
+                <el-table-column prop="unit" label="出售规格" width="100"></el-table-column>
+                <el-table-column prop="realityPrice" label="实际售价">
                   <template slot-scope="{row,$index}">
                     <el-input v-if="row.showEdit" v-model="row.realityPrice" maxlength="7" size="small" style="width:120px" onkeypress='return(/[\d\.]/.test(String.fromCharCode(event.keyCode)))'></el-input>
                     <span v-if="!row.showEdit">{{row.realityPrice}}</span>

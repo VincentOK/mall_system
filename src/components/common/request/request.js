@@ -36,12 +36,12 @@ export const userRegister = (msgObj) => fetch('/timestoremanage/register', msgOb
 export const checkUser = (val) => fetch('/timestoremanage/common/queryUserNameOrCommercialName', val, 'POST');
 
 /**
- * 发送短信验证码
+ * 商户注册发送短信验证码
  * @param phone
  * @returns {Promise<*>}
  */
-export const sendPhoneCode = (phone) => fetch('/timestoremanage/common/forgotPasswordSendVcode', {
-    phoneNum: phone
+export const sendPhoneCode = (phone) => fetch('/timestoremanage/common/regSendVcode', {
+    userPhone: phone
 }, 'POST');
 
 

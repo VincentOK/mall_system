@@ -25,10 +25,10 @@
                 </div>
                 <el-table :data="tableData" ref="multipleTable" :header-cell-style="getRowClass" @selection-change="handleSelectionChange">
                     <el-table-column prop="count" label="结算金额"></el-table-column>
-                    <el-table-column prop="channel" label="通道费（5%）"></el-table-column>
+                    <!-- <el-table-column prop="channel" label="通道费（5%）"></el-table-column>
                     <el-table-column prop="dividedInto" label="分成比例"></el-table-column>
-                    <el-table-column prop="actualAccount" label="实际到账"></el-table-column>
-                    <el-table-column prop="countAfter" label="待结算余额"></el-table-column>
+                    <el-table-column prop="actualAccount" label="实际到账"></el-table-column> -->
+                    <el-table-column prop="countBefore" label="待结算余额"></el-table-column>
                     <el-table-column prop="createTime" label="结算申请时间"></el-table-column>
                     <el-table-column prop="status" label="结算状态"></el-table-column>
                 </el-table>
@@ -51,6 +51,7 @@
 <script>
 import { mapState } from "vuex";
 import { listBillingDetails } from "../../common/request/request";
+import { multiplyPrice,dividePrice } from "../../common/commonJS/commonjs.js";
 export default {
   name: "basetable",
   data() {
@@ -125,6 +126,10 @@ export default {
           self.total_page = res.data.total;
           self.pageSize = res.data.pageSize;
           self.pages_count = res.data.pages;
+          for (var i = 0; i < res.data.dataList.length; i++) {
+            self.tableData[i].count = '￥' + dividePrice(res.data.dataList[i].count)
+            self.tableData[i].countBefore = '￥' + dividePrice(res.data.dataList[i].countBefore)
+          }
         } else {
           console.log("");
         }

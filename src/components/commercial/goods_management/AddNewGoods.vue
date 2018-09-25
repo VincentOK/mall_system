@@ -142,6 +142,7 @@ import "quill/dist/quill.bubble.css";
 import VueCropper from "vue-cropperjs";
 import { quillEditor } from "vue-quill-editor";
 import previewDialog from "./preview_dialog/PreviewDialog.vue";
+import { multiplyPrice } from "../../common/commonJS/commonjs.js";
 import { mapState, mapMutations, mapActions } from "vuex";
 import {
   addStoreCommodity,
@@ -356,16 +357,20 @@ export default {
         if (valid) {
           let param = JSON.parse(JSON.stringify(self.form));
           param.tenantUid = self.uid;
-          param.realityPrice = Number(param.realityPrice);
-          param.suggestPrice = Number(param.suggestPrice);
-          param.inventory = Number(param.inventory);
-          param.carriage = Number(param.carriage);
+          param.realityPrice = multiplyPrice(param.realityPrice);
+          param.suggestPrice = multiplyPrice(param.suggestPrice);
+          param.inventory = multiplyPrice(param.inventory);
+          param.carriage = multiplyPrice(param.carriage)?multiplyPrice(param.carriage):0;
           addStoreCommodity(param)
             .then(res => {
-              self.$router.push({
-                path: "./onlineManagement",
-                query: { activeName: "third" }
-              });
+              if (res.data) {
+                self.$router.push({
+                  path: "./onlineManagement",
+                  query: { activeName: "third" }
+                });
+              }else{
+                self.$message.error("提交失败!");
+              }
             })
             .catch(err => {
               console.log(err);

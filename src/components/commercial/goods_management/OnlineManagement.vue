@@ -51,16 +51,16 @@
             </div>
             <el-table :data="tableData"  ref="multipleTable" :header-cell-style="getRowClass" @selection-change="handleSelectionChange">
                 <el-table-column prop="commodityName" label="商品"></el-table-column>
-                <el-table-column prop="unit" label="出售规格" width="100"></el-table-column>
-                <el-table-column prop="realityPrice" label="实际售价">
+                <el-table-column prop="dividePrice(unit)" label="出售规格" width="100"></el-table-column>
+                <el-table-column prop="dividePrice(realityPrice)" label="实际售价">
                   <template slot-scope="{row,$index}">
-                    <el-input v-if="row.showEdit" v-model="row.realityPrice" size="small" style="width:120px"></el-input>
+                    <el-input v-if="row.showEdit" v-model="row.realityPrice" maxlength="7" size="small" style="width:120px" onkeypress='return(/[\d\.]/.test(String.fromCharCode(event.keyCode)))'></el-input>
                     <span v-if="!row.showEdit">{{row.realityPrice}}</span>
                   </template>
                 </el-table-column>
                 <el-table-column prop="suggestPrice" label="建议售价">
                   <template slot-scope="{row,$index}">
-                    <el-input v-if="row.showEdit" v-model="row.suggestPrice"  size="small" style="width:120px"></el-input>
+                    <el-input v-if="row.showEdit" v-model="row.suggestPrice" maxlength="7" size="small" style="width:120px" onkeypress='return(/[\d\.]/.test(String.fromCharCode(event.keyCode)))'></el-input>
                     <span v-if="!row.showEdit">{{row.suggestPrice}}</span>
                   </template>
                 </el-table-column>
@@ -68,10 +68,9 @@
                 <el-table-column prop="userBrowseNumber" label="独立浏览量"></el-table-column>
                 <el-table-column prop="sales" label="已售"></el-table-column>
                 <el-table-column prop="inventory" label="剩余库存">
-                  
                   <template slot-scope="{row,$index}">
                     <div class="surplus_stock">
-                    <el-input v-if="row.showEdit" v-model="row.inventory"  size="small" style="width:120px">
+                    <el-input v-if="row.showEdit" v-model="row.inventory"  size="small" style="width:120px" maxlength="4" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'>
                       <template slot="prepend"><span @click="plusMath(row)">+</span></template>
                       <template slot="append"><span @click="subtractMath(row)">-</span></template>
                     </el-input>
@@ -116,7 +115,7 @@
               </el-scrollbar>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="editVisible = false" type="primary">下架</el-button>
+                <el-button @click="deleteRow" type="primary" v-show="activeName != 'second'">下架</el-button>
                 <!-- <el-button  @click="saveEdit" type="info">拒绝上架</el-button> -->
             </span>
         </el-dialog>
@@ -137,6 +136,7 @@
 
 <script>
 import viewDetailDialog from "./preview_dialog/viewDetailsDialog.vue";
+import { multiplyPrice,dividePrice } from "../../common/commonJS/commonjs.js";
 import { mapState } from "vuex";
 import {
   listSell,
@@ -187,17 +187,6 @@ export default {
   mounted() {},
   computed: {
     ...mapState(["userInfo"]),
-    data() {
-      return this.tableData.filter(d => {
-        let is_del = false;
-        for (let i = 0; i < this.del_list.length; i++) {
-          if (d.name === this.del_list[i].name) {
-            is_del = true;
-            break;
-          }
-        }
-      });
-    }
   },
   methods: {
     handleClick(tab, e) {
@@ -246,6 +235,10 @@ export default {
           self.pages_count = res.data.pages;
           self.pageSize = res.data.pageSize;
           for (var i = 0; i < res.data.dataList.length; i++) {
+            self.tableData[i].realityPrice = dividePrice(res.data.dataList[i].realityPrice)
+            self.tableData[i].suggestPrice = dividePrice(res.data.dataList[i].suggestPrice)
+            self.tableData[i].inventory = dividePrice(res.data.dataList[i].inventory)
+            self.tableData[i].carriage = dividePrice(res.data.dataList[i].carriage)
             self.$set(self.tableData[i], "showEdit", false);
           }
         })
@@ -270,6 +263,12 @@ export default {
           self.total_page = res.data.total;
           self.pageSize = res.data.pageSize;
           self.pages_count = res.data.pages;
+          for (var i = 0; i < res.data.dataList.length; i++) {
+            self.tableData[i].realityPrice = dividePrice(res.data.dataList[i].realityPrice)
+            self.tableData[i].suggestPrice = dividePrice(res.data.dataList[i].suggestPrice)
+            self.tableData[i].inventory = dividePrice(res.data.dataList[i].inventory)
+            self.tableData[i].carriage = dividePrice(res.data.dataList[i].carriage)
+          }
         })
         .catch(err => {
           console.log(err);
@@ -292,6 +291,10 @@ export default {
           self.pageSize = res.data.pageSize;
           self.pages_count = res.data.pages;
           for (var i = 0; i < res.data.dataList.length; i++) {
+            self.tableData[i].realityPrice = dividePrice(res.data.dataList[i].realityPrice)
+            self.tableData[i].suggestPrice = dividePrice(res.data.dataList[i].suggestPrice)
+            self.tableData[i].inventory = dividePrice(res.data.dataList[i].inventory)
+            self.tableData[i].carriage = dividePrice(res.data.dataList[i].carriage)
             this.$set(this.tableData[i], "showEdit", false);
           }
         })
@@ -339,9 +342,9 @@ export default {
       let self = this;
       let param = {
         commodityId: row.commodityId,
-        realityPrice: row.realityPrice,
-        suggestPrice: row.suggestPrice,
-        inventory: row.inventory
+        realityPrice: multiplyPrice(row.realityPrice),
+        suggestPrice: multiplyPrice(row.suggestPrice),
+        inventory: multiplyPrice(row.inventory)
       };
       edit(param).then(res => {
         if (res.data) {
@@ -385,6 +388,7 @@ export default {
           self.$message.info("下架失败");
         });
       self.delVisible = false;
+      self.editVisible = false
     }
   }
 };

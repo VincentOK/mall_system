@@ -86,17 +86,34 @@ export const orderDetailrefund = (orderNumber) => fetch('/timestoremanage/order/
     orderNumber: orderNumber
 }, 'POST', true);
 /**
+ * 待退款状态点击拒绝退款
+ * @param orderNumber
+ * @param reason
+ * @returns {Promise<*>}
+ */
+export const refusedRefund = (orderNumber,reason) =>fetch('/timestoremanage/order/refusedRefund',{
+    orderNumber:orderNumber,
+    reason:reason
+},'POST',true);
+/**
  * 同意退款
  * @param form
  * @returns {Promise<*>}
  */
 export const confrimRefund = (form) => fetch('/timestoremanage/order/confrimRefund', {
-    uid: form.uid,
-    shippingName: form.shippingName,
-    shippingPhone: form.shippingPhone,
-    shippingAddress: form.shippingAddress,
-    detailAddress: form.detailAddress,
+    orderNumber: form.orderNumber,
+    tenantContacts: form.shippingName,
+    tenantPhone: form.shippingPhone,
+    tenantAddress: form.detailAddress,
 }, 'POST', true);
+/**
+ * 确认执行退款，退还买家商品费用
+ * @param orderNumber
+ * @returns {Promise<*>}
+ */
+export const executeRefund =(orderNumber) =>fetch('/timestoremanage/order/executeRefund',{
+    orderNumber:orderNumber
+},'POST',true);
 /**
  * 拒绝发货
  * @param form

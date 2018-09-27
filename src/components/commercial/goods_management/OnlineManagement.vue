@@ -115,7 +115,7 @@
               </el-scrollbar>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="deleteRow" type="primary" v-show="activeName != 'second'">下架</el-button>
+                <el-button @click="deleteRow" type="primary" v-show="activeName == 'first'">下架</el-button>
                 <!-- <el-button  @click="saveEdit" type="info">拒绝上架</el-button> -->
             </span>
         </el-dialog>

@@ -17,14 +17,14 @@
         </div>
         <div>
           <label>支付渠道：</label>
-          <p style="display:inline" v-for="item in GoodsDetail.payTypeList" :key="item.typeId">{{item.typeName}}&nbsp;</p>
+          <p style="display:inline">{{GoodsDetail.typeName}}</p>
         </div>
         <div>
           <label>上架时间：</label>
           <span>{{GoodsDetail.createTime}}</span>
         </div>
-        <div style="margin-left: -40px;">
-          <label>可提供发票类型：</label>
+        <div style="margin-left: -14px;">
+          <label>可提供发票：</label>
           <span>{{GoodsDetail.support}}</span>
         </div>
       </div>
@@ -47,11 +47,11 @@
         </div>
         <div>
           <label>支持退货：</label>
-          <span>{{GoodsDetail.salesReturn}}2</span>
+          <span>{{GoodsDetail.salesReturn}}</span>
         </div>
         <div class="invoice_type">
           <label>可提供发票类型：</label>
-          <p v-for="item in GoodsDetail.invoiceTypeList" :key="item.typeId">{{item.typeName}}&nbsp;&nbsp;</p>
+          <p>{{GoodsDetail.invoicetypeName}}</p>
         </div>
       </div>
     </div>
@@ -152,7 +152,6 @@ export default {
             self.sliders = res.data.listImages;
             self.GoodsDetail.realityPrice = dividePrice(res.data.realityPrice);
             self.GoodsDetail.suggestPrice = dividePrice(res.data.suggestPrice);
-            self.GoodsDetail.inventory = dividePrice(res.data.inventory);
             self.GoodsDetail.carriage = dividePrice(res.data.carriage);
           })
           .catch(err => {
@@ -162,9 +161,9 @@ export default {
         getCheckDetail(self.commodityId)
           .then(res => {
             self.GoodsDetail = res.data;
+            self.sliders = res.data.listImages;
             self.GoodsDetail.realityPrice = dividePrice(res.data.realityPrice);
             self.GoodsDetail.suggestPrice = dividePrice(res.data.suggestPrice);
-            self.GoodsDetail.inventory = dividePrice(res.data.inventory);
             self.GoodsDetail.carriage = dividePrice(res.data.carriage);
           })
           .catch(err => {

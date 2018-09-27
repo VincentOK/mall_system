@@ -152,7 +152,6 @@ export default {
             self.sliders = res.data.listImages;
             self.GoodsDetail.realityPrice = dividePrice(res.data.realityPrice);
             self.GoodsDetail.suggestPrice = dividePrice(res.data.suggestPrice);
-            self.GoodsDetail.inventory = dividePrice(res.data.inventory);
             self.GoodsDetail.carriage = dividePrice(res.data.carriage);
           })
           .catch(err => {
@@ -165,7 +164,6 @@ export default {
             self.sliders = res.data.listImages;
             self.GoodsDetail.realityPrice = dividePrice(res.data.realityPrice);
             self.GoodsDetail.suggestPrice = dividePrice(res.data.suggestPrice);
-            self.GoodsDetail.inventory = dividePrice(res.data.inventory);
             self.GoodsDetail.carriage = dividePrice(res.data.carriage);
           })
           .catch(err => {

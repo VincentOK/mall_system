@@ -51,9 +51,9 @@
             </div>
             <div v-show="activeName != 'third'">
             <el-table :data="tableData"  ref="multipleTable" :header-cell-style="getRowClass" @selection-change="handleSelectionChange">
-                <el-table-column prop="commodityPrizeimgUrl" label="" min-width="50%" >
+                <el-table-column prop="imgUrl" label="" min-width="50%" >
                     <template  slot-scope="scope">
-                        <img :src="scope.row.commodityPrizeimgUrl"  min-width="70" height="70" />
+                        <img :src="scope.row.imgUrl"  min-width="70" height="70" />
                     </template>
                 </el-table-column>
                 <el-table-column prop="commodityName" label="商品"></el-table-column>
@@ -107,9 +107,9 @@
             </div>
             <div v-show="activeName == 'third'">
             <el-table :data="tableData"  ref="multipleTable" :header-cell-style="getRowClass" @selection-change="handleSelectionChange">
-                <el-table-column prop="commodityPrizeimgUrl" label="" min-width="50%" >
+                <el-table-column prop="imgUrl" label="" min-width="50%" >
                     <template  slot-scope="scope">
-                        <img :src="scope.row.commodityPrizeimgUrl"  min-width="70" height="70" />
+                        <img :src="scope.row.imgUrl"  min-width="70" height="70" />
                     </template>
                 </el-table-column>
                 <el-table-column prop="commodityName" label="商品"></el-table-column>

@@ -32,7 +32,7 @@
                         <el-table-column prop="unit" label="出售规格" width="100"></el-table-column>
                         <el-table-column prop="count" label="购买数量" >
                         </el-table-column>
-                        <el-table-column prop="orderPriceRmb" label="支付金额" :formatter="formatter">
+                        <el-table-column prop="orderPriceRmb" label="支付金额" :formatter="formatterAnother">
                         </el-table-column>
                         <el-table-column prop="carriage" label="运费" :formatter="formatterCarriage">
                         </el-table-column>
@@ -77,7 +77,7 @@
                             <el-table-column prop="unit" label="出售规格"  width="100"></el-table-column>
                             <el-table-column prop="count" label="购买数量" >
                             </el-table-column>
-                            <el-table-column prop="orderPriceRmb" label="支付金额" :formatter="formatter">
+                            <el-table-column prop="orderPriceRmb" label="支付金额"  :formatter="formatterAnother">
                             </el-table-column>
                             <el-table-column prop="carriage" label="运费" :formatter="formatterCarriage">
                             </el-table-column>
@@ -93,11 +93,11 @@
                                                <!--@click="viewDetails($index, row)">查看详情</el-button>-->
                                     <el-button size="small" type="text" style="color:#66b1ff;"
                                                @click="viewDetailsRefund($index, row.orderNumber)">查看详情</el-button>
-                                    <el-button v-if="row.orderStatus === '待退款'" size="small" type="text" style="color:#66b1ff;"
+                                    <el-button v-if="row.orderStatus === '4'" size="small" type="text" style="color:#66b1ff;"
                                                @click="agreeDetails($index, row)" >同意退款</el-button>
-                                    <el-button  v-if="row.orderStatus === '待退款'" size="small" type="text"
+                                    <el-button  v-if="row.orderStatus === '4'" size="small" type="text"
                                                @click="notagreePay($index, row)">拒绝退款</el-button>
-                                    <el-button  v-if="row.orderStatus === '执行退款'" size="small" type="text"
+                                    <el-button  v-if="row.orderStatus === '9'" size="small" type="text"
                                                 @click="sureagreePay($index, row)">执行退款</el-button>
                                 </template>
                             </el-table-column>
@@ -392,17 +392,20 @@
             <el-dialog id="el-title" title="同意退款" :visible.sync="agreeVisible" width="460px" center top="300px" :show-close="false">
                 <div class="">
                     <div class="refund_title_word">同意买家<label style="color: #ec414d">{{refund_name}}</label>的退货退款请求？</div>
-                    <el-form ref="agreerulesform" :model="form_agree" :rules="form_agreerules"   label-width="100px">
-                        <el-form-item label="收件人:" prop="shippingName">
-                            <el-input v-model="form_agree.shippingName" placeholder="请输入收件人" ></el-input>
-                        </el-form-item>
-                        <el-form-item label="联系电话:" prop="shippingPhone">
-                            <el-input v-model="form_agree.shippingPhone" placeholder="请输入联系电话" ></el-input>
-                        </el-form-item>
-                        <el-form-item label="收货地址:" prop="detailAddress">
-                            <el-input v-model="form_agree.detailAddress" placeholder="请输入收货地址" ></el-input>
-                        </el-form-item>
-                    </el-form>
+                    <div  v-if="form_agree.sureStatus" >
+                        <el-form ref="agreerulesform" :model="form_agree" :rules="form_agreerules" label-width="100px">
+                            <el-form-item label="收件人:" prop="shippingName">
+                                <el-input v-model="form_agree.shippingName" placeholder="请输入收件人" ></el-input>
+                            </el-form-item>
+                            <el-form-item label="联系电话:" prop="shippingPhone">
+                                <el-input v-model="form_agree.shippingPhone" placeholder="请输入联系电话" ></el-input>
+                            </el-form-item>
+                            <el-form-item label="收货地址:" prop="detailAddress">
+                                <el-input v-model="form_agree.detailAddress" placeholder="请输入收货地址" ></el-input>
+                            </el-form-item>
+                        </el-form>
+                    </div>
+
                 </div>
 
                 <span slot="footer" class="dialog-footer">
@@ -443,7 +446,7 @@
                     </div>
                     <div class="word_more">
                         <p>同意向卖家<label style="color: #ec414d">{{surePayGoods.name}}</label></p>
-                        <p>退还<label style="color: #ec414d">￥{{surePayGoods.money | formMoney(surePayGoods.money)}}</label>的商品基本款项？</p>
+                        <p>退还<label style="color: #ec414d">{{surePayGoods.money}}</label>的商品基本款项？</p>
                         <p>退款金额将从您的平台账户扣除，请仔细检查买家寄回的货品后再退款</p>
                     </div>
                 </div>
@@ -465,6 +468,7 @@ import {
   RefuseDelivery,
   listRefund,
   confrimRefund,
+    confrimRefundNo,
     refusedRefund,
     executeRefund,
     orderDetailrefund
@@ -524,6 +528,7 @@ export default {
             ]
         },
       form_agree: {
+          sureStatus:false,
           orderNumber: "",
         shippingName: "",
         detailAddress: "",
@@ -647,7 +652,7 @@ export default {
         .then(res => {
           console.log("JSON待退款:" + JSON.stringify(res));
           this.getDatarefundOrders = res.data.dataList;
-          this.refundordersCount = parseInt(res.data.total);
+                this.refundordersCount = parseInt(res.data.total);
         })
         .catch(err => {
           console.log(err);
@@ -664,17 +669,33 @@ export default {
     /**
      * 待处理订单单条数据
      */
-    formatter(row, column, cellValue, index) {
-        // console.log("row:"+JSON.stringify(row)+"column:"+JSON.stringify(column)+"cellValue:"+cellValue+"index:"+index);
-        if(row.orderPriceRmb !== 0){
+    formatterO(row, column, cellValue, index) {
+        console.log("=========row==========:"+JSON.stringify(row)+"column:"+JSON.stringify(column)+"cellValue:"+cellValue+"index:"+index);
+        debugger;
+        if(row.orderPriceRmb != 0){
             row.orderPriceRmb = dividePrice(row.orderPriceRmb);
-            return row.orderPriceRmb;
-        }else if(row.orderPriceSjb !== 0){
+            return '￥'+row.orderPriceRmb;
+        }else if(row.orderPriceSjb != 0){
             return row.orderPriceRmb;
         }else {
             return '￥'+dividePrice(row.orderPriceRmb);
         }
     },
+      /**
+       * 待处理订单单条数据
+       */
+      formatterAnother(row, column, cellValue, index) {
+          console.log("=========row==========:"+JSON.stringify(row)+"column:"+JSON.stringify(column)+"cellValue:"+cellValue+"index:"+index);
+          let orderPrice = 0;
+          if(row.orderPriceRmb != 0){
+              orderPrice = '￥'+dividePrice(row.orderPriceRmb);
+          }else if(row.orderPriceSjb != 0){
+              orderPrice = dividePrice(row.orderPriceSjb);
+          }else {
+              orderPrice = '￥'+dividePrice(row.orderPriceRmb);
+          }
+          return orderPrice
+      },
       /**
        *
        */
@@ -761,6 +782,11 @@ export default {
       this.idx = index;
       this.refund_name = row.shippingName;
       this.form_agree.orderNumber = row.orderNumber;
+      if(row.sendOut == 'N'){
+          this.form_agree.sureStatus = false;
+      }else {
+          this.form_agree.sureStatus = true;
+      }
       this.agreeVisible = true;
     },
     //拒绝退款弹框
@@ -845,25 +871,43 @@ export default {
      * @param agreerulesform
      */
     agreedelVisible(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          this.agreeVisible = false;
-          console.log(this.form_agree);
-          confrimRefund(this.form_agree)
-            .then(res => {
-              console.log(res);
-              if (res.code === "0") {
-                  this.getrefundData(this.pageNum, this.pageSize, this.userInfo.uid);
-                this.$message("确认发货成功");
-              } else {
-                this.$message.error(res.msg);
-              }
-            })
-            .catch(err => {
-              console.log(err);
+        if(this.form_agree.sureStatus){
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    console.log(this.form_agree);
+                    confrimRefund(this.form_agree,'1')
+                        .then(res => {
+                            console.log(res);
+                            if (res.code === "0") {
+                                this.agreeVisible = false;
+                                this.getrefundData(this.pageNum, this.pageSize, this.userInfo.uid);
+                                this.$message("确认退款成功");
+                            } else {
+                                this.$message.error(res.msg);
+                            }
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        });
+                }
             });
+        }else {
+            confrimRefundNo(this.form_agree.orderNumber,'0')
+                .then(res => {
+                    console.log(res);
+                    if (res.code === "0") {
+                        this.agreeVisible = false;
+                        this.getrefundData(this.pageNum, this.pageSize, this.userInfo.uid);
+                        this.$message("确认退款成功");
+                    } else {
+                        this.$message.error(res.msg);
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
         }
-      });
+
     },
     //拒绝退款
     notagreedelVisible(formName) {
@@ -890,6 +934,7 @@ export default {
        * 确认执行退款、
        */
       suragreedelVisible(){
+          console.log(JSON.stringify(this.surePayGoods))
           executeRefund(this.surePayGoods.ordernumber).then(res =>{
               console.log("确认执行退款:"+JSON.stringify(res))
               if(res.code == '0'){

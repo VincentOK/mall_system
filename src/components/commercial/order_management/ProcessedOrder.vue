@@ -22,8 +22,8 @@
                     <el-option key="1" label="全部订单" value="0"></el-option>
                     <el-option key="2" label="已发货订单" value="3"></el-option>
                     <el-option key="3" label="已退款订单" value="5"></el-option>
-                    <el-option key="4" label="已完成订单" value="6"></el-option>
-                    <el-option key="5" label="拒绝发货订单" value="7" class="last-el-option"></el-option>
+                    <el-option key="4" label="拒绝发货订单" value="7"></el-option>
+                        <el-option key="5" label="已拒绝退款订单" value="8"  class="last-el-option"></el-option>
                     </el-select>
                     </span>
 
@@ -67,7 +67,7 @@
                         <el-table-column prop="receivingAddress" label="收货地址" ></el-table-column>
                         <el-table-column prop="receivingPhone" label="手机号码" ></el-table-column>
                         <el-table-column prop="orderTime" label="下单时间"></el-table-column>
-                        <el-table-column prop="orderStatus" label="订单状态"></el-table-column>
+                        <el-table-column prop="orderStatus" label="订单状态" :formatter="chinaStatus"></el-table-column>
                         <el-table-column label="操作" align="center">
                             <template slot-scope="{row,$index}">
                                 <el-button size="small" type="text" style="color:#66b1ff;"
@@ -298,7 +298,7 @@
                                 </div>
                                 <div class="goods_detail_right">
                                     <div>
-                                        收货人：<label>{{goodsDetail.commodityName}}</label>
+                                        收货人：<label>{{goodsDetail.receivingName}}</label>
                                     </div>
                                     <div>
                                         收货地址：<label>{{goodsDetail.receivingAddress}}</label>
@@ -480,6 +480,46 @@
                 return '￥'+dividePrice(row.carriage)
             },
             /**
+             * 状态格式化
+             */
+            chinaStatus(row, column, cellValue, index){
+                let word = '';
+                console.log("aaaaaaaaaaaaaaaaaaaaaaaaaa:"+JSON.stringify(row))
+                switch(row.orderStatus)
+                {
+                    case '1':
+                      word='待付款';
+                        break;
+                    case '2':
+                        word='待发货';
+                        break;
+                    case '3':
+                        word='已发货';
+                        break;
+                    case '4':
+                        word='退款中';
+                        break;
+                    case '5':
+                        word='已退款';
+                        break;
+                    case '6':
+                        word='已完成';
+                        break;
+                    case '7':
+                        word='拒绝发货';
+                        break;
+                    case '8':
+                        word='拒绝退款';
+                        break;
+                    case '9':
+                        word='退还商品';
+                        break;
+                    default:
+                        word=''
+                }
+                return word;
+            },
+            /**
              * 分页
              */
             handleCurrentChange(val) {
@@ -521,14 +561,18 @@
              */
             formatter(row, column, cellValue, index) {
                 // console.log("row:"+JSON.stringify(row)+"column:"+JSON.stringify(column)+"cellValue:"+cellValue+"index:"+index);
+                //return '￥'+dividePrice(row.orderPriceRmb);
+                var orderPrice = 0;
                 if(row.orderPriceRmb !== 0){
-                    row.orderPriceRmb = dividePrice(row.orderPriceRmb);
-                    return row.orderPriceRmb;
+                    orderPrice = '￥'+dividePrice(row.orderPriceRmb);
+                    //return row.orderPriceRmb;
                 }else if(row.orderPriceSjb !== 0){
-                    return row.orderPriceRmb;
+                    orderPrice = dividePrice(row.orderPriceSjb);
+                   // return row.orderPriceRmb;
                 }else {
-                    return '￥'+dividePrice(row.orderPriceRmb);
+                    orderPrice = dividePrice(row.orderPriceRmb);
                 }
+                return orderPrice;
             },
             /**
              * 点击查看详情弹出详情框
@@ -537,34 +581,35 @@
              */
             viewDetails(index, row) {
                 console.log(index,row);
-                if(row.orderStatus === '已发货' || row.orderStatus === '已完成' || row.orderStatus === '拒绝发货'){
+                if(row.orderStatus === '3' || row.orderStatus === '6' || row.orderStatus === '7' || row.orderStatus === '8'){
                     console.log("已发货:已完成");
                     getShippedSend(row.orderNumber).then(res =>{
                         console.log("已发货+已完成+已拒绝发货:"+res);
                         if(res.code === "0"){
                             this.editVisibleTitle = row.orderStatus;
+                            this.goodsDetail = res.data;
                             this.editVisible=true;//弹出框
                             this.returnGoods=false;//已拒绝发货
                             this.goodsOk=true;//已发货,已完成
                             this.returnMoney=false;//已退款状态
-                            this.goodsDetail = res.data
                         }else {
                             this.$message.error(res.msg)
                         }
                     }).catch(err =>{
                         this.$message.error(err)
                     });
-                }else if(row.orderStatus === '已退款'){
-                    console.log("已退款")
+                }else if(row.orderStatus === '5'){
+                    console.log("已退款");
                     orderDetailrefund(row.orderNumber).then(res =>{
                         console.log("已退款:"+res);
                         if(res.code === "0"){
+                            this.goodsDetail = res.data;
                             this.editVisibleTitle = row.orderStatus;
                             this.editVisible=true;//弹出框
                             this.returnGoods=false;//已拒绝发货
                             this.goodsOk=false;//已发货,已完成
                             this.returnMoney=true;//已退款状态
-                            this.goodsDetail = res.data
+
                         }else {
                             this.$message.error(res.msg)
                         }

@@ -54,13 +54,13 @@
                 <el-table-column prop="unit" label="出售规格" width="100"></el-table-column>
                 <el-table-column prop="realityPrice" label="实际售价">
                   <template slot-scope="{row,$index}">
-                    <el-input v-if="row.showEdit" v-model="row.realityPrice" maxlength="7" size="small" style="width:120px" onkeypress='return(/[\d\.]/.test(String.fromCharCode(event.keyCode)))'></el-input>
+                    ￥<el-input v-if="row.showEdit" v-model="row.realityPrice" maxlength="7" size="small" style="width:100px" onkeypress='return(/[\d\.]/.test(String.fromCharCode(event.keyCode)))'></el-input>
                     <span v-if="!row.showEdit">{{row.realityPrice}}</span>
                   </template>
                 </el-table-column>
                 <el-table-column prop="suggestPrice" label="建议售价">
                   <template slot-scope="{row,$index}">
-                    <el-input v-if="row.showEdit" v-model="row.suggestPrice" maxlength="7" size="small" style="width:120px" onkeypress='return(/[\d\.]/.test(String.fromCharCode(event.keyCode)))'></el-input>
+                    ￥<el-input v-if="row.showEdit" v-model="row.suggestPrice" maxlength="7" size="small" style="width:100px" onkeypress='return(/[\d\.]/.test(String.fromCharCode(event.keyCode)))'></el-input>
                     <span v-if="!row.showEdit">{{row.suggestPrice}}</span>
                   </template>
                 </el-table-column>

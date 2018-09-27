@@ -84,11 +84,9 @@ export default {
     };
   },
   computed: {
-    ...mapState(["userInfo"]),
-    username() {
-      let username = localStorage.getItem("ms_username");
-      return username ? username : this.name;
-    }
+      ...mapState([
+          'userInfo'
+      ]),
   },
   mounted() {
     this.tenantUid = this.userInfo.uid;

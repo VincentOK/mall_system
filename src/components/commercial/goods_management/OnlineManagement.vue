@@ -77,18 +77,18 @@
                     <span v-if="!row.showEdit">{{row.inventory}}</span>
                     </div>
                   </template>
-                  
+
                 </el-table-column>
                 <el-table-column prop="updateTime" label="上架时间"></el-table-column>
                 <el-table-column label="操作" align="center" width="280">
                     <template slot-scope="{row,$index}">
-                      <el-button size="small" type="text" style="color:#66b1ff;" 
+                      <el-button size="small" type="text" style="color:#66b1ff;"
                       @click="viewDetails($index, row)">查看详情</el-button>
-                      <el-button size="small" type="text" style="color:#66b1ff;" 
+                      <el-button size="small" type="text" style="color:#66b1ff;"
                       @click="handleEdit($index, row)" v-show="activeName != 'second'" v-if="!row.showEdit">编辑</el-button>
-                      <el-button size="small" type="text" style="color:#66b1ff;" 
+                      <el-button size="small" type="text" style="color:#66b1ff;"
                       @click="handleSave($index, row)" v-show="activeName != 'second'" v-if="row.showEdit">保存编辑</el-button>
-                      <el-button size="small" type="text" 
+                      <el-button size="small" type="text"
                       @click="handleDelete($index, row)" v-show="activeName == 'first'">下架</el-button>
                     </template>
                 </el-table-column>
@@ -96,13 +96,13 @@
             <div class="pagination">
                  <el-pagination
                   v-if="paginationShow"
-                  background 
-                  :page-size="pageSize" 
+                  background
+                  :page-size="pageSize"
                   :current-page="cur_page"
                   @current-change="handleCurrentChange"
                   :pager-count="pages_count"
                   layout="prev, pager, next, jumper"
-                  :total="total_page">  
+                  :total="total_page">
                 </el-pagination>
             </div>
         </div>
@@ -237,7 +237,6 @@ export default {
           for (var i = 0; i < res.data.dataList.length; i++) {
             self.tableData[i].realityPrice = dividePrice(res.data.dataList[i].realityPrice)
             self.tableData[i].suggestPrice = dividePrice(res.data.dataList[i].suggestPrice)
-            self.tableData[i].inventory = dividePrice(res.data.dataList[i].inventory)
             self.tableData[i].carriage = dividePrice(res.data.dataList[i].carriage)
             self.$set(self.tableData[i], "showEdit", false);
           }
@@ -344,7 +343,7 @@ export default {
         commodityId: row.commodityId,
         realityPrice: multiplyPrice(row.realityPrice),
         suggestPrice: multiplyPrice(row.suggestPrice),
-        inventory: multiplyPrice(row.inventory)
+        inventory: row.inventory
       };
       edit(param).then(res => {
         if (res.data) {

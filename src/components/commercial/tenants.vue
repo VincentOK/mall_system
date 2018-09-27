@@ -3,14 +3,14 @@
     <div class="tenants">
         <p class="tenants_title">商城后台系统</p>
         <div class="a_link">
-            <a href="#">&nbsp;&nbsp;&nbsp;时间商城</a>/
-            <a href="#">{{person_commoney}}入驻</a>
+            <router-link :to="'/'">&nbsp;&nbsp;&nbsp;时间商城</router-link>/
+            <label>{{person_commoney}}入驻</label>
         </div>
         <div class="form_tenants">
             <div>
                 <p class="tenants_person" @click="personComponey">&nbsp;&nbsp;&nbsp;{{person_commoney}}请点击此处申请>></p>
                 <!--<div class="container" style="height: 700px;overflow-y: scroll">-->
-                    <el-scrollbar style="height:850px;">
+                    <el-scrollbar style="height:800px;width: 100%;">
                         <div class="container" style="border: none">
                             <div class="form-box">
                                 <el-form ref="form" :rules="rules" :model="form" label-width="150px">

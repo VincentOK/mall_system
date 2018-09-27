@@ -17,7 +17,11 @@ Vue.use(_prototype);
 //全局调用自定义vue指令
 import instruction from './components/common/commonJS/instruction'
 Vue.use(instruction);
-
+//过滤器统一处理加载
+import filters from './components/common/commonJS/filters'
+Object.keys(filters).forEach(key => {
+    Vue.filter(key, filters[key])
+});
 Vue.use(ElementUI, { size: 'small' });
 import { getStorage } from "./components/common/commonJS/localStorage";
 import { Decrypt } from "./components/common/commonJS/secert";

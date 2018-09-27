@@ -45,17 +45,30 @@
                 </span>
                 </div>
                     <el-table :data="listRefundOrderData"  ref="multipleTable" :header-cell-style="getRowClass">
-                        <el-table-column prop="commodityName" label="商品" :formatter="formatter.commodityName"></el-table-column>
-                        <el-table-column prop="unit" label="出售规格" :formatter="formatter.unit" width="100"></el-table-column>
-                        <el-table-column prop="count" label="购买数量" :formatter="formatter.count">
+                        <el-table-column prop="commodityPrizeimgUrl" label="" min-width="50%" >
+                            <template  slot-scope="scope">
+                                <img :src="scope.row.commodityPrizeimgUrl"  min-width="70" height="70" />
+                            </template>
                         </el-table-column>
-                        <el-table-column prop="totalPrice" label="支付金额" :formatter="formatter.totalPrice">
+                        <el-table-column prop="commodityPrizeName" label="商品"></el-table-column>
+                        <el-table-column prop="unit" label="出售规格" width="100"></el-table-column>
+                        <el-table-column prop="count" label="购买数量">
                         </el-table-column>
-                        <el-table-column prop="shippingName" label="收货人" :formatter="formatter.shippingName"></el-table-column>
-                        <el-table-column prop="address" label="收货地址" :formatter="formatter.address"></el-table-column>
-                        <el-table-column prop="shippingPhone" label="手机号码" :formatter="formatter.shippingPhone"></el-table-column>
-                        <el-table-column prop="orderTime" label="下单时间" :formatter="formatter.orderTime"></el-table-column>
-                        <el-table-column prop="orderStatus" label="订单状态" :formatter="formatter.orderStatus"></el-table-column>
+                        <el-table-column prop="channel" label="通道费" :formatter="formatterChannel">
+                        </el-table-column>
+                        <el-table-column prop="manageFee" label="管理费" :formatter="formatterManageFee">
+                        </el-table-column>
+                        <el-table-column prop="actualAccount" label="实际到账" :formatter="formatterActualAccount">
+                        </el-table-column>
+                        <el-table-column prop="orderPriceRmb" label="支付金额" :formatter="formatter">
+                        </el-table-column>
+                        <el-table-column prop="carriage" label="运费"  :formatter="formatterCarriage">
+                        </el-table-column>
+                        <el-table-column prop="receivingName" label="收货人" ></el-table-column>
+                        <el-table-column prop="receivingAddress" label="收货地址" ></el-table-column>
+                        <el-table-column prop="receivingPhone" label="手机号码" ></el-table-column>
+                        <el-table-column prop="orderTime" label="下单时间"></el-table-column>
+                        <el-table-column prop="orderStatus" label="订单状态"></el-table-column>
                         <el-table-column label="操作" align="center">
                             <template slot-scope="{row,$index}">
                                 <el-button size="small" type="text" style="color:#66b1ff;"
@@ -86,18 +99,18 @@
                                 <div class="one_detail">
                                     <div class="goods_detail_left">
                                         <div>
-                                            联系人：<label>{{goodsDetail.refundInfo.realName}}</label>
+                                            联系人：<label>{{goodsDetail.contacts}}</label>
                                         </div>
                                         <div>
-                                            申请原因：<label>{{goodsDetail.refundInfo.reason}}</label>
+                                            申请原因：<label>{{goodsDetail.reason}}</label>
                                         </div>
                                     </div>
                                     <div class="goods_detail_right">
                                         <div>
-                                            联系电话：<label>{{goodsDetail.refundInfo.linkPhone}}</label>
+                                            联系电话：<label>{{goodsDetail.phone}}</label>
                                         </div>
                                         <div>
-                                            问题描述：<label>{{goodsDetail.refundInfo.describes}}</label>
+                                            问题描述：<label>{{goodsDetail.describes}}</label>
                                         </div>
                                     </div>
                                 </div>
@@ -115,15 +128,15 @@
                                 <div class="one_detail">
                                     <div class="goods_detail_left">
                                         <div>
-                                            收件人：<label>{{goodsDetail.refundPath.shipping_name}}</label>
+                                            收件人：<label>{{goodsDetail.tenantContacts}}</label>
                                         </div>
                                         <div>
-                                            联系电话：<label>{{goodsDetail.refundPath.shipping_phone}}</label>
+                                            联系电话：<label>{{goodsDetail.tenantPhone}}</label>
                                         </div>
                                     </div>
                                     <div class="goods_detail_right">
                                         <div>
-                                            收货地址：<label>{{goodsDetail.refundPath.address}}</label>
+                                            收货地址：<label>{{goodsDetail.tenantAddress}}</label>
                                         </div>
                                     </div>
                                 </div>
@@ -132,40 +145,48 @@
                             <div class="one_detail">
                                 <div class="goods_detail_left">
                                     <div>
-                                        商品名称：<label>{{goodsDetail.orderInfo.commodityName}}</label>
+                                        商品名称：<label>{{goodsDetail.commodityPrizeName}}</label>
                                     </div>
                                     <div>
-                                        出售规格：<label>{{goodsDetail.orderInfo.unit}}</label>
+                                        出售规格：<label>{{goodsDetail.unit}}</label>
                                     </div>
                                     <div>
-                                        购买数量：<label>{{goodsDetail.orderInfo.count}}</label>
+                                        购买数量：<label>{{goodsDetail.count}}</label>
                                     </div>
-                                    <div v-show="returnGoods">
-                                        下单时间：<label>{{goodsDetail.orderInfo.orderTime}}</label>
+                                    <div>
+                                        通道费：<label>￥{{goodsDetail.channel | formMoney(goodsDetail.channel)}}</label>
                                     </div>
-                                    <div v-show="goodsOk">
-                                        快递公司：<label>快递公司{{goodsDetail.orderInfo.unit}}</label>
+                                    <div>
+                                        实际到账：<label>￥{{goodsDetail.actualAccount | formMoney(goodsDetail.actualAccount)}}</label>
                                     </div>
-                                    <div v-show="goodsOk">
-                                        快递单号：<label>快递单号{{goodsDetail.orderInfo.unit}}</label>
+                                    <div>
+                                        快递公司：<label>{{goodsDetail.logisticsName}}</label>
                                     </div>
-
+                                    <div>
+                                        快递单号：<label>{{goodsDetail.logisticsNumber}}</label>
+                                    </div>
                                 </div>
                                 <div class="goods_detail_right">
                                     <div>
-                                        订单号：<label>{{goodsDetail.orderInfo.orderNumber}}</label>
+                                        订单号：<label>{{goodsDetail.orderNumber}}</label>
                                     </div>
                                     <div>
-                                        支付流水号：<label>{{goodsDetail.orderInfo.payNumber}}</label>
+                                        支付流水号：<label>{{goodsDetail.payNumber}}</label>
+                                    </div>
+                                    <div v-if="goodsDetail.orderPriceRmb !== 0">
+                                        支付金额：<label>￥{{goodsDetail.orderPriceRmb | formMoney(goodsDetail.orderPriceRmb)}}</label>
+                                    </div>
+                                    <div v-if="goodsDetail.orderPriceSjb !== 0">
+                                        支付时间币：<label>{{goodsDetail.orderPriceSjb | formMoney(goodsDetail.orderPriceSjb)}}</label>
                                     </div>
                                     <div>
-                                        支付金额：<label>{{goodsDetail.orderInfo.totalPrice}}</label>
+                                        管理费：<label>￥{{goodsDetail.manageFee | formMoney(goodsDetail.manageFee)}}</label>
                                     </div>
-                                    <div v-show="goodsOk">
-                                        下单时间：<label>{{goodsDetail.orderInfo.orderTime}}</label>
+                                    <div>
+                                        运费：<label>￥{{goodsDetail.carriage | formMoney(goodsDetail.carriage)}}</label>
                                     </div>
-                                    <div v-show="returnGoods">
-                                        拒绝发货原因：<label>拒绝发货原因{{goodsDetail.orderInfo.orderNumber}}</label>
+                                    <div>
+                                        下单时间：<label>{{goodsDetail.orderTime}}</label>
                                     </div>
                                 </div>
                             </div>
@@ -173,18 +194,18 @@
                             <div class="one_detail">
                                 <div class="goods_detail_left">
                                     <div>
-                                        买家昵称：<label>{{goodsDetail.buyersInfo.nickName}}</label>
+                                        买家昵称：<label>{{goodsDetail.nickName}}</label>
                                     </div>
                                     <div>
-                                        手机号：<label>{{goodsDetail.buyersInfo.shippingPhone}}</label>
+                                        手机号：<label>{{goodsDetail.receivingPhone}}</label>
                                     </div>
                                 </div>
                                 <div class="goods_detail_right">
                                     <div>
-                                        收货人：<label>{{goodsDetail.buyersInfo.shippingName}}</label>
+                                        收货人：<label>{{goodsDetail.receivingName}}</label>
                                     </div>
                                     <div>
-                                        收货地址：<label>{{goodsDetail.buyersInfo.address}}</label>
+                                        收货地址：<label>{{goodsDetail.receivingAddress}}</label>
                                     </div>
                                 </div>
                             </div>
@@ -193,18 +214,18 @@
                                 <div class="one_detail">
                                     <div class="goods_detail_left">
                                         <div>
-                                            买家索要发票：<label>{{goodsDetail.invoiceInfo.blag}}</label>
+                                            买家索要发票：<label>{{goodsDetail.support}}</label>
                                         </div>
                                         <div>
-                                            发票单位名称：<label>{{goodsDetail.invoiceInfo.nameEntity}}</label>
+                                            发票单位名称：<label>{{goodsDetail.invoiceName}}</label>
                                         </div>
                                     </div>
                                     <div class="goods_detail_right">
                                         <div>
-                                            发票类型：<label>{{goodsDetail.invoiceInfo.typeName}}</label>
+                                            发票类型：<label>{{goodsDetail.typeName}}</label>
                                         </div>
                                         <div>
-                                            纳税人识别号：<label>{{goodsDetail.invoiceInfo.identifyNumber}}</label>
+                                            纳税人识别号：<label>{{goodsDetail.invoiceCode}}</label>
                                         </div>
                                     </div>
                                 </div>
@@ -217,13 +238,19 @@
                             <div class="one_detail">
                                 <div class="goods_detail_left">
                                     <div>
-                                        商品名称：<label>{{goodsDetail.commodityName}}</label>
+                                        商品名称：<label>{{goodsDetail.commodityPrizeName}}</label>
                                     </div>
                                     <div>
                                         出售规格：<label>{{goodsDetail.unit}}</label>
                                     </div>
                                     <div>
                                         购买数量：<label>{{goodsDetail.count}}</label>
+                                    </div>
+                                    <div v-if="goodsDetail.orderPriceRmb !== 0">
+                                        支付金额：<label>￥{{goodsDetail.orderPriceRmb | formMoney(goodsDetail.orderPriceRmb)}}</label>
+                                    </div>
+                                    <div v-if="goodsDetail.orderPriceSjb !== 0">
+                                        支付时间币：<label>{{goodsDetail.orderPriceSjb  | formMoney(goodsDetail.orderPriceSjb)}}</label>
                                     </div>
                                     <div v-show="returnGoods">
                                         下单时间：<label>{{goodsDetail.orderTime}}</label>
@@ -233,6 +260,9 @@
                                     </div>
                                     <div>
                                         快递单号：<label>{{goodsDetail.logisticsNumber}}</label>
+                                    </div>
+                                    <div>
+                                        实际到账：<label>￥{{goodsDetail.actualAccount | formMoney(goodsDetail.actualAccount)}}</label>
                                     </div>
 
                                 </div>
@@ -244,13 +274,16 @@
                                         支付流水号：<label>{{goodsDetail.payNumber}}</label>
                                     </div>
                                     <div>
-                                        支付金额：<label>{{goodsDetail.totalPrice}}</label>
+                                        运费：<label>￥{{goodsDetail.carriage | formMoney(goodsDetail.carriage)}}</label>
                                     </div>
-                                    <div v-show="goodsOk">
+                                    <div>
+                                        通道费：<label>￥{{goodsDetail.channel | formMoney(goodsDetail.channel)}}</label>
+                                    </div>
+                                    <div>
+                                        管理费：<label>￥{{goodsDetail.manageFee | formMoney(goodsDetail.manageFee)}}</label>
+                                    </div>
+                                    <div>
                                         下单时间：<label>{{goodsDetail.orderTime}}</label>
-                                    </div>
-                                    <div v-show="returnGoods">
-                                        拒绝发货原因：<label>拒绝发货原因{{goodsDetail.orderNumber}}</label>
                                     </div>
                                 </div>
                             </div>
@@ -261,20 +294,20 @@
                                         买家昵称：<label>{{goodsDetail.nickName}}</label>
                                     </div>
                                     <div>
-                                        手机号：<label>{{goodsDetail.shippingPhone}}</label>
+                                        手机号：<label>{{goodsDetail.receivingPhone}}</label>
                                     </div>
                                 </div>
                                 <div class="goods_detail_right">
                                     <div>
-                                        收货人：<label>{{goodsDetail.shippingName}}</label>
+                                        收货人：<label>{{goodsDetail.commodityName}}</label>
                                     </div>
                                     <div>
-                                        收货地址：<label>{{goodsDetail.address}}</label>
+                                        收货地址：<label>{{goodsDetail.receivingAddress}}</label>
                                     </div>
                                 </div>
                             </div>
                             <div>
-                                <h4>发票相关信息<label class="buy_notive">*买家想你索要了发票，请将发票与商品一同寄出</label></h4>
+                                <!--<h4>发票相关信息<label class="buy_notive">*买家想你索要了发票，请将发票与商品一同寄出</label></h4>-->
                                 <!--<div class="one_detail">-->
                                     <!--<div class="goods_detail_left">-->
                                         <!--<div>-->
@@ -316,7 +349,7 @@
                                 </div>
                                 <div class="goods_detail_right">
                                     <div>
-                                        拒绝发货原因：<label>拒绝发货原因{{goodsDetail.reason}}</label>
+                                        拒绝发货原因：<label>{{goodsDetail.reason}}</label>
                                     </div>
                                 </div>
                             </div>
@@ -360,6 +393,7 @@
         getNoSendDetail
     } from "../../common/request/request";
     import {mapState, mapMutations,mapActions} from 'vuex'
+    import { dividePrice } from "../../common/commonJS/commonjs";
     export default {
         name: "basetable",
         props: {
@@ -373,7 +407,7 @@
                 listRefundOrderData:null,//列表数据
                 listRefundOrderDataTotal:null,//列表总数
                 cur_page: 1,//页码
-                pageSize:15,//每页行数
+                pageSize:6,//每页行数
 
                 select_cate: "",//下拉框
                 select_word: "",//搜索框输入值
@@ -423,6 +457,30 @@
         },
         methods: {
             /**
+             * 通道费格式化
+             */
+            formatterChannel(row, column, cellValue, index){
+                return '￥'+dividePrice(row.channel)
+            },
+            /**
+             * 管理费格式化
+             */
+            formatterManageFee(row, column, cellValue, index){
+                return '￥'+dividePrice(row.manageFee)
+            },
+            /**
+             * 实际到账格式化
+             */
+            formatterActualAccount(row, column, cellValue, index){
+                return '￥'+dividePrice(row.actualAccount)
+            },
+            /**
+             * 运费格式化
+             */
+            formatterCarriage(row, column, cellValue, index){
+                return '￥'+dividePrice(row.carriage)
+            },
+            /**
              * 分页
              */
             handleCurrentChange(val) {
@@ -462,8 +520,16 @@
              * @param column
              * @returns {*}
              */
-            formatter(row, column) {
-                return row;
+            formatter(row, column, cellValue, index) {
+                // console.log("row:"+JSON.stringify(row)+"column:"+JSON.stringify(column)+"cellValue:"+cellValue+"index:"+index);
+                if(row.orderPriceRmb !== 0){
+                    row.orderPriceRmb = dividePrice(row.orderPriceRmb);
+                    return row.orderPriceRmb;
+                }else if(row.orderPriceSjb !== 0){
+                    return row.orderPriceRmb;
+                }else {
+                    return '￥'+dividePrice(row.orderPriceRmb);
+                }
             },
             /**
              * 点击查看详情弹出详情框
@@ -472,10 +538,10 @@
              */
             viewDetails(index, row) {
                 console.log(index,row);
-
-                if(row.orderStatus === '已发货' || row.orderStatus === '已完成'){
+                if(row.orderStatus === '已发货' || row.orderStatus === '已完成' || row.orderStatus === '拒绝发货'){
+                    console.log("已发货:已完成");
                     getShippedSend(row.orderNumber).then(res =>{
-                        console.log(res)
+                        console.log("已发货+已完成+已拒绝发货:"+res);
                         if(res.code === "0"){
                             this.editVisibleTitle = row.orderStatus;
                             this.editVisible=true;//弹出框
@@ -490,8 +556,9 @@
                         this.$message.error(err)
                     });
                 }else if(row.orderStatus === '已退款'){
+                    console.log("已退款")
                     orderDetailrefund(row.orderNumber).then(res =>{
-                        console.log(res);
+                        console.log("已退款:"+res);
                         if(res.code === "0"){
                             this.editVisibleTitle = row.orderStatus;
                             this.editVisible=true;//弹出框
@@ -506,23 +573,25 @@
                         this.$message.error(err)
                     });
 
-                }else if(row.orderStatus === '拒绝发货'){
-                    getNoSendDetail(row.orderNumber).then(res =>{
-                        console.log(res)
-                        if(res.code === "0"){
-                            this.editVisibleTitle = row.orderStatus;
-                            this.editVisible=true;//弹出框
-                            this.returnGoods=true;//已拒绝发货
-                            this.goodsOk=false;//已发货,已完成
-                            this.returnMoney=false;//已退款状态
-                            this.goodsDetail = res.data
-                        }else {
-                            this.$message.error(res.msg)
-                        }
-                    }).catch(err =>{
-                        this.$message.error(err)
-                    });
                 }
+                // else if(row.orderStatus === '拒绝发货'){
+                //     console.log("拒绝发货")
+                //     getNoSendDetail(row.orderNumber).then(res =>{
+                //         console.log("拒绝发货:"+res)
+                //         if(res.code === "0"){
+                //             this.editVisibleTitle = row.orderStatus;
+                //             this.editVisible=true;//弹出框
+                //             this.returnGoods=true;//已拒绝发货
+                //             this.goodsOk=false;//已发货,已完成
+                //             this.returnMoney=false;//已退款状态
+                //             this.goodsDetail = res.data
+                //         }else {
+                //             this.$message.error(res.msg)
+                //         }
+                //     }).catch(err =>{
+                //         this.$message.error(err)
+                //     });
+                // }
             },
 
             //拒绝退款

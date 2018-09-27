@@ -109,7 +109,7 @@
         </div>
 
         <el-dialog :visible.sync="dialogVisible" top="5vh">
-           <img width="100%" :src="dialogImageUrl" alt="">  
+           <img width="100%" :src="dialogImageUrl" alt="">
         </el-dialog>
 
         <el-dialog :visible.sync="previewPhoneDialog" top="5vh" width="0" :show-close="false">
@@ -359,7 +359,6 @@ export default {
           param.tenantUid = self.uid;
           param.realityPrice = multiplyPrice(param.realityPrice);
           param.suggestPrice = multiplyPrice(param.suggestPrice);
-          param.inventory = multiplyPrice(param.inventory);
           param.carriage = multiplyPrice(param.carriage)?multiplyPrice(param.carriage):0;
           addStoreCommodity(param)
             .then(res => {

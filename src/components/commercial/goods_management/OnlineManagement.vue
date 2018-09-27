@@ -265,7 +265,6 @@ export default {
           for (var i = 0; i < res.data.dataList.length; i++) {
             self.tableData[i].realityPrice = dividePrice(res.data.dataList[i].realityPrice)
             self.tableData[i].suggestPrice = dividePrice(res.data.dataList[i].suggestPrice)
-            self.tableData[i].inventory = dividePrice(res.data.dataList[i].inventory)
             self.tableData[i].carriage = dividePrice(res.data.dataList[i].carriage)
           }
         })
@@ -292,7 +291,6 @@ export default {
           for (var i = 0; i < res.data.dataList.length; i++) {
             self.tableData[i].realityPrice = dividePrice(res.data.dataList[i].realityPrice)
             self.tableData[i].suggestPrice = dividePrice(res.data.dataList[i].suggestPrice)
-            self.tableData[i].inventory = dividePrice(res.data.dataList[i].inventory)
             self.tableData[i].carriage = dividePrice(res.data.dataList[i].carriage)
             this.$set(this.tableData[i], "showEdit", false);
           }

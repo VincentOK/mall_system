@@ -195,7 +195,7 @@ export default {
         unit: "",
         realityPrice: "",
         suggestPrice: null,
-        inventory: "",
+        inventory: null,
         order_freight: "1",
         carriage: null,
         payType: [],
@@ -360,6 +360,7 @@ export default {
           param.realityPrice = multiplyPrice(param.realityPrice);
           param.suggestPrice = multiplyPrice(param.suggestPrice);
           param.carriage = multiplyPrice(param.carriage)?multiplyPrice(param.carriage):0;
+          param.inventory = Number(param.inventory)
           addStoreCommodity(param)
             .then(res => {
               if (res.data) {
@@ -410,28 +411,6 @@ export default {
       let checkedCount = value.length;
       this.checkAllInvoice = checkedCount === this.checkedInvoiceTypes.length;
     },
-    buytypeString(value) {
-      switch (value) {
-        case 1:
-          return "微信支付";
-        case 2:
-          return "支付宝支付";
-        case 3:
-          return "银行卡支付";
-        default:
-          return;
-      }
-    },
-    invoiceString(value) {
-      switch (value) {
-        case 1:
-          return "普通发票";
-        case 2:
-          return "增值税专用发票";
-        default:
-          return;
-      }
-    }
   }
 };
 </script>

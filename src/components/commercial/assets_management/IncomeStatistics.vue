@@ -26,10 +26,10 @@
                             <el-input v-model="ruleForm.backMoney" placeholder="请输入100以上的整数" type="number" class="income_money" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'></el-input>
                         </el-form-item>
                         <el-form-item label="收款人:">
-                            <span>{{tenantInfo.bankUseName?tenantInfo.bankUseName:"张三"}}</span>
+                            <span>{{tenantInfo.bankUseName | formatString}}</span>
                         </el-form-item>
                         <el-form-item label="收款账户:">
-                            <span>{{tenantInfo.bankNo?tenantInfo.bankNo:"6227 **** **** **** 187(北京银行)"}}</span>
+                            <span>{{tenantInfo.bankNo | formatString}}</span>
                             <!-- <span>（{{tenantInfo.bankName}}）</span> -->
                         </el-form-item>
                     </el-form>
@@ -46,12 +46,12 @@
                 <div class="top_dialog">
                   <h4 style="color:black">确认结算至以下银行账户？</h4>
                   <p class="top_dialog_bank">
-                    <span>{{accountInfo.bankNo?accountInfo.bankNo:"6227 **** **** **** 187(北京银行)"}}</span>
+                    <span>{{accountInfo.bankNo | formatString}}</span>
                     <!-- <span>（{{ruleForm.backname}}）</span> -->
                   </p>
                   <p>
                     <label>收款人:</label>
-                    <span>{{accountInfo.bankUseName?accountInfo.bankUseName:"张三"}}</span>
+                    <span>{{accountInfo.bankUseName | formatString}}</span>
                   </p>
                 </div>
                 
@@ -144,7 +144,14 @@ export default {
       } else {
         return value;
       }
-    }
+    },
+    formatString: function(value) {
+      if (typeof value == "function") {
+        return "";
+      } else {
+        return value;
+      }
+    },
   },
   methods: {
     formater(value) {

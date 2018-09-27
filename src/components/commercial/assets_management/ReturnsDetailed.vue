@@ -28,7 +28,7 @@
                     <!-- <el-table-column prop="channel" label="通道费（5%）"></el-table-column>
                     <el-table-column prop="dividedInto" label="分成比例"></el-table-column>
                     <el-table-column prop="actualAccount" label="实际到账"></el-table-column> -->
-                    <el-table-column prop="countBefore" label="待结算余额"></el-table-column>
+                    <el-table-column prop="countAfter" label="待结算余额"></el-table-column>
                     <el-table-column prop="createTime" label="结算申请时间"></el-table-column>
                     <el-table-column prop="status" label="结算状态"></el-table-column>
                 </el-table>
@@ -128,7 +128,7 @@ export default {
           self.pages_count = res.data.pages;
           for (var i = 0; i < res.data.dataList.length; i++) {
             self.tableData[i].count = '￥' + dividePrice(res.data.dataList[i].count)
-            self.tableData[i].countBefore = '￥' + dividePrice(res.data.dataList[i].countBefore)
+            self.tableData[i].countAfter = '￥' + dividePrice(res.data.dataList[i].countAfter)
           }
         } else {
           console.log("");

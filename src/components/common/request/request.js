@@ -91,10 +91,10 @@ export const orderDetailrefund = (orderNumber) => fetch('/timestoremanage/order/
  * @param reason
  * @returns {Promise<*>}
  */
-export const refusedRefund = (orderNumber,reason) =>fetch('/timestoremanage/order/refusedRefund',{
-    orderNumber:orderNumber,
-    reason:reason
-},'POST',true);
+export const refusedRefund = (orderNumber, reason) => fetch('/timestoremanage/order/refusedRefund', {
+    orderNumber: orderNumber,
+    reason: reason
+}, 'POST', true);
 /**
  * 同意退款
  * @param form
@@ -111,9 +111,9 @@ export const confrimRefund = (form) => fetch('/timestoremanage/order/confrimRefu
  * @param orderNumber
  * @returns {Promise<*>}
  */
-export const executeRefund =(orderNumber) =>fetch('/timestoremanage/order/executeRefund',{
-    orderNumber:orderNumber
-},'POST',true);
+export const executeRefund = (orderNumber) => fetch('/timestoremanage/order/executeRefund', {
+    orderNumber: orderNumber
+}, 'POST', true);
 /**
  * 拒绝发货
  * @param form
@@ -309,4 +309,26 @@ export const listBillingDetails = (param) => fetch('/timestoremanage/account/lis
     status: param.status,
     pageNumber: param.pageNumber,
     pageSize: param.pageSize,
+}, 'POST', true);
+
+/**
+ * 概览
+ **/
+export const viewDetail = (tenantUid) => fetch('/timestoremanage/survey/view', {
+    tenantUid: tenantUid,
+}, 'POST', true);
+
+//获取公告详情
+export const getNoticeDetail = (noticeId) => fetch('/timestoremanage/survey/getNoticeDetail', {
+    noticeId: noticeId,
+}, 'POST', true);
+
+//获取消息列表
+export const listMessages = (tenantUid) => fetch('/timestoremanage/survey/listMessages', {
+    tenantUid: tenantUid,
+}, 'POST', true);
+
+//获取消息详情
+export const getMessagesDetail = (messageId) => fetch('/timestoremanage/survey/getMessagesDetail', {
+    messageId: messageId,
 }, 'POST', true);

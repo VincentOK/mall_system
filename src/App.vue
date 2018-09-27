@@ -56,4 +56,8 @@ input[type="number"]{
 .imgWidth img{
   width: 100%;
 }
+.product_detail img{
+  width: 500px;
+  height: 300px;
+}
 </style>

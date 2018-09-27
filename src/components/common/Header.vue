@@ -118,10 +118,6 @@ export default {
       ...mapState([
           'userInfo'
       ]),
-    username() {
-      let username = localStorage.getItem("ms_username");
-      return username ? username : this.name;
-    }
   },
     mounted(){
         if (document.body.clientWidth < 1500) {

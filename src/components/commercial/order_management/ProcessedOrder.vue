@@ -17,7 +17,6 @@
                     <!--<el-option key="5" label="" value="按销量从低至高" class="last-el-option"></el-option>-->
                     <!--</el-select>-->
                     <!--</span>-->
-
                     <span class="ordering-rule" style="left: 50%">结算状态：
                     <el-select v-model="select_cate" placeholder="请选择状态" @change="chooseStatus" class="handle-select mr10">
                     <el-option key="1" label="全部订单" value="0"></el-option>

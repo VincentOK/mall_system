@@ -8,17 +8,17 @@
         <div class="header-right">
             <div class="header-user-con">
                 <div class="btn-bell">
-                    <el-tooltip effect="light" :content="message?`有${message}条未读消息`:`消息中心`" placement="bottom">
+                    <el-tooltip effect="light" :content="informNumber?`有${informNumber}条未读消息`:`消息中心`" placement="bottom">
                         <i class="el-icon-bell">
                             <el-popover placement="right-start" width="200" trigger="click">
                                 <span slot="reference">消息</span>
                                 <div class="scrollbarParent">
                                 <el-scrollbar style="height:100%;">
                                 <div v-for="(item,index) in gridData" :key="index">
-                                    <div class="message-info" @click="clickDialog(item.name)">
-                                        <p class="message-address">{{maxSlice(item.address)}}</p>
-                                        <span class="btn-bell-inner" v-if="item.date"></span>
-                                        <p class="message-date">{{item.date}}</p>
+                                    <div class="message-info" @click="clickDialog(item.messageId,item.inform)">
+                                        <p class="message-address">{{maxSlice(item.title)}}</p>
+                                        <span class="btn-bell-inner" v-show="item.inform=='0'"></span>
+                                        <p class="message-date">{{item.createTime}}</p>
                                     </div>
                                 </div>
                                 </el-scrollbar>
@@ -44,25 +44,30 @@
             </div>
         </div>
         <div class="red_header">
-            <el-dialog title="消息详情" :visible.sync="dialogVisible" width="40%" :before-close="handleClose">
-                <span>{{dialogContext}}</span>
+            <el-dialog title="消息详情" :visible.sync="dialogVisible" width="40%" :before-close="handleClose" :close-on-click-modal='false' :close-on-press-escape="false">
+                <div class="notice_wrap">
+                <h3>{{messageTitle}}</h3>
+                <span class="notice_time">{{messageCreateTime}}</span>
+                <p v-html="messageContent"></p>
+              </div>
                 <span slot="footer" class="dialog-footer">
                     <!-- <el-button @click="dialogVisible = false">取 消</el-button> -->
-                    <el-button type="primary" @click="dialogVisible = false">关闭窗口</el-button>
+                    <el-button type="primary" @click="demo">关闭窗口</el-button>
                 </span>
             </el-dialog>
         </div>
     </div>
 </template>
 <script>
-    import { removeStorage } from "./commonJS/localStorage";
-    import {  loginout } from "./request/request";
-    import {mapState} from 'vuex'
-    import bus from "../common/bus";
+import { removeStorage } from "./commonJS/localStorage";
+import { loginout, listMessages, getMessagesDetail } from "./request/request";
+import { mapState } from "vuex";
+import bus from "../common/bus";
 export default {
   data() {
     return {
-        dialogTitle:'',
+      tenantUid:"",
+      dialogTitle: "",
       collapse: false,
       fullscreen: false,
       name: "linxin",
@@ -70,48 +75,12 @@ export default {
       dialogVisible: false,
       dialogContext: "",
       maxLength: 10,
-      gridData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "标题消息"
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "标题消息"
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "标题消息"
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "标题消息"
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "标题消息"
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "标题消息"
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "标题消息"
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "标题消息"
-        }
-      ]
+      gridData: [],
+      informNumber:null,
+      messageTitle:'',
+      messageCreateTime:'',
+      messageContent:'',
+      informPoint:true,
     };
   },
   computed: {
@@ -119,36 +88,44 @@ export default {
           'userInfo'
       ]),
   },
-    mounted(){
-        if (document.body.clientWidth < 1500) {
-            this.collapseChage();
-        }
-      console.log("aa:"+JSON.stringify(this.userInfo))
-    },
+  mounted() {
+    this.tenantUid = this.userInfo.uid;
+    this.getListMessages();
+    if (document.body.clientWidth < 1500) {
+      this.collapseChage();
+    }
+    console.log("aa:" + JSON.stringify(this.userInfo));
+  },
   methods: {
-      /**
-       * 修改密码
-       * @param command
-       */
-      edxpassword(){
-          console.log("修改密码")
-          this.$router.push('/edxpassword')
-      },
+    /**
+     * 修改密码
+     * @param command
+     */
+    edxpassword() {
+      console.log("修改密码");
+      this.$router.push("/edxpassword");
+    },
+    demo(){
+      this.dialogVisible = false;
+      this.getListMessages()
+    },
     // 用户名下拉菜单选择事件
     handleCommand(command) {
       if (command == "loginout") {
-          loginout().then(res =>{
-              console.log(res)
-              if (res.code ==="0"){
-                  removeStorage('token');
-                  removeStorage('userInfo');
-                  removeStorage('resourceList');
-                  this.$router.push("/login");
-              } else {
-                  this.$message.error(res.msg)
-              }
-          }).catch(err =>{
-              console.log(err)
+        loginout()
+          .then(res => {
+            console.log(res);
+            if (res.code === "0") {
+              removeStorage("token");
+              removeStorage("userInfo");
+              removeStorage("resourceList");
+              this.$router.push("/login");
+            } else {
+              this.$message.error(res.msg);
+            }
+          })
+          .catch(err => {
+            console.log(err);
           });
       }
     },
@@ -159,10 +136,12 @@ export default {
       this.dialogVisible = true;
       done();
     },
-    clickDialog(e) {
+    clickDialog(e,event) {
+      console.log(event);
       this.dialogContext = e;
       this.dialogVisible = true;
-        this.dialogTitle = '消息'
+      this.dialogTitle = "消息";
+      this.getMessagesDetail(e)
     },
     // 侧边栏折叠
     collapseChage() {
@@ -195,22 +174,52 @@ export default {
         }
       }
       this.fullscreen = !this.fullscreen;
+    },
+    getListMessages() {
+      let self = this;
+      listMessages(self.tenantUid)
+        .then(res => {
+          if (res.data) {
+            self.gridData = res.data.dataList;
+            self.informNumber = res.data.informNumber;
+          } else {
+            console.log("");
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    getMessagesDetail(messageId) {
+      let self = this;
+      getMessagesDetail(messageId)
+        .then(res => {
+          if (res.data) {
+            self.messageTitle = res.data.title
+            self.messageCreateTime = res.data.createTime
+            self.messageContent = res.data.content
+          } else {
+            console.log("");
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
-  },
+  }
 };
 </script>
 <style scoped>
-
-    .router_link{
-        color: #283446
-    }
-    .router_link:hover{
-        color: #ec414d;
-    }
+.router_link {
+  color: #283446;
+}
+.router_link:hover {
+  color: #ec414d;
+}
 .header {
   position: relative;
   box-sizing: border-box;
-    background-color: #ec414d;
+  background-color: #ec414d;
   width: 100%;
   height: 70px;
   font-size: 22px;
@@ -318,5 +327,13 @@ export default {
 .message-date {
   font-size: 12px;
   color: #aaa;
+}
+.notice_wrap {
+  width: 60%;
+  margin: auto;
+}
+.notice_time {
+  display: inline-block;
+  margin: 15px 0 40px 0;
 }
 </style>

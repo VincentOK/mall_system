@@ -49,7 +49,13 @@
                     <el-button class="clear-button" type="default" icon="search" @click="clearSearch">清空</el-button>
                 </span>
             </div>
+            <div v-show="activeName != 'third'">
             <el-table :data="tableData"  ref="multipleTable" :header-cell-style="getRowClass" @selection-change="handleSelectionChange">
+                <el-table-column prop="imgUrl" label="" min-width="50%" >
+                    <template  slot-scope="scope">
+                        <img :src="scope.row.imgUrl"  min-width="70" height="70" />
+                    </template>
+                </el-table-column>
                 <el-table-column prop="commodityName" label="商品"></el-table-column>
                 <el-table-column prop="unit" label="出售规格" width="100"></el-table-column>
                 <el-table-column prop="realityPrice" label="实际售价">
@@ -64,9 +70,9 @@
                     <span v-if="!row.showEdit">{{row.suggestPrice}}</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="totalBrowseNumber" label="总浏览量"></el-table-column>
-                <el-table-column prop="userBrowseNumber" label="独立浏览量"></el-table-column>
-                <el-table-column prop="sales" label="已售"></el-table-column>
+                  <el-table-column prop="totalBrowseNumber" label="总浏览量"></el-table-column>
+                  <el-table-column prop="userBrowseNumber" label="独立浏览量"></el-table-column>
+                  <el-table-column prop="sales" label="已售"></el-table-column>
                 <el-table-column prop="inventory" label="剩余库存">
                   <template slot-scope="{row,$index}">
                     <div class="surplus_stock">
@@ -79,7 +85,12 @@
                   </template>
 
                 </el-table-column>
-                <el-table-column prop="updateTime" label="上架时间"></el-table-column>
+                <div v-if="activeName == 'first'">
+                    <el-table-column prop="createTime" label="上架时间"></el-table-column>
+                </div>
+                <div v-else>
+                    <el-table-column prop="updateTime" label="下架时间"></el-table-column>
+                </div>
                 <el-table-column label="操作" align="center" width="280">
                     <template slot-scope="{row,$index}">
                       <el-button size="small" type="text" style="color:#66b1ff;"
@@ -93,6 +104,57 @@
                     </template>
                 </el-table-column>
             </el-table>
+            </div>
+            <div v-show="activeName == 'third'">
+            <el-table :data="tableData"  ref="multipleTable" :header-cell-style="getRowClass" @selection-change="handleSelectionChange">
+                <el-table-column prop="imgUrl" label="" min-width="50%" >
+                    <template  slot-scope="scope">
+                        <img :src="scope.row.imgUrl"  min-width="70" height="70" />
+                    </template>
+                </el-table-column>
+                <el-table-column prop="commodityName" label="商品"></el-table-column>
+                <el-table-column prop="unit" label="出售规格" width="100"></el-table-column>
+                <el-table-column prop="realityPrice" label="实际售价">
+                  <template slot-scope="{row,$index}">
+                    ￥<el-input v-if="row.showEdit" v-model="row.realityPrice" maxlength="7" size="small" style="width:100px" onkeypress='return(/[\d\.]/.test(String.fromCharCode(event.keyCode)))'></el-input>
+                    <span v-if="!row.showEdit">{{row.realityPrice}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="suggestPrice" label="建议售价">
+                  <template slot-scope="{row,$index}">
+                    ￥<el-input v-if="row.showEdit" v-model="row.suggestPrice" maxlength="7" size="small" style="width:100px" onkeypress='return(/[\d\.]/.test(String.fromCharCode(event.keyCode)))'></el-input>
+                    <span v-if="!row.showEdit">{{row.suggestPrice}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="inventory" label="剩余库存">
+                  <template slot-scope="{row,$index}">
+                    <div class="surplus_stock">
+                    <el-input v-if="row.showEdit" v-model="row.inventory"  size="small" style="width:120px" maxlength="4" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'>
+                      <template slot="prepend"><span @click="plusMath(row)">+</span></template>
+                      <template slot="append"><span @click="subtractMath(row)">-</span></template>
+                    </el-input>
+                    <span v-if="!row.showEdit">{{row.inventory}}</span>
+                    </div>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="payType" label="支付渠道"></el-table-column>
+                <el-table-column prop="salesReturn" label="支持退货"></el-table-column>
+                <el-table-column prop="promotion" label="参与促销计划"></el-table-column>
+                <el-table-column prop="createTime" label="上架时间"></el-table-column>
+                <el-table-column label="操作" align="center" width="280">
+                    <template slot-scope="{row,$index}">
+                      <el-button size="small" type="text" style="color:#66b1ff;"
+                      @click="viewDetails($index, row)">查看详情</el-button>
+                      <el-button size="small" type="text" style="color:#66b1ff;"
+                      @click="handleEdit($index, row)" v-show="activeName != 'second'" v-if="!row.showEdit">编辑</el-button>
+                      <el-button size="small" type="text" style="color:#66b1ff;"
+                      @click="handleSave($index, row)" v-show="activeName != 'second'" v-if="row.showEdit">保存编辑</el-button>
+                      <el-button size="small" type="text"
+                      @click="handleDelete($index, row)" v-show="activeName == 'first'">下架</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            </div>
             <div class="pagination">
                  <el-pagination
                   v-if="paginationShow"
@@ -223,8 +285,8 @@ export default {
         pageNumber: this.cur_page,
         pageSize: 10,
         tenantUid: self.uid,
-        startTime: self.dateValue[0],
-        endTime: self.dateValue[1],
+        startTime: self.dateValue?self.dateValue[0]:null,
+        endTime: self.dateValue?self.dateValue[1]:null,
         keyword: self.select_word
       };
       listSell(param)
@@ -251,8 +313,8 @@ export default {
         pageNumber: this.cur_page,
         pageSize: 10,
         tenantUid: self.uid,
-        startTime: self.dateValue[0],
-        endTime: self.dateValue[1],
+        startTime: self.dateValue?self.dateValue[0]:null,
+        endTime: self.dateValue?self.dateValue[1]:null,
         keyword: self.select_word,
         sort: Number(self.select_cate)
       };
@@ -278,8 +340,8 @@ export default {
         pageNumber: this.cur_page,
         pageSize: 10,
         tenantUid: self.uid,
-        startTime: self.dateValue[0],
-        endTime: self.dateValue[1],
+        startTime: self.dateValue?self.dateValue[0]:null,
+        endTime: self.dateValue?self.dateValue[1]:null,
         keyword: self.select_word
       };
       listCheck(param)

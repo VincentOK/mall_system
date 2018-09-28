@@ -46,12 +46,12 @@
                 <div class="top_dialog">
                   <h4 style="color:black">确认结算至以下银行账户？</h4>
                   <p class="top_dialog_bank">
-                    <span>{{accountInfo.bankNo | formatString}}</span>
+                    <span>{{tenantInfo.bankNo | formatString}}</span>
                     <!-- <span>（{{ruleForm.backname}}）</span> -->
                   </p>
                   <p>
                     <label>收款人:</label>
-                    <span>{{accountInfo.bankUseName | formatString}}</span>
+                    <span>{{tenantInfo.bankUseName | formatString}}</span>
                   </p>
                 </div>
                 
@@ -158,10 +158,10 @@ export default {
       return value.replace(/\s/g, "").replace(/(\d{4})(?=\d)/g, "$1 ");
     },
     submitForm(formName) {
+      let self = this;
       this.$refs[formName].validate(valid => {
-        if (valid) {
+        if (valid && self.countEarnings.availableCoin >= Number(self.ruleForm.backMoney)) {
           this.incomeDialog = true;
-          this.getSettlementApplication();
         } else {
           this.$message.error("提交失败!");
           return false;
@@ -175,6 +175,7 @@ export default {
         if (res.data) {
           self.$message.success("提交成功");
           self.ruleForm.backMoney=null;
+          self.getCountEarnings()
         } else {
           console.log("");
         }

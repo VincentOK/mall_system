@@ -71,7 +71,7 @@
                           </el-radio-group>
                       </el-form-item>
                       <el-form-item label="可提供发票" prop="invoice">
-                          <el-radio-group v-model="form.invoice">
+                          <el-radio-group v-model="form.invoice" @change="handleInvoiceListChange">
                               <el-radio label="Y">是</el-radio>
                               <el-radio label="N">否</el-radio>
                           </el-radio-group>
@@ -413,6 +413,12 @@ export default {
       let checkedCount = value.length;
       this.checkAllInvoice = checkedCount === this.checkedInvoiceTypes.length;
     },
+    handleInvoiceListChange(value){
+      if(value == 'N'){
+        this.form.invoiceType = [];
+        this.checkAllInvoice =false
+      }
+    }
   }
 };
 </script>

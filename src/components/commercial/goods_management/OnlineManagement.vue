@@ -15,7 +15,7 @@
                 <span class="good-total">共{{total_page?total_page:0}}个商品</span>
                 <span class="ordering-rule" v-show="activeName == 'second'">排序规则：
                 <el-select v-model="select_cate" placeholder="请选择排序规则" class="handle-select mr10"  @change="getListData">
-                    <el-option key="1" label="默认（按上架时间从近至远）" value="1"></el-option>
+                    <el-option key="1" label="默认（按下架时间从近至远）" value="1"></el-option>
                     <el-option key="2" label="按总浏览量从高至低" value="2"></el-option>
                     <el-option key="3" label="按总浏览量从低至高" value="3"></el-option>
                     <el-option key="4" label="按销量从高至低" value="4"></el-option>
@@ -60,13 +60,13 @@
                 <el-table-column prop="unit" label="出售规格" width="100"></el-table-column>
                 <el-table-column prop="realityPrice" label="实际售价">
                   <template slot-scope="{row,$index}">
-                    ￥<el-input v-if="row.showEdit" v-model="row.realityPrice" maxlength="7" size="small" style="width:100px" onkeypress='return(/[\d\.]/.test(String.fromCharCode(event.keyCode)))'></el-input>
+                    ￥<el-input v-if="row.showEdit" v-model="row.realityPrice" maxlength="7" size="small" style="width:90px" onkeypress='return(/[\d\.]/.test(String.fromCharCode(event.keyCode)))'></el-input>
                     <span v-if="!row.showEdit">{{row.realityPrice}}</span>
                   </template>
                 </el-table-column>
                 <el-table-column prop="suggestPrice" label="建议售价">
                   <template slot-scope="{row,$index}">
-                    ￥<el-input v-if="row.showEdit" v-model="row.suggestPrice" maxlength="7" size="small" style="width:100px" onkeypress='return(/[\d\.]/.test(String.fromCharCode(event.keyCode)))'></el-input>
+                    ￥<el-input v-if="row.showEdit" v-model="row.suggestPrice" maxlength="7" size="small" style="width:90px" onkeypress='return(/[\d\.]/.test(String.fromCharCode(event.keyCode)))'></el-input>
                     <span v-if="!row.showEdit">{{row.suggestPrice}}</span>
                   </template>
                 </el-table-column>
@@ -76,7 +76,7 @@
                 <el-table-column prop="inventory" label="剩余库存">
                   <template slot-scope="{row,$index}">
                     <div class="surplus_stock">
-                    <el-input v-if="row.showEdit" v-model="row.inventory"  size="small" style="width:120px" maxlength="4" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'>
+                    <el-input v-if="row.showEdit" v-model="row.inventory"  size="small" style="width:100px" maxlength="4" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'>
                       <template slot="prepend"><span @click="plusMath(row)">+</span></template>
                       <template slot="append"><span @click="subtractMath(row)">-</span></template>
                     </el-input>
@@ -116,20 +116,20 @@
                 <el-table-column prop="unit" label="出售规格" width="100"></el-table-column>
                 <el-table-column prop="realityPrice" label="实际售价">
                   <template slot-scope="{row,$index}">
-                    ￥<el-input v-if="row.showEdit" v-model="row.realityPrice" maxlength="7" size="small" style="width:100px" onkeypress='return(/[\d\.]/.test(String.fromCharCode(event.keyCode)))'></el-input>
+                    ￥<el-input v-if="row.showEdit" v-model="row.realityPrice" maxlength="7" size="small" style="width:90px" onkeypress='return(/[\d\.]/.test(String.fromCharCode(event.keyCode)))'></el-input>
                     <span v-if="!row.showEdit">{{row.realityPrice}}</span>
                   </template>
                 </el-table-column>
                 <el-table-column prop="suggestPrice" label="建议售价">
                   <template slot-scope="{row,$index}">
-                    ￥<el-input v-if="row.showEdit" v-model="row.suggestPrice" maxlength="7" size="small" style="width:100px" onkeypress='return(/[\d\.]/.test(String.fromCharCode(event.keyCode)))'></el-input>
+                    ￥<el-input v-if="row.showEdit" v-model="row.suggestPrice" maxlength="7" size="small" style="width:90px" onkeypress='return(/[\d\.]/.test(String.fromCharCode(event.keyCode)))'></el-input>
                     <span v-if="!row.showEdit">{{row.suggestPrice}}</span>
                   </template>
                 </el-table-column>
                 <el-table-column prop="inventory" label="剩余库存">
                   <template slot-scope="{row,$index}">
                     <div class="surplus_stock">
-                    <el-input v-if="row.showEdit" v-model="row.inventory"  size="small" style="width:120px" maxlength="4" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'>
+                    <el-input v-if="row.showEdit" v-model="row.inventory"  size="small" style="width:100px" maxlength="4" onkeypress='return(/[\d]/.test(String.fromCharCode(event.keyCode)))'>
                       <template slot="prepend"><span @click="plusMath(row)">+</span></template>
                       <template slot="append"><span @click="subtractMath(row)">-</span></template>
                     </el-input>
@@ -304,7 +304,7 @@ export default {
           }
         })
         .catch(err => {
-          console.log(err);
+          self.tableData = [];
         });
     },
     getlistSoldOut() {
@@ -331,7 +331,7 @@ export default {
           }
         })
         .catch(err => {
-          console.log(err);
+          self.tableData = [];
         });
     },
     getlistCheck() {
@@ -358,7 +358,7 @@ export default {
           }
         })
         .catch(err => {
-          console.log(err);
+          self.tableData = [];
         });
     },
     searchQuery() {
@@ -382,7 +382,9 @@ export default {
       row.inventory++;
     },
     subtractMath(row) {
-      row.inventory--;
+      if(row.inventory > 0){
+        row.inventory--;
+      }
     },
     viewDetails(index, row) {
       const item = this.tableData[index];

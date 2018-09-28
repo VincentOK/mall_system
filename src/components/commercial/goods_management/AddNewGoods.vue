@@ -71,11 +71,12 @@
                           </el-radio-group>
                       </el-form-item>
                       <el-form-item label="可提供发票" prop="invoice">
-                          <el-radio-group v-model="form.invoice">
+                          <el-radio-group v-model="form.invoice" @change="handleInvoiceListChange">
                               <el-radio label="Y">是</el-radio>
                               <el-radio label="N">否</el-radio>
                           </el-radio-group>
                       </el-form-item>
+                      <div v-if="form.invoice == 'Y'">
                       <el-form-item label="可提供发票类型" class="the-buyer" prop="invoiceType">
                         <div class="the_buyer_type">
                           <el-checkbox :indeterminate="invoiceIndeterminate" v-model="checkAllInvoice" @change="handleCheckAllInvoiceChange">全选</el-checkbox>
@@ -86,6 +87,7 @@
                           </el-checkbox-group>
                         </div>
                       </el-form-item>
+                      </div>
                     </div>
                     <el-form-item label="商品详情：" prop="detail" class="goods_desc">
                         <P class="">（请进一步描述商品，或注意事项）</P>
@@ -411,6 +413,12 @@ export default {
       let checkedCount = value.length;
       this.checkAllInvoice = checkedCount === this.checkedInvoiceTypes.length;
     },
+    handleInvoiceListChange(value){
+      if(value == 'N'){
+        this.form.invoiceType = [];
+        this.checkAllInvoice =false
+      }
+    }
   }
 };
 </script>

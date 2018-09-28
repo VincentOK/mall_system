@@ -17,7 +17,7 @@
         </div>
         <div>
           <label>支付渠道：</label>
-          <p style="display:inline" v-for="item in GoodsDetail.payList" :key="item.typeId">{{item.typeName}}&nbsp;</p>
+          <p style="display:inline" v-for="item in GoodsDetail.payTypeList" :key="item.typeId">{{item.typeName}}&nbsp;</p>
         </div>
         <div>
           <label>上架时间：</label>
@@ -51,7 +51,7 @@
         </div>
         <div class="invoice_type">
           <label>可提供发票类型：</label>
-           <p v-for="item in GoodsDetail.invoiceList" :key="item.typeId">{{item.typeName}}&nbsp;&nbsp;</p>
+           <p v-for="item in GoodsDetail.invoiceTypeList" :key="item.typeId">{{item.typeName}}&nbsp;&nbsp;</p>
         </div>
       </div>
     </div>

@@ -113,7 +113,7 @@
                                                     v-bind:action= "uploadUrl"
                                                     name="files"
                                                     list-type="picture-card"
-                                                    :limit="0"
+                                                    :limit="5"
                                                     :on-success="handleAvatarSuccessOther"
                                                     :on-preview="handlePictureCardPreview"
                                                     :on-remove="handleRemove"

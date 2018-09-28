@@ -91,9 +91,12 @@ export const orderDetailrefund = (orderNumber) => fetch('/timestoremanage/order/
  * @param reason
  * @returns {Promise<*>}
  */
-export const refusedRefund = (orderNumber, reason) => fetch('/timestoremanage/order/refusedRefund', {
+export const refusedRefund = (orderNumber, reason,logisticsName,logisticsNumber) => fetch('/timestoremanage/order/refusedRefund', {
     orderNumber: orderNumber,
-    reason: reason
+    reason: reason,
+    logisticsName:logisticsName,
+    logisticsNumber:logisticsNumber,
+
 }, 'POST', true);
 /**
  * 同意退款

@@ -93,11 +93,11 @@
                                                <!--@click="viewDetails($index, row)">查看详情</el-button>-->
                                     <el-button size="small" type="text" style="color:#66b1ff;"
                                                @click="viewDetailsRefund($index, row.orderNumber)">查看详情</el-button>
-                                    <el-button v-if="row.orderStatus === '4'" size="small" type="text" style="color:#66b1ff;"
+                                    <el-button v-if="row.orderStatus === '4' || row.orderStatus === '5'" size="small" type="text" style="color:#66b1ff;"
                                                @click="agreeDetails($index, row)" >同意退款</el-button>
-                                    <el-button  v-if="row.orderStatus === '4'" size="small" type="text"
+                                    <el-button  v-if="row.orderStatus === '4' || row.orderStatus === '5'" size="small" type="text"
                                                @click="notagreePay($index, row)">拒绝退款</el-button>
-                                    <el-button  v-if="row.orderStatus === '9'" size="small" type="text"
+                                    <el-button  v-if="row.orderStatus === '10'" size="small" type="text"
                                                 @click="sureagreePay($index, row)">执行退款</el-button>
                                 </template>
                             </el-table-column>
@@ -423,6 +423,15 @@
                         <el-form-item label="拒绝原因：" prop="desc">
                             <el-input type="textarea"  v-model="form_notrefund.desc"></el-input>
                         </el-form-item>
+
+                        <el-form-item v-if="form_notrefund.sureStatus" label="快递公司：" prop="logisticsName">
+                            <el-input v-model="form_notrefund.logisticsName" placeholder="请输入快递公司" ></el-input>
+                        </el-form-item>
+
+                        <el-form-item v-if="form_notrefund.sureStatus"  label="快递单号：" prop="logisticsNumber">
+                            <el-input v-model="form_notrefund.logisticsNumber" placeholder="请输入快递单号" ></el-input>
+                        </el-form-item>
+
                     </el-form>
                 </div>
 
@@ -518,13 +527,22 @@ export default {
             money:''
         },
       form_notrefund: {//拒绝退款
+          sureStatus:false,
           name:'',
           ordernumber: "",
-          desc: ""
+          desc: "",
+          logisticsName:'',
+          logisticsNumber:''
       },
         form_notrefundRules: {
             desc: [
                 { required: true, message: "请输入拒绝退款原因", trigger: "blur" }
+            ],
+            logisticsName: [
+                { required: true, message: "请输入快递公司", trigger: "blur" }
+            ],
+            logisticsNumber: [
+                { required: true, message: "请输入快递单号", trigger: "blur" }
             ]
         },
       form_agree: {
@@ -795,6 +813,11 @@ export default {
       this.idx = index;
       this.form_notrefund.ordernumber = row.orderNumber;
       this.form_notrefund.name = row.contacts;
+      if(row.orderStatus == '5'){
+          this.form_notrefund.sureStatus = true;
+      }else {
+          this.form_notrefund.sureStatus = false;
+      }
       this.notagreeVisible = true;
     },
       //执行退款弹框
@@ -914,7 +937,7 @@ export default {
         console.log(this.form_notrefund);
         this.$refs[formName].validate(valid => {
             if (valid) {
-                refusedRefund(this.form_notrefund.ordernumber,this.form_notrefund.desc).then(res =>{
+                refusedRefund(this.form_notrefund.ordernumber,this.form_notrefund.desc,this.form_notrefund.logisticsName,this.form_notrefund.logisticsNumber).then(res =>{
                     console.log("拒绝退款:"+JSON.stringify(res));
                     if(res.code == '0'){
                         this.notagreeVisible = false;

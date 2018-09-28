@@ -48,7 +48,7 @@
             return {
                 imgCode:getCode(),
                 ruleForm: {
-                    username: '18614060970',
+                    username: '18376614866',
                     password: '123456',
                     checkword:'',
                 },
@@ -74,6 +74,7 @@
 
         },
         mounted(){
+
             // console.log('8888');
             // this.getNewCode();
             // testa(1).then(res =>{

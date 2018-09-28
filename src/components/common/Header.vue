@@ -10,7 +10,7 @@
                 <div class="btn-bell">
                     <el-tooltip effect="light" :content="informNumber?`有${informNumber}条未读消息`:`消息中心`" placement="bottom">
                         <i class="el-icon-bell">
-                            <el-popover placement="right-start" width="200" trigger="click">
+                            <el-popover placement="right-start" width="200" trigger="click" :disabled='!gridData.length'>
                                 <span slot="reference">消息</span>
                                 <div class="scrollbarParent">
                                 <el-scrollbar style="height:100%;">
@@ -26,7 +26,7 @@
                             </el-popover>
                         </i>
                     </el-tooltip>
-                    <span class="btn-bell-badge" v-if="message"></span>
+                    <span class="btn-bell-badge" v-if="informNumber"></span>
                 </div>
                 <!-- 用户头像 -->
                 <div class="user-avator"><img src="static/img/img.jpg"></div>

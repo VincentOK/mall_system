@@ -304,7 +304,7 @@ export default {
           }
         })
         .catch(err => {
-          console.log(err);
+          self.tableData = [];
         });
     },
     getlistSoldOut() {
@@ -331,7 +331,7 @@ export default {
           }
         })
         .catch(err => {
-          console.log(err);
+          self.tableData = [];
         });
     },
     getlistCheck() {
@@ -358,7 +358,7 @@ export default {
           }
         })
         .catch(err => {
-          console.log(err);
+          self.tableData = [];
         });
     },
     searchQuery() {

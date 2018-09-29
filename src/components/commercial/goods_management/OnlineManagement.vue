@@ -397,6 +397,7 @@ export default {
       item.showEdit = true;
     },
     handleSave(index, row) {
+      
       this.idx = index;
       const itemSave = this.tableData[index];
       itemSave.showEdit = false;
@@ -407,13 +408,18 @@ export default {
         suggestPrice: multiplyPrice(row.suggestPrice),
         inventory: row.inventory
       };
-      edit(param).then(res => {
-        if (res.data) {
-          self.$message.success("编辑成功");
-        } else {
-          self.$message.info("接受小数点后两位");
-        }
-      });
+      if(Number(row.realityPrice) < Number(row.suggestPrice)){
+        edit(param).then(res => {
+          if (res.data) {
+            self.$message.success("编辑成功");
+          } else {
+            self.$message.info("编辑失败");
+          }
+        });
+      }else{
+        self.$message.info("建议售价价格需大于实际售价");
+        this.handleEdit(index,row)
+      }
     },
     handleDelete(index, row) {
       this.idx = index;

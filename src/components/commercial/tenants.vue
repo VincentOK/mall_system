@@ -354,7 +354,7 @@
 </template>
 
 <script>
-    import { uploadGoodsImg,userRegister,checkUser,sendPhoneCode } from "../common/request/request";
+    import { registerUploadImages,userRegister,checkUser,sendPhoneCode } from "../common/request/request";
     import { isvalidPhone } from "../common/commonJS/commonjs";
     import { bankCardAttribution } from "../common/commonJS/checkBank";
     export default {
@@ -525,7 +525,7 @@
             };
         },
         created(){
-            this.uploadUrl = uploadGoodsImg()
+            this.uploadUrl = registerUploadImages()
         },
         methods: {
             /**
@@ -687,7 +687,7 @@
                 }
                 // let param = new FormData(); // 创建form对象
                 // param.append('files', file,file.name);// 通过append向form对象添加数据
-                // uploadGoodsImg(param).then(res =>{
+                // registerUploadImages(param).then(res =>{
                 //     console.log(res)
                 // }).catch(err =>{
                 //     console.log(err)

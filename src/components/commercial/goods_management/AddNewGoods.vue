@@ -148,7 +148,7 @@ import { multiplyPrice } from "../../common/commonJS/commonjs.js";
 import { mapState, mapMutations, mapActions } from "vuex";
 import {
   addStoreCommodity,
-  uploadGoodsImg,
+  goodsUploadImages,
   payTypeList,
   invoiceList
 } from "../../common/request/request";
@@ -315,7 +315,7 @@ export default {
   mounted() {
     let self = this;
     self.uid = self.userInfo.uid;
-    this.uploadUrl = uploadGoodsImg();
+    this.uploadUrl = goodsUploadImages();
     payTypeList()
       .then(res => {
         self.checkedBuyTypes = res.data;

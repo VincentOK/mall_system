@@ -20,10 +20,10 @@
                     <span class="ordering-rule" style="left: 50%">结算状态：
                     <el-select v-model="select_cate" placeholder="请选择状态" @change="chooseStatus" class="handle-select mr10">
                     <el-option key="1" label="全部订单" value="0"></el-option>
-                    <el-option key="2" label="已发货订单" value="3"></el-option>
-                    <el-option key="3" label="已退款订单" value="5"></el-option>
-                    <el-option key="4" label="拒绝发货订单" value="7"></el-option>
-                        <el-option key="5" label="已拒绝退款订单" value="8"  class="last-el-option"></el-option>
+                    <el-option key="2" label="已发货订单" value="1"></el-option>
+                    <el-option key="3" label="已退款订单" value="2"  class="last-el-option"></el-option>
+                    <!--<el-option key="4" label="拒绝发货订单" value="3"></el-option>-->
+                        <!--<el-option key="5" label="已拒绝退款订单" value="4"  class="last-el-option"></el-option>-->
                     </el-select>
                     </span>
 
@@ -484,7 +484,7 @@
              */
             chinaStatus(row, column, cellValue, index){
                 let word = '';
-                console.log("aaaaaaaaaaaaaaaaaaaaaaaaaa:"+JSON.stringify(row))
+                console.log("aaaaaaaaaaaaaaaaaaaaaaaaaa:"+JSON.stringify(row));
                 switch(row.orderStatus)
                 {
                     case '1':
@@ -586,7 +586,39 @@
                     getShippedSend(row.orderNumber).then(res =>{
                         console.log("已发货+已完成+已拒绝发货:"+res);
                         if(res.code === "0"){
-                            this.editVisibleTitle = row.orderStatus;
+                            switch (row.orderStatus)
+                            {
+                                case '1':
+                                    this.editVisibleTitle ='待付款';
+                                    break;
+                                case '2':
+                                    this.editVisibleTitle ='待发货';
+                                    break;
+                                case '3':
+                                    this.editVisibleTitle ='已发货';
+                                    break;
+                                case '4':
+                                    this.editVisibleTitle ='退款中';
+                                    break;
+                                case '5':
+                                    this.editVisibleTitle ='退款中';
+                                    break;
+                                case '6':
+                                    this.editVisibleTitle ='已退款';
+                                    break;
+                                case '7':
+                                    this.editVisibleTitle='已完成';
+                                    break;
+                                case '8':
+                                    this.editVisibleTitle='退还商品';
+                                    break;
+                                case '9':
+                                    this.editVisibleTitle='已关闭';
+                                    break;
+                                default:
+                                    this.editVisibleTitle=''
+                            }
+                            // this.editVisibleTitle = row.orderStatus;
                             this.goodsDetail = res.data;
                             this.editVisible=true;//弹出框
                             this.returnGoods=false;//已拒绝发货

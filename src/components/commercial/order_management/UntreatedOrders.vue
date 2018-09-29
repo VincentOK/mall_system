@@ -143,7 +143,9 @@
                                     支付流水号：<label>{{order_detail.payNumber}}</label>
                                 </div>
                                 <div>
-                                    支付金额：<label>{{order_detail.totalPrice | formMoney(order_detail.totalPrice)}}</label>
+                                    支付金额：<label v-if="order_detail.orderPriceRmb != '0'">￥{{order_detail.orderPriceRmb | formMoney(order_detail.orderPriceRmb)}}</label>
+                                              <label v-if="order_detail.orderPriceSjb != '0'">{{order_detail.orderPriceSjb | formMoney(order_detail.orderPriceSjb)}}</label>
+                                              <label v-if="order_detail.orderPriceRmb == '0' && order_detail.orderPriceSjb == '0'">￥{{order_detail.orderPriceSjb | formMoney(order_detail.orderPriceSjb)}}</label>
                                 </div>
                             </div>
                         </div>
@@ -154,15 +156,15 @@
                                     买家昵称：<label>{{order_detail.nickName}}</label>
                                 </div>
                                 <div>
-                                    手机号：<label>{{order_detail.shippingPhone}}</label>
+                                    手机号：<label>{{order_detail.receivingPhone}}</label>
                                 </div>
                             </div>
                             <div class="goods_detail_right">
                                 <div>
-                                    收货人：<label>{{order_detail.shippingName}}</label>
+                                    收货人：<label>{{order_detail.receivingName}}</label>
                                 </div>
                                 <div>
-                                    收货地址：<label>{{order_detail.address}}</label>
+                                    收货地址：<label>{{order_detail.receivingAddress}}</label>
                                 </div>
                             </div>
                         </div>

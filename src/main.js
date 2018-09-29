@@ -6,7 +6,7 @@ import store from './store/store'
 import ElementUI from 'element-ui';
 // import 'element-ui/lib/theme-chalk/index.css';    // 默认主题
 // import '../static/css/theme-green/index.css';       // 浅绿色主题
-import '../static/css/iconfont/iconfont.css'
+import '../static/css/newIconfont/iconfont.css'
 import '../static/css/#EC414D/index.css';
 
 

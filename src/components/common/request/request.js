@@ -4,10 +4,15 @@
 import { baseUrl } from './url'
 import fetch from './fetch'
 /**
- * 上传files图片
+ * 商户入驻时图片上传
  *
  */
-export const uploadGoodsImg = () => { return baseUrl + '/timestoremanage/storeCommodity/uploadImages' };
+export const registerUploadImages = () => { return baseUrl + '/timestoremanage/common/registerUploadImages' };
+/**
+ * 新增商品时图片上传
+ *
+ */
+export const goodsUploadImages = () => { return baseUrl + '/timestoremanage/common/goodsUploadImages' };
 
 /**
  * 获取验证码
@@ -91,11 +96,11 @@ export const orderDetailrefund = (orderNumber) => fetch('/timestoremanage/order/
  * @param reason
  * @returns {Promise<*>}
  */
-export const refusedRefund = (orderNumber, reason,logisticsName,logisticsNumber) => fetch('/timestoremanage/order/refusedRefund', {
+export const refusedRefund = (orderNumber, reason, logisticsName, logisticsNumber) => fetch('/timestoremanage/order/refusedRefund', {
     orderNumber: orderNumber,
     reason: reason,
-    logisticsName:logisticsName,
-    logisticsNumber:logisticsNumber,
+    logisticsName: logisticsName,
+    logisticsNumber: logisticsNumber,
 
 }, 'POST', true);
 /**
@@ -104,8 +109,8 @@ export const refusedRefund = (orderNumber, reason,logisticsName,logisticsNumber)
  *  * @param status
  * @returns {Promise<*>}
  */
-export const confrimRefund = (form , status ) => fetch('/timestoremanage/order/confrimRefund', {
-    status:status,
+export const confrimRefund = (form, status) => fetch('/timestoremanage/order/confrimRefund', {
+    status: status,
     orderNumber: form.orderNumber,
     tenantContacts: form.shippingName,
     tenantPhone: form.shippingPhone,
@@ -119,9 +124,9 @@ export const confrimRefund = (form , status ) => fetch('/timestoremanage/order/c
  *  * @param status
  * @returns {Promise<*>}
  */
-export const confrimRefundNo = (orderNumber,status) => fetch('/timestoremanage/order/confrimRefund', {
-    orderNumber:orderNumber,
-    status:status
+export const confrimRefundNo = (orderNumber, status) => fetch('/timestoremanage/order/confrimRefund', {
+    orderNumber: orderNumber,
+    status: status
 }, 'POST', true);
 /**
  * 确认执行退款，退还买家商品费用

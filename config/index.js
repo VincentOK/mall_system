@@ -9,6 +9,7 @@ module.exports = {
 
     // Paths
     assetsSubDirectory: 'static',
+      noParse: ['ws'],
     assetsPublicPath: '/',
     proxyTable: {
       // '/api':{
@@ -26,7 +27,7 @@ module.exports = {
             }
         },
       '/ms':{
-          target: 'https://www.easy-mock.com/mock/592501a391470c0ac1fab128',
+          target: 'ws://192.168.0.146:8989',
           changeOrigin: true
       }
     },

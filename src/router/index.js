@@ -9,7 +9,8 @@ const myrouter = [
         component: resolve => require(['../components/common/Home.vue'], resolve),
         redirect: '/dashboard',
         meta: { title: '自述文件' },
-        children: [{
+        children: [
+            {
                 path: '/dashboard',
                 component: resolve => require(['../components/commercial/Dashboard.vue'], resolve),
                 meta: { title: '系统首页' }

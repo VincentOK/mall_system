@@ -59,10 +59,10 @@
     </div>
 </template>
 <script>
-import { removeStorage } from "./commonJS/localStorage";
-import { loginout, listMessages, getMessagesDetail } from "./request/request";
-import { mapState } from "vuex";
-import bus from "../common/bus";
+    import { removeStorage } from "./commonJS/localStorage";
+    import { loginout, listMessages, getMessagesDetail } from "./request/request";
+    import { mapState } from "vuex";
+    import bus from "../common/bus";
 export default {
   data() {
     return {

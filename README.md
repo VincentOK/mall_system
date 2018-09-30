@@ -1,17 +1,11 @@
 # manage-system #
-基于Vue.js 2.x系列 + Element UI 的后台管理系统解决方案。[线上地址](http://blog.gdfengshuo.com/example/work/)
+基于Vue.js 2.x系列 + Element UI 的后台管理系统解决方案.
 
-[English document](https://github.com/lin-xin/manage-system/blob/master/README_EN.md)
-
-[更新日志](https://github.com/lin-xin/vue-manage-system/releases)
-
-## 捐赠
-![微信扫一扫](http://blog.gdfengshuo.com/images/weixin.jpg)
 
 ## 前言 ##
 之前在公司用了Vue + Element组件库做了个后台管理系统，基本很多组件可以直接引用组件库的，但是也有一些需求无法满足。像图片裁剪上传、富文本编辑器、图表等这些在后台管理系统中很常见的功能，就需要引用其他的组件才能完成。从寻找组件，到使用组件的过程中，遇到了很多问题，也积累了宝贵的经验。所以我就把开发这个后台管理系统的经验，总结成这个后台管理系统解决方案。
 
-该方案作为一套多功能的后台框架模板，适用于绝大部分的后台管理系统（Web Management System）开发。基于vue.js,使用vue-cli脚手架快速生成项目目录，引用Element UI组件库，方便开发快速简洁好看的组件。分离颜色样式，支持手动切换主题色，而且很方便使用自定义主题色。
+该方案作为一套多功能的后台框架模板，适用于绝大部分的后台管理系统（Web Management System）开发，后台管理系统基于客户端与管理员两种角色。基于vue.js,使用vue-cli脚手架快速生成项目目录，引用Element UI组件库，方便开发快速简洁好看的组件。分离颜色样式，支持手动切换主题色，而且很方便使用自定义主题色。
 
 ## 功能 ##
 - [x] Element UI
@@ -35,8 +29,12 @@
 	|-- build                            // webpack配置文件
 	|-- config                           // 项目打包路径
 	|-- src                              // 源码目录
-	|   |-- components                   // 组件
-	|       |-- common                   // 公共组件
+	|   |-- components                    // 组件
+	        |--administrator              // 管理员权限目录
+	        |--commercial                 //商户端目录
+	|       |-- common                    // 公共组件
+	            |--commonJS               // 公共JS文件
+	            |--request               // 封装JS请求
 	|           |-- bus.js           	 // Event Bus
 	|           |-- Header.vue           // 公共头部
 	|           |-- Home.vue           	 // 公共路由入口
@@ -55,6 +53,8 @@
 	|           |-- Premission.vue       // 权限测试组件
 	|           |-- Upload.vue           // 图片上传
 	|           |-- VueEditor.vue        // 富文本编辑器
+	    |--router                        //路由跳转
+	    |--store                         //VUEX状态管理
 	|   |-- App.vue                      // 页面入口文件
 	|   |-- main.js                      // 程序入口文件，加载各种公共组件
 	|-- .babelrc                         // ES6语法编译配置
@@ -67,7 +67,7 @@
 
 ## 安装步骤 ##
 
-	git clone https://github.com/lin-xin/vue-manage-system.git      // 把模板下载到本地
+	把模板下载到本地
 	cd vue-manage-system    // 进入模板目录
 	npm install         // 安装项目依赖，等待安装完成之后
 
@@ -84,7 +84,7 @@
 ## 组件使用说明与演示 ##
 
 ### vue-schart ###
-vue.js封装sChart.js的图表组件。访问地址：[vue-schart](https://github.com/linxin/vue-schart)
+vue.js封装sChart.js的图表组件。
 <p><a href="https://www.npmjs.com/package/vue-schart"><img src="https://img.shields.io/npm/dm/vue-schart.svg" alt="Downloads"></a></p>
 
 ```JavaScript
@@ -99,7 +99,7 @@ vue.js封装sChart.js的图表组件。访问地址：[vue-schart](https://githu
 		></schart>
     </div>
 </template>
-	
+
 <script>
     import Schart from 'vue-schart';        // 导入Schart组件
     export default {
@@ -128,18 +128,18 @@ vue.js封装sChart.js的图表组件。访问地址：[vue-schart](https://githu
 ```
 
 ### element-ui ###
-一套基于vue.js2.0的桌面组件库。访问地址：[element](http://element.eleme.io/#/zh-CN/component/layout)
+一套基于vue.js2.0的桌面组件库
 
 ### Vue-Quill-Editor ###
-基于Quill、适用于Vue2的富文本编辑器。访问地址：[vue-quill-editor](https://github.com/surmon-china/vue-quill-editor)
+基于Quill、适用于Vue2的富文本编辑器
 
 （IE10及以下不支持）
 
 ### mavonEditor ###
-基于Vue的markdown编辑器。访问地址：[mavonEditor](https://github.com/hinesboy/mavonEditor)
+基于Vue的markdown编辑器
 
 ### vue-cropperjs ###
-一个封装了 cropperjs 的 Vue 组件，用于裁剪图片。访问地址：[vue-cropperjs](https://github.com/Agontuk/vue-cropperjs)
+一个封装了 cropperjs 的 Vue 组件，用于裁剪图片
 
 ## 其他注意事项 ##
 ### 一、如果我不想用到上面的某些组件呢，那我怎么在模板中删除掉不影响到其他功能呢？ ###
@@ -152,14 +152,14 @@ vue.js封装sChart.js的图表组件。访问地址：[vue-schart](https://githu
 {
     // 富文本编辑器组件
     path: '/editor',
-    component: resolve => require(['../components/page/VueEditor.vue'], resolve) 
+    component: resolve => require(['../components/page/VueEditor.vue'], resolve)
 },
 ```
 
 第二步：删除引入该组件的文件。在目录 src/components/page/ 删除 VueEditor.vue 文件。
 
 第三步：删除该页面的入口。在目录 src/components/common/Sidebar.vue 中，找到该入口，删除下面这段代码。
-	
+
 ```js
 {
 	index: 'editor',
@@ -168,7 +168,7 @@ vue.js封装sChart.js的图表组件。访问地址：[vue-schart](https://githu
 ```
 
 第四步：卸载该组件。执行以下命令：
-	
+
 	npm un vue-quill-editor -S
 
 完成。
@@ -191,12 +191,3 @@ import 'element-ui/lib/theme-default/index.css';    // 默认主题
 ```
 
 第三步：打开 src/components/common/Sidebar.vue 文件，找到 el-menu 标签，把 background-color/text-color/active-text-color 属性去掉即可。
-
-## 项目截图 ##
-### 默认皮肤 ###
-
-![Image text](https://github.com/lin-xin/manage-system/raw/master/screenshots/wms1.png)
-
-### 浅绿色皮肤 ###
-
-![Image text](https://github.com/lin-xin/manage-system/raw/master/screenshots/wms2.png)

@@ -10,20 +10,22 @@
  */
 let baseUrl = '';
 let imgBaseUrl = '';
+let wsUrl = '';
 let key = "14935725AWCNHVUG";
 let iv = 'KHGTHNBF14896325';
 
 console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV == 'development') {
-    baseUrl = 'http://192.168.0.154:8989';
-    // imgBaseUrl = '/img/';
+    baseUrl = 'http://192.168.0.138:8989';
+    wsUrl = 'ws://192.168.0.138:8989/timestoremanage';
 } else if (process.env.NODE_ENV == 'production') {
     baseUrl = 'http://l92.168.0.154:8989';
-    // imgBaseUrl = 'http://www.ninhaotime.com/';
+    wsUrl = 'http://192.168.0.154:8989';
 }
 export {
     baseUrl,
     key,
     iv,
+    wsUrl,
     imgBaseUrl,
 }

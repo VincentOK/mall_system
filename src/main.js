@@ -25,7 +25,10 @@ Object.keys(filters).forEach(key => {
 Vue.use(ElementUI, { size: 'small' });
 import { getStorage } from "./components/common/commonJS/localStorage";
 import { Decrypt } from "./components/common/commonJS/secert";
+
+
 // Vue.prototype.$axios = axios;
+
 //使用钩子函数对路由进行权限跳转
 router.beforeEach((to, from, next) => {
     let role = getStorage('userInfo');

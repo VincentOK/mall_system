@@ -11,8 +11,17 @@
             return {
             }
         },
+        created(){
+            let userMessage = this.userInfo;
+            if (userMessage) {
+                // debugger;
+                // this.$connectSocket('ws://192.168.0.138:8989/timestoremanage/websocket/123456');
+            }
+        },
         computed:{
-
+            ...mapState([
+                'userInfo'
+            ])
         },
         mounted(){
             console.log("APP.VUE+测试");
